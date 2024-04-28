@@ -2,6 +2,16 @@
     "main_menu": {
         "size": [250, 320],
         "pos": "@get frame_size c -125 -160@",
-        "objects": {}
+        "bg_color": [64, 74, 204],
+        "outline_color": [19, 23, 74],
+        "objects": {
+            "title_text": {
+                "type": "text",
+                "pos": [125, 300],
+                "text": "StarTales Alpha 2.0",
+                "font": "rajdhani-bold",
+                "font_size": 14
+            }
+        }
     }
 }

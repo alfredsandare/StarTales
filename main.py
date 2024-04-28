@@ -1,12 +1,14 @@
 import json
 from PhoenixGUI import *
 import pygame
+from PhoenixGUI.util import update_pos_by_anchor
 
 PATH = __file__[:-7]
 
 class Game:
     def __init__(self):
-        self.screen = pygame.display.set_mode((800, 800))
+        self.frame_size = (800, 800)
+        self.screen = pygame.display.set_mode(self.frame_size)
         self.menu_handler = MenuHandler(self.screen, 1)
 
         menues_data = self.load_menues_data()
@@ -27,6 +29,7 @@ class Game:
         return json.loads(final_data)
 
     def main(self):
+        self.menu_handler.menues["main_menu"].activate()
         clock = pygame.time.Clock()
         while True:
             self.screen.fill((0, 0, 0))
@@ -41,8 +44,15 @@ class Game:
         args = input_.split()[1:]
 
         if id_ == "frame_size":
-            return [100, 100]
-        
+            pos = update_pos_by_anchor([0, 0], self.frame_size, args[0])
+            pos = [-1*pos[0] + int(args[1]), -1*pos[1] + int(args[2])]
+            return pos
+
+        elif id_ == "default_font":
+            if "bold" in args:
+                return "rajdhani-bold"
+            return "rajdhani-regular"
+            
         return ""
 
 if __name__ == "__main__":
