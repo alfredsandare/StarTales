@@ -1,6 +1,7 @@
 {
     "main_menu": {
         "size": [250, 320],
-        "pos": "@get frame_size c -125 -160"
+        "pos": "@get frame_size c -125 -160@",
+        "objects": {}
     }
 }
