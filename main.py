@@ -13,6 +13,7 @@ class Game:
 
         menues_data = self.load_menues_data()
         self.menu_handler.load_data_from_dict(menues_data, None)
+        self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
     def load_menues_data(self):
         with open(PATH + "data/menues.json") as file:
