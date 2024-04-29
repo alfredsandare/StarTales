@@ -10,7 +10,8 @@
                 "pos": [125, 300],
                 "text": "StarTales Alpha 2.0",
                 "font": "rajdhani-bold",
-                "font_size": 14
+                "font_size": 14,
+                "anchor": "c"
             }
         }
     }
