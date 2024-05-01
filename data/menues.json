@@ -9,8 +9,20 @@
                 "type": "text",
                 "pos": [125, 300],
                 "text": "StarTales Alpha 2.0",
-                "font": "rajdhani-bold",
+                "font": "@get default_font bold@",
                 "font_size": 14,
+                "anchor": "c"
+            },
+            "play_button": {
+                "type": "button",
+                "pos": [150, 50],
+                "enable_rect": true,
+                "rect_color": [35, 43, 133],
+                "text": "Play",
+                "font": "@get default_font bold@",
+                "font_size": 25,
+                "rect_padx": 6,
+                "rect_pady": 6,
                 "anchor": "c"
             }
         }

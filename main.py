@@ -51,8 +51,8 @@ class Game:
 
         elif id_ == "default_font":
             if "bold" in args:
-                return "rajdhani-bold"
-            return "rajdhani-regular"
+                return '"rajdhani-bold"'
+            return '"rajdhani-regular"'
             
         return ""
 
