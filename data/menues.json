@@ -21,7 +21,31 @@
                 "text": "Play",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 6,
+                "rect_pady": 8,
+                "rect_length": 200,
+                "anchor": "c"
+            },
+            "settings_button": {
+                "type": "button",
+                "pos": [125, 100],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Settings",
+                "font": "@get default_font bold@",
+                "font_size": 25,
+                "rect_pady": 8,
+                "rect_length": 200,
+                "anchor": "c"
+            },
+            "credits_button": {
+                "type": "button",
+                "pos": [125, 150],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Credits",
+                "font": "@get default_font bold@",
+                "font_size": 25,
+                "rect_pady": 8,
                 "rect_length": 200,
                 "anchor": "c"
             }
