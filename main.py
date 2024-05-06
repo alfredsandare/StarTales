@@ -9,11 +9,22 @@ class Game:
     def __init__(self):
         self.frame_size = (800, 800)
         self.screen = pygame.display.set_mode(self.frame_size)
-        self.menu_handler = MenuHandler(self.screen, 1)
+        self.menu_handler = MenuHandler()
 
         menues_data = self.load_menues_data()
         self.menu_handler.load_data_from_dict(menues_data, None)
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
+
+    def main(self):
+        self.menu_handler.menues["main_menu"].activate()
+        clock = pygame.time.Clock()
+        while True:
+            self.screen.fill((0, 0, 0))
+
+            events = pygame.event.get()
+            self.menu_handler.update(events, self.screen)
+            pygame.display.flip()
+            clock.tick(60)
 
     def load_menues_data(self):
         with open(PATH + "data/menues.json") as file:
@@ -27,18 +38,30 @@ class Game:
                 final_data += (str(self.get_values(split[0])) 
                                + ("" if len(split) == 1 else split[1]))
 
-        return json.loads(final_data)
+        loaded_data = json.loads(final_data)
 
-    def main(self):
-        self.menu_handler.menues["main_menu"].activate()
-        clock = pygame.time.Clock()
-        while True:
-            self.screen.fill((0, 0, 0))
+        for menu_key, menu in loaded_data.items():
+            for obj_key, obj in menu["objects"].items():
+                if obj["type"] == "button" and "color_theme" in obj.keys():
+                    loaded_data[menu_key]["objects"][obj_key].update( \
+                        self._get_button_color_theme(obj["color_theme"]))
+                    
+                    del loaded_data[menu_key]["objects"][obj_key]["color_theme"]
 
-            events = pygame.event.get()
-            self.menu_handler.update(events, self.screen)
-            pygame.display.flip()
-            clock.tick(60)
+        return loaded_data
+    
+    def _get_button_color_theme(self, theme):
+        if theme == "default":
+            return {
+                "rect_color": [35, 43, 133],
+                "rect_hover_color": [35, 43, 133],
+                "rect_click_color": [27, 32, 99],
+                "rect_outline_color": [255, 255, 255],
+                "rect_outline_hover_color": [254, 180, 5],
+                "rect_outline_click_color": [254, 180, 5]
+            } 
+        
+        return {}
 
     def get_values(self, input_):
         id_ = input_.split()[0]
