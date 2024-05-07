@@ -16,8 +16,6 @@ class Planet:
         self.planet_surface = self._render_planet_surface()
         cloud_surface = self._render_cloud_surface()
 
-        # self.surface = pygame.transform.scale(self.surface, (2*self.surface_size[0], 2*self.surface_size[1]))
-
         self.frames = self._render_frames(self.planet_surface, cloud_surface)
         self.current_frame_index = 0
         
@@ -39,13 +37,7 @@ class Planet:
                         break
                 surface.set_at((x, y), color)
 
-        num_of_blits = 2
-        final_surface = pygame.Surface((num_of_blits*self.surface_size[0], self.surface_size[1]), pygame.SRCALPHA)
-        
-        for i in range(num_of_blits):
-            final_surface.blit(surface, (i*self.surface_size[0], 0))
-
-        return final_surface
+        return self._repeat_surface(surface, 2)
     
     def _render_cloud_surface(self):
         height_map = DS.diamond_square(shape=self.surface_size, 
@@ -54,7 +46,7 @@ class Planet:
                           roughness=0.7,
                           as_ndarray=False)
         
-        surface = pygame.Surface((314, 100), pygame.SRCALPHA)
+        surface = pygame.Surface(self.surface_size, pygame.SRCALPHA)
         for x in range(self.surface_size[0]):
             for y in range(self.surface_size[1]):
                 height = height_map[x][y]
@@ -65,31 +57,33 @@ class Planet:
                     color = (255, 255, 255, 0)
                 surface.set_at((x, y), color)
 
-        num_of_blits = 3
-        final_surface = pygame.Surface((num_of_blits*self.surface_size[0], self.surface_size[1]), pygame.SRCALPHA)
-        
-        for i in range(num_of_blits):
-            final_surface.blit(surface, (i*self.surface_size[0], 0))
-
-        return final_surface
+        return self._repeat_surface(surface, 3)
     
     def _render_frames(self, planet_surface, cloud_surface):
-        height = self.surface_size[1]
+        diameter = self.surface_size[1]
         frames = []
         for i in range(self.surface_size[0]):
 
-            upper_limit = height
-            frame = pygame.Surface((height, height), pygame.SRCALPHA)
+            upper_limit = diameter
+            frame = pygame.Surface((diameter, diameter), pygame.SRCALPHA)
 
-            rect = (i, 0, upper_limit, height)
+            rect = (i, 0, upper_limit, diameter)
             frame.blit(planet_surface.subsurface(rect).copy(), (0, 0))
 
-            rect = (math.floor(2*i), 0, upper_limit, height)
+            rect = (math.floor(2*i), 0, upper_limit, diameter)
             frame.blit(cloud_surface.subsurface(rect).copy(), (0, 0))
 
             frames.append(frame)
                 
         return frames
+    
+    def _repeat_surface(self, surface, num_of_blits):
+        new_surface = pygame.Surface((num_of_blits*self.surface_size[0], self.surface_size[1]), pygame.SRCALPHA)
+
+        for i in range(num_of_blits):
+            new_surface.blit(surface, (i*self.surface_size[0], 0))
+
+        return new_surface
     
     def get_frame(self, speed=1):
         self.current_frame_index += speed
