@@ -1,3 +1,4 @@
+import math
 from hkb_diamondsquare import DiamondSquare as DS
 import pygame
 
@@ -13,10 +14,11 @@ class Planet:
         self.surface_size = (314, 100)
 
         self.planet_surface = self._render_planet_surface()
-        self.cloud_surface = self._render_cloud_surface()
-        self.surface = self._render_total_surface()
+        cloud_surface = self._render_cloud_surface()
+
         # self.surface = pygame.transform.scale(self.surface, (2*self.surface_size[0], 2*self.surface_size[1]))
-        self.frames = self._render_frames()
+
+        self.frames = self._render_frames(self.planet_surface, cloud_surface)
         self.current_frame_index = 0
         
     def _render_planet_surface(self):
@@ -57,36 +59,44 @@ class Planet:
                     color = (255, 255, 255, 0)
                 surface.set_at((x, y), color)
 
-        return surface
+        num_of_blits = 3
+        final_surface = pygame.Surface((num_of_blits*self.surface_size[0], self.surface_size[1]), pygame.SRCALPHA)
+        
+        for i in range(num_of_blits):
+            final_surface.blit(surface, (i*self.surface_size[0], 0))
 
-    def _render_total_surface(self):
-        surface = pygame.Surface(self.surface_size, pygame.SRCALPHA)
-        surface.blit(self.planet_surface, (0, 0))
-        surface.blit(self.cloud_surface, (0, 0))
-        return surface
+        return final_surface
     
-    def _render_frames(self):
+    def _render_frames(self, planet_surface, cloud_surface):
+        height = self.surface_size[1]
         frames = []
         for i in range(self.surface_size[0]):
 
-            upper_limit = 100 if i+100 < self.surface_size[0] else self.surface_size[0]-i
+            upper_limit = height \
+                if i+height < self.surface_size[0] else \
+                self.surface_size[0]-i
 
-            print(i, upper_limit, upper_limit<100)
+            frame = pygame.Surface((height, height), pygame.SRCALPHA)
 
-            frames.append(self.surface.subsurface((i, 0, upper_limit, self.surface_size[1])).copy())
+            rect = (i, 0, upper_limit, height)
+            frame.blit(planet_surface.subsurface(rect).copy(), (0, 0))
 
-            if upper_limit < 100:
-                surface = self.surface.subsurface((0, 0, 100-upper_limit, self.surface_size[1])).copy()
-                frames[-1].blit(surface, (upper_limit, 0))
+            if upper_limit < height:
+                rect = (0, 0, height-upper_limit, height)
+                surface = planet_surface.subsurface(rect).copy()
+                frame.blit(surface, (upper_limit, 0))
+
+            # rect = (2*i, 0, upper_limit, height)
+
+            frames.append(frame)
                 
         return frames
     
-    def get_frame(self):
-        self.current_frame_index += 1
-        if self.current_frame_index == len(self.frames):
+    def get_frame(self, speed=1):
+        self.current_frame_index += speed
+        if self.current_frame_index >= len(self.frames):
             self.current_frame_index = 0
-        return self.frames[self.current_frame_index]
+        return self.frames[math.floor(self.current_frame_index)]
 
-        
     def flatten_list(self, l):
         return [item for sublist in l for item in sublist]
