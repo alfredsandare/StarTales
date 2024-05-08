@@ -24,7 +24,7 @@ class Game:
         while True:
             self.screen.fill((0, 0, 0))
             self.screen.blit(self.planet.planet_surface, (0, 110))
-            self.planet.draw(self.screen, 1/300, 1/200)
+            self.planet.draw(self.screen, 1/500, 1/300)
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen)

@@ -69,6 +69,8 @@ class Planet:
     
     def draw(self, screen, speed, cloud_speed):
 
+        diameter = self.surface_size[1]
+
         self.rotation_progress += speed
         if self.rotation_progress > 1:
             self.rotation_progress -= 1
@@ -77,13 +79,21 @@ class Planet:
         if self.cloud_rotation_progress > 1:
             self.cloud_rotation_progress -= 1
 
-        screen.blit(self.planet_surface, (0, 0), 
+                
+
+        surface = pygame.Surface((diameter, diameter), pygame.SRCALPHA)
+
+        surface.blit(self.planet_surface, (0, 0), 
                     (self.rotation_progress * self.surface_size[0], 0, 
                      self.surface_size[1], self.surface_size[1]))
         
-        screen.blit(self.cloud_surface, (0, 0), 
+        surface.blit(self.cloud_surface, (0, 0), 
                     (self.cloud_rotation_progress * self.surface_size[0], 0, 
                      self.surface_size[1], self.surface_size[1]))
+        
+        # Masks the part of the surface that is not in the circle
+        mask = pygame.Surface((diameter, diameter), pygame.SRCALPHA)
+        pygame.draw.circle(mask, (255, 255, 255), (diameter//2, diameter//2), diameter//2)
+        surface.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
 
-    def flatten_list(self, l):
-        return [item for sublist in l for item in sublist]
+        screen.blit(surface, (0, 0))
