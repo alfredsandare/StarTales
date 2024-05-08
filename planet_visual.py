@@ -59,7 +59,8 @@ class PlanetVisual:
         return self._repeat_surface(surface, 3)
 
     def _repeat_surface(self, surface, num_of_blits):
-        new_surface = pygame.Surface((num_of_blits*self.surface_size[0], self.surface_size[1]), pygame.SRCALPHA)
+        size = (num_of_blits*self.surface_size[0], self.surface_size[1])
+        new_surface = pygame.Surface(size, pygame.SRCALPHA)
 
         for i in range(num_of_blits):
             new_surface.blit(surface, (i*self.surface_size[0], 0))
@@ -90,7 +91,8 @@ class PlanetVisual:
         
         # Masks the part of the surface that is not in the circle
         mask = pygame.Surface((diameter, diameter), pygame.SRCALPHA)
-        pygame.draw.circle(mask, (255, 255, 255), (diameter//2, diameter//2), diameter//2)
+        pygame.draw.circle(mask, (255, 255, 255), 
+                           (diameter//2, diameter//2), diameter//2)
         surface.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
 
         screen.blit(surface, (0, 0))
