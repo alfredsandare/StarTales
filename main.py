@@ -20,7 +20,7 @@ class Game:
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
 
-        style = PlanetVisualStyle(*planet_visual_style.EARTHLY)
+        style = PlanetVisualStyle(*planet_visual_style.EARTHLY2)
         visual = PlanetVisual(style, 1/500, 1/300)
         self.planet = Planet(visual)
 
