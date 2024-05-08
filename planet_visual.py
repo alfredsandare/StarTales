@@ -1,5 +1,6 @@
 from hkb_diamondsquare import DiamondSquare as DS
 import pygame
+import numpy as np
 
 from planet_visual_style import PlanetVisualStyle
 
@@ -67,7 +68,7 @@ class PlanetVisual:
 
         return new_surface
     
-    def draw(self, screen):
+    def draw(self, screen: pygame.Surface, pos: tuple[int, int], size: int):
 
         diameter = self.surface_size[1]
 
@@ -95,4 +96,26 @@ class PlanetVisual:
                            (diameter//2, diameter//2), diameter//2)
         surface.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
 
-        screen.blit(surface, (0, 0))
+        surface = pygame.transform.scale(surface, (size, size))
+
+        #mask = self.create_alpha_gradient(surface)
+        #surface.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+
+        screen.blit(surface, pos)
+
+    def create_alpha_gradient(self, surface):
+        # Create a new array with the same shape as the surface's alpha channel
+        alpha = np.zeros(surface.get_size(), np.uint8)
+
+        # Create a gradient in the x and y directions
+        gradient = np.repeat(np.linspace(0, 255, surface.get_width()), surface.get_height()).reshape(surface.get_size())
+
+        # Apply the gradient to the alpha channel
+        alpha[:, :] = gradient
+
+        # Create a new surface with the alpha channel
+        mask = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+        mask.fill((255, 255, 255, 0))
+        pygame.surfarray.pixels_alpha(mask)[:] = alpha
+
+        return mask
