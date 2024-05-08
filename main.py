@@ -3,6 +3,9 @@ from PhoenixGUI import *
 import pygame
 from PhoenixGUI.util import update_pos_by_anchor
 from planet import Planet
+from planet_visual import PlanetVisual
+from planet_visual_style import PlanetVisualStyle
+import planet_visual_style
 
 PATH = __file__[:-7]
 
@@ -16,15 +19,18 @@ class Game:
         self.menu_handler.load_data_from_dict(menues_data, None)
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
-        self.planet = Planet()
+
+        style = PlanetVisualStyle(*planet_visual_style.EARTHLY)
+        visual = PlanetVisual(style, 1/500, 1/300)
+        self.planet = Planet(visual)
 
     def main(self):
         #self.menu_handler.menues["main_menu"].activate()
         clock = pygame.time.Clock()
         while True:
             self.screen.fill((0, 0, 0))
-            self.screen.blit(self.planet.planet_surface, (0, 110))
-            self.planet.draw(self.screen, 1/500, 1/300)
+            #self.screen.blit(self.planet.planet_surface, (0, 110))
+            self.planet.draw(self.screen)
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen)
