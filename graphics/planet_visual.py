@@ -2,7 +2,7 @@ from hkb_diamondsquare import DiamondSquare as DS
 import pygame
 import numpy as np
 
-from planet_visual_style import PlanetVisualStyle
+from graphics.planet_visual_style import PlanetVisualStyle
 
 
 class PlanetVisual:

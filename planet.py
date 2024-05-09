@@ -1,5 +1,5 @@
 import pygame
-from planet_visual import PlanetVisual
+from graphics.planet_visual import PlanetVisual
 
 
 class Planet:

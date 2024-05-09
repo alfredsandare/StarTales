@@ -3,9 +3,9 @@ from PhoenixGUI import *
 import pygame
 from PhoenixGUI.util import update_pos_by_anchor
 from planet import Planet
-from planet_visual import PlanetVisual
-from planet_visual_style import PlanetVisualStyle
-import planet_visual_style
+from graphics.planet_visual import PlanetVisual
+from graphics.planet_visual_style import PlanetVisualStyle
+import graphics.planet_visual_style as planet_visual_style
 
 PATH = __file__[:-7]
 
@@ -20,7 +20,7 @@ class Game:
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
 
-        style = PlanetVisualStyle(*planet_visual_style.LIGHTS)
+        style = PlanetVisualStyle(*planet_visual_style.EARTHLY2)
         visual = PlanetVisual(style, 1/500, 1/300)
         self.planet = Planet(visual)
 
