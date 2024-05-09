@@ -1,10 +1,10 @@
 import pygame
-import graphics.planet_visual_generator as pvg
-from graphics.planet_visual_style import PlanetVisualStyle
+import graphics.celestial_body_visual_generator as cbvg
+from graphics.terrestrial_body_style import TerrestrialBodyStyle
 from graphics.star_visual_style import StarVisualStyle
 
 
-class PlanetVisual:
+class CelestialBodyVisual:
     def __init__(self, style, surface_speed, cloud_speed=None):
         self.style = style
 
@@ -13,14 +13,14 @@ class PlanetVisual:
         self.planet_surface = None
         self.cloud_surface = None
 
-        if type(style) is PlanetVisualStyle:
-            self.planet_surface = pvg.generate_planet_surface(self.surface_size, style)
+        if type(style) is TerrestrialBodyStyle:
+            self.planet_surface = cbvg.generate_planet_surface(self.surface_size, style)
             self.cloud_surface = None
             if cloud_speed is not None:
-                self.cloud_surface = pvg.generate_cloud_surface(self.surface_size, style)
+                self.cloud_surface = cbvg.generate_cloud_surface(self.surface_size, style)
 
         elif type(style) is StarVisualStyle:
-            self.planet_surface = pvg.generate_star_surface(self.surface_size, style)
+            self.planet_surface = cbvg.generate_star_surface(self.surface_size, style)
 
         # elif type(style) is 
 
