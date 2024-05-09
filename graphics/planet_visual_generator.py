@@ -42,6 +42,26 @@ def generate_cloud_surface(surface_size, style):
 
     return _repeat_surface(surface, 3, surface_size)
 
+def generate_star_surface(surface_size, style):
+    height_map = DS.diamond_square(shape=surface_size, 
+                                   min_height=1, 
+                                   max_height=100,
+                                   roughness=0.9,
+                                   as_ndarray=False)
+    
+    surface = pygame.Surface(surface_size, pygame.SRCALPHA)
+    for x in range(surface_size[0]):
+        for y in range(surface_size[1]):
+            height = height_map[x][y]
+            color = ()
+            for limit, color in style.color_limits.items():
+                if height <= limit:
+                    color = color
+                    break
+            surface.set_at((x, y), color)
+
+    return _repeat_surface(surface, 2, surface_size)
+
 def _repeat_surface(surface, num_of_blits, surface_size):
     size = (num_of_blits*surface_size[0], surface_size[1])
     new_surface = pygame.Surface(size, pygame.SRCALPHA)

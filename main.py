@@ -2,12 +2,15 @@ import json
 from PhoenixGUI import *
 import pygame
 from PhoenixGUI.util import update_pos_by_anchor
+from graphics.star_visual_style import StarVisualStyle
+import graphics.star_visual_style as star_visual_style
 from planet import Planet
 from graphics.planet_visual import PlanetVisual
 from graphics.planet_visual_style import PlanetVisualStyle
 import graphics.planet_visual_style as planet_visual_style
 
 PATH = __file__[:-7]
+
 
 class Game:
     def __init__(self):
@@ -24,13 +27,17 @@ class Game:
         visual = PlanetVisual(style, 1/500, 1/300)
         self.planet = Planet(visual)
 
+        style = StarVisualStyle(star_visual_style.CLASS_G)
+        visual = PlanetVisual(style, 1/600)
+        self.star = Planet(visual)
+
     def main(self):
         #self.menu_handler.menues["main_menu"].activate()
         clock = pygame.time.Clock()
         while True:
             self.screen.fill((0, 0, 0))
             #self.screen.blit(self.planet.planet_surface, (0, 110))
-            self.planet.draw(self.screen, (300, 300), 200)
+            self.star.draw(self.screen, (300, 300), 200)
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen)
