@@ -64,4 +64,5 @@ class CelestialBodyVisual:
         #mask = self.create_alpha_gradient(surface)
         #surface.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
 
+        pos = [pos[0]-diameter/2, pos[1]-diameter/2]
         screen.blit(surface, pos)

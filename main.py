@@ -8,6 +8,9 @@ from celestial_body import CelestialBody
 from graphics.celestial_body_visual import CelestialBodyVisual
 from graphics.terrestrial_body_style import TerrestrialBodyStyle
 import graphics.terrestrial_body_style as terrestrial_body_style
+from star import Star
+from star_system import StarSystem
+from terrestrial_body import TerrestrialBody
 
 PATH = __file__[:-7]
 
@@ -24,11 +27,13 @@ class Game:
 
         style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.planet = CelestialBody(visual)
+        self.planet = TerrestrialBody(visual, 10, "sun", False, 10, 24, 10, 1)
 
         style = StarVisualStyle(star_visual_style.CLASS_G)
         visual = CelestialBodyVisual(style, 1/600)
-        self.star = CelestialBody(visual)
+        self.star = Star(visual, 20, "G2V")
+
+        self.star_system = StarSystem("sol", self.star, [self.planet])
 
     def main(self):
         #self.menu_handler.menues["main_menu"].activate()
@@ -36,7 +41,9 @@ class Game:
         while True:
             self.screen.fill((0, 0, 0))
             #self.screen.blit(self.planet.planet_surface, (0, 110))
-            self.planet.draw(self.screen, (300, 300), 200)
+            #self.planet.draw(self.screen, (300, 300), 200)
+
+            self.star_system.render_and_draw(self.screen, (0, 0), 1)
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen)
