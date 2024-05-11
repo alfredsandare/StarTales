@@ -15,14 +15,14 @@ class StarSystem:
 
         for cb in self.celestial_bodies.values():
             pos = multiply_vector(camera_pos, -1)
+            pos[0] += cb.sma * math.cos(2 * math.pi * cb.orbit_progress)
+            pos[1] -= cb.sma * math.sin(2 * math.pi * cb.orbit_progress)
+            pos = multiply_vector(pos, zoom)
             pos = sum_two_vectors(pos, multiply_vector(screen.get_size(), 0.5))
-            pos[0] += zoom * cb.sma * math.cos(2 * math.pi * cb.orbit_progress)
-            pos[1] -= zoom * cb.sma * math.sin(2 * math.pi * cb.orbit_progress)
             cb.draw(screen, pos, 100)
             
-
-
     def _render_object(self, obj, screen, camera_pos, zoom):
         pos = multiply_vector(camera_pos, -1)
+        pos = multiply_vector(pos, zoom)
         pos = sum_two_vectors(pos, multiply_vector(screen.get_size(), 0.5))
         obj.draw(screen, pos, 100)

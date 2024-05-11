@@ -26,7 +26,7 @@ class Game:
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
         self.system_view_zoom = 200  # unit is pixels/AU
-        self.system_view_pos = (0, 0)  # unit is AU
+        self.system_view_pos = (1, 1)  # unit is AU
 
         style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
