@@ -55,6 +55,14 @@ class Game:
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen)
+
+            for event in events:
+                if event.type == pygame.MOUSEWHEEL:
+                    SENSITIVITY = 40
+                    self.system_view_zoom += event.y * SENSITIVITY
+                    if self.system_view_zoom <= 0:
+                        self.system_view_zoom = 0
+
             pygame.display.flip()
             clock.tick(60)
 
