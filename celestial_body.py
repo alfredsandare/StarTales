@@ -1,7 +1,9 @@
 import pygame
 
+from graphics.celestial_body_visual import CelestialBodyVisual
+
 class CelestialBody:
-    def __init__(self, visual, size: float):
+    def __init__(self, visual: CelestialBodyVisual, size: float):
         self.visual = visual
 
         # float that should be rounded to three value figures.

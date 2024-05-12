@@ -26,15 +26,15 @@ class Game:
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
         self.system_view_zoom = 200  # unit is pixels/AU
-        self.system_view_pos = [1, 1]  # unit is AU
+        self.system_view_pos = [0, 0]  # unit is AU
 
         style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.planet = TerrestrialBody(visual, 10, "Earth", "sun", False, 10, 24, 10, 1)
+        self.planet = TerrestrialBody(visual, 15.9, "Earth", "sun", False, 10, 24, 10, 1)
 
         style = StarVisualStyle(star_visual_style.CLASS_G)
         visual = CelestialBodyVisual(style, 1/600)
-        self.star = Star(visual, 20, "G2V")
+        self.star = Star(visual, 1740, "G2V")
 
         self.star_system = StarSystem("sol", self.star, {"earth": self.planet})
 
@@ -62,6 +62,8 @@ class Game:
                     self.system_view_zoom += event.y * SENSITIVITY
                     if self.system_view_zoom <= 0:
                         self.system_view_zoom = 0
+
+            self.planet.orbit_progress += 0.005
 
             pygame.display.flip()
             clock.tick(60)
