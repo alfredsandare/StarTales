@@ -26,7 +26,7 @@ class Game:
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
         self.system_view_zoom = 200  # unit is pixels/AU
-        self.system_view_pos = (1, 1)  # unit is AU
+        self.system_view_pos = [1, 1]  # unit is AU
 
         style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
@@ -49,6 +49,9 @@ class Game:
             self.star_system.render_and_draw(self.screen, 
                                              self.system_view_pos, 
                                              self.system_view_zoom)
+            
+            key_state = pygame.key.get_pressed()
+            self._update_star_system_pos(key_state)
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen)
@@ -107,6 +110,17 @@ class Game:
             return '"rajdhani-regular"'
             
         return ""
+    
+    def _update_star_system_pos(self, key_state):
+        MOVEMENT_SPEED = 0.025
+        if key_state[pygame.K_d]:
+            self.system_view_pos[0] += MOVEMENT_SPEED
+        if key_state[pygame.K_a]:
+            self.system_view_pos[0] -= MOVEMENT_SPEED
+        if key_state[pygame.K_s]:
+            self.system_view_pos[1] += MOVEMENT_SPEED
+        if key_state[pygame.K_w]:
+            self.system_view_pos[1] -= MOVEMENT_SPEED
 
 if __name__ == "__main__":
     game = Game()
