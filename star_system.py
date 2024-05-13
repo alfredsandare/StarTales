@@ -19,9 +19,12 @@ class StarSystem:
         self.allow_zoom_in = True
         self.allow_zoom_out = True
 
-        cb_sizes = [self.star.size, *(cb.size for cb in self.celestial_bodies.values())]
+        cb_sizes = [self.star.size, 
+                    *(cb.size for cb in self.celestial_bodies.values())]
+        
         cb_pixel_sizes = [self._get_cb_pixel_size(size, zoom) for size in cb_sizes]
         cb_pixel_sizes = self._adjust_sizes(cb_pixel_sizes, zoom)
+
         if max(cb_pixel_sizes) < 10:
             self.allow_zoom_out = False
 
@@ -43,8 +46,11 @@ class StarSystem:
 
     def _draw_object(self, screen, obj, pos, size):
         obj.draw(screen, pos, size)
+
         screen_size = screen.get_size()
-        screen_hitbox = Hitbox(-size/2, -size/2, screen_size[0]+size/2, screen_size[1]+size/2)
+        screen_hitbox = Hitbox(-size/2, -size/2, 
+                               screen_size[0]+size/2, screen_size[1]+size/2)
+        
         if size == MAX_CB_SIZE_HARD_LIMIT and screen_hitbox.is_pos_inside(*pos):
             self.allow_zoom_in = False
             
@@ -54,10 +60,7 @@ class StarSystem:
         diameter_in_au = diameter_in_m / consts.METERS_PER_AU
         diameter_in_pixels = diameter_in_au * zoom  # zoom has unit pixels/au
 
-        SIZE_FACTOR = 1
-        size = diameter_in_pixels * SIZE_FACTOR
-
-        return set_value_in_boundaries(size, 0, 400)
+        return set_value_in_boundaries(diameter_in_pixels, 0, 400)
     
     def _adjust_sizes(self, sizes, zoom):
         # sizes here are in pixels
@@ -79,7 +82,10 @@ class StarSystem:
 
         size_factor = max_cb_size / max_size
 
-        return [set_value_in_boundaries(size_factor * size ** exponent, 0, MAX_CB_SIZE_HARD_LIMIT) for size in sizes]
+        return [set_value_in_boundaries(size_factor * size ** exponent, 
+                                        0, 
+                                        MAX_CB_SIZE_HARD_LIMIT) 
+                                        for size in sizes]
 
     def _find_smallest_sma_diff(self, smas):
         if len(smas) == 1:
