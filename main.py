@@ -62,13 +62,37 @@ class Game:
                     change = self.system_view_zoom * event.y * SENSITIVITY
                     if ((change > 0 and self.star_system.allow_zoom_in)
                         or (change < 0 and self.star_system.allow_zoom_out)):
-                        self.system_view_zoom += self.system_view_zoom * event.y * SENSITIVITY
+
+                        change = self.system_view_zoom * event.y * SENSITIVITY
+                        if change > 0:  # only when zooming in
+                            self._adjust_system_position(
+                                pygame.mouse.get_pos(),
+                                self.system_view_zoom + change,
+                                self.system_view_zoom)
+
+                        self.system_view_zoom += change
 
 
             # self.planet.orbit_progress += 0.005
 
             pygame.display.flip()
             clock.tick(60)
+
+    def _adjust_system_position(self, mouse_pos, zoom, prev_zoom):
+        # this functions makes adjusts the system_view_pos so that the cursor
+        # has the same relative position as it had before zooming.
+
+        # scale between -1 and 1
+        mouse_pos = [2*mouse_pos[0]/self.frame_size[0]-1, 
+                     2*mouse_pos[1]/self.frame_size[1]-1]
+        
+        # the length and height of the part of the system that is displayed on the screen
+        old_window_size = [self.frame_size[0] / prev_zoom, self.frame_size[1] / prev_zoom]
+        new_window_size = [self.frame_size[0] / zoom, self.frame_size[1] / zoom]
+            
+        camera_diff = [(old_window_size[0] - new_window_size[0])/2 * mouse_pos[0], (old_window_size[1] - new_window_size[1])/2 * mouse_pos[1]]
+        self.system_view_pos[0] += camera_diff[0]
+        self.system_view_pos[1] += camera_diff[1]
 
     def load_menues_data(self):
         with open(PATH + "data/menues.json") as file:
