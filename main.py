@@ -59,7 +59,10 @@ class Game:
             for event in events:
                 if event.type == pygame.MOUSEWHEEL:
                     SENSITIVITY = 0.1
-                    self.system_view_zoom += self.system_view_zoom * event.y * SENSITIVITY
+                    change = self.system_view_zoom * event.y * SENSITIVITY
+                    if ((change > 0 and self.star_system.allow_zoom_in)
+                        or (change < 0)):
+                        self.system_view_zoom += self.system_view_zoom * event.y * SENSITIVITY
 
 
             # self.planet.orbit_progress += 0.005

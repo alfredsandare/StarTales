@@ -3,15 +3,20 @@ from star import Star
 from util import multiply_vector, set_value_in_boundaries
 from PhoenixGUI.util import sum_two_vectors
 import data.consts as consts
+from PhoenixGUI.hitbox import Hitbox
 
+MAX_CB_SIZE_HARD_LIMIT = 400
 
 class StarSystem:
     def __init__(self, name: str, star: Star, celestial_bodies: dict):
         self.name = name
         self.celestial_bodies = celestial_bodies
         self.star = star
+        self.allow_zoom_in = True
 
     def render_and_draw(self, screen, camera_pos, zoom):
+        self.allow_zoom_in = True
+
         cb_sizes = [self.star.size, *(cb.size for cb in self.celestial_bodies.values())]
         cb_pixel_sizes = [self._get_cb_pixel_size(size, zoom) for size in cb_sizes]
         cb_pixel_sizes = self._adjust_sizes(cb_pixel_sizes, zoom)
@@ -19,9 +24,8 @@ class StarSystem:
         pos = multiply_vector(camera_pos, -1)
         pos = multiply_vector(pos, zoom)
         pos = sum_two_vectors(pos, multiply_vector(screen.get_size(), 0.5))
-        #size = self._get_cb_pixel_size(self.star.size, zoom)
         size = cb_pixel_sizes[0]
-        self.star.draw(screen, pos, size)
+        self._draw_object(screen, self.star, pos, size)
 
         for i, cb in enumerate(self.celestial_bodies.values()):
             pos = multiply_vector(camera_pos, -1)
@@ -30,9 +34,15 @@ class StarSystem:
             pos = multiply_vector(pos, zoom)
             pos = sum_two_vectors(pos, multiply_vector(screen.get_size(), 0.5))
 
-            #size = self._get_cb_pixel_size(cb.size, zoom)
             size = cb_pixel_sizes[i+1]
-            cb.draw(screen, pos, size)
+            self._draw_object(screen, cb, pos, size)
+
+    def _draw_object(self, screen, obj, pos, size):
+        obj.draw(screen, pos, size)
+        screen_size = screen.get_size()
+        screen_hitbox = Hitbox(-size/2, -size/2, screen_size[0]+size/2, screen_size[1]+size/2)
+        if size == MAX_CB_SIZE_HARD_LIMIT and screen_hitbox.is_pos_inside(*pos):
+            self.allow_zoom_in = False
             
     def _get_cb_pixel_size(self, size, zoom):
         radius_in_m = size * 400_000
@@ -40,7 +50,7 @@ class StarSystem:
         diameter_in_au = diameter_in_m / consts.METERS_PER_AU
         diameter_in_pixels = diameter_in_au * zoom  # zoom has unit pixels/au
 
-        SIZE_FACTOR = 1#1000
+        SIZE_FACTOR = 1
         size = diameter_in_pixels * SIZE_FACTOR
 
         return set_value_in_boundaries(size, 0, 400)
@@ -65,26 +75,18 @@ class StarSystem:
 
         size_factor = max_cb_size / max_size
 
-        MAX_SIZE_HARD_LIMIT = 400
-
-        return [set_value_in_boundaries(size_factor * size ** exponent, 0, MAX_SIZE_HARD_LIMIT) for size in sizes]
+        return [set_value_in_boundaries(size_factor * size ** exponent, 0, MAX_CB_SIZE_HARD_LIMIT) for size in sizes]
 
     def _find_smallest_sma_diff(self, smas):
         if len(smas) == 1:
             return smas[0]
 
-        # Sort the list
         sorted_smas = sorted(smas)
-
-        # Initialize smallest difference to be the difference between the first two elements
         smallest_diff = sorted_smas[1] - sorted_smas[0]
 
-        # Iterate over the sorted list
         for i in range(1, len(sorted_smas) - 1):
-            # Calculate the difference between current and next element
             diff = sorted_smas[i+1] - sorted_smas[i]
 
-            # If this difference is smaller than the current smallest difference, update smallest difference
             if diff < smallest_diff:
                 smallest_diff = diff
 
