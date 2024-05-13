@@ -28,6 +28,8 @@ class StarSystem:
         if max(cb_pixel_sizes) < 10:
             self.allow_zoom_out = False
 
+        # pos can be declared here that the loop below uses as a base pos.
+
         pos = multiply_vector(camera_pos, -1)
         pos = multiply_vector(pos, zoom)
         pos = sum_two_vectors(pos, multiply_vector(screen.get_size(), 0.5))
