@@ -61,7 +61,7 @@ class Game:
                     SENSITIVITY = 0.1
                     change = self.system_view_zoom * event.y * SENSITIVITY
                     if ((change > 0 and self.star_system.allow_zoom_in)
-                        or (change < 0)):
+                        or (change < 0 and self.star_system.allow_zoom_out)):
                         self.system_view_zoom += self.system_view_zoom * event.y * SENSITIVITY
 
 

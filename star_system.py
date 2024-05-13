@@ -13,13 +13,17 @@ class StarSystem:
         self.celestial_bodies = celestial_bodies
         self.star = star
         self.allow_zoom_in = True
+        self.allow_zoom_out = True
 
     def render_and_draw(self, screen, camera_pos, zoom):
         self.allow_zoom_in = True
+        self.allow_zoom_out = True
 
         cb_sizes = [self.star.size, *(cb.size for cb in self.celestial_bodies.values())]
         cb_pixel_sizes = [self._get_cb_pixel_size(size, zoom) for size in cb_sizes]
         cb_pixel_sizes = self._adjust_sizes(cb_pixel_sizes, zoom)
+        if max(cb_pixel_sizes) < 10:
+            self.allow_zoom_out = False
 
         pos = multiply_vector(camera_pos, -1)
         pos = multiply_vector(pos, zoom)
