@@ -58,12 +58,11 @@ class Game:
 
             for event in events:
                 if event.type == pygame.MOUSEWHEEL:
-                    SENSITIVITY = 40
-                    self.system_view_zoom += event.y * SENSITIVITY
-                    if self.system_view_zoom <= 0:
-                        self.system_view_zoom = 0
+                    SENSITIVITY = 0.1
+                    self.system_view_zoom += self.system_view_zoom * event.y * SENSITIVITY
 
-            self.planet.orbit_progress += 0.005
+
+            # self.planet.orbit_progress += 0.005
 
             pygame.display.flip()
             clock.tick(60)
@@ -122,15 +121,16 @@ class Game:
         return ""
     
     def _update_star_system_pos(self, key_state):
-        MOVEMENT_SPEED = 0.025
+        MOVEMENT_SPEED = 5  # pixels per frame
+        movement = MOVEMENT_SPEED / self.system_view_zoom
         if key_state[pygame.K_d]:
-            self.system_view_pos[0] += MOVEMENT_SPEED
+            self.system_view_pos[0] += movement
         if key_state[pygame.K_a]:
-            self.system_view_pos[0] -= MOVEMENT_SPEED
+            self.system_view_pos[0] -= movement
         if key_state[pygame.K_s]:
-            self.system_view_pos[1] += MOVEMENT_SPEED
+            self.system_view_pos[1] += movement
         if key_state[pygame.K_w]:
-            self.system_view_pos[1] -= MOVEMENT_SPEED
+            self.system_view_pos[1] -= movement
 
 if __name__ == "__main__":
     game = Game()
