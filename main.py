@@ -28,15 +28,20 @@ class Game:
         self.system_view_zoom = 200  # unit is pixels/AU
         self.system_view_pos = [0, 0]  # unit is AU
 
-        style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
-        visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.planet = TerrestrialBody(visual, 15.9, "Earth", "sun", False, 10, 24, 10, 1)
 
         style = StarVisualStyle(star_visual_style.CLASS_G)
         visual = CelestialBodyVisual(style, 1/600)
-        self.star = Star(visual, 1740, "G2V")
+        self.star = Star(visual, 1740, "Sun", "sun", "G2V")
 
-        self.star_system = StarSystem("sol", self.star, {"earth": self.planet})
+        style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
+        visual = CelestialBodyVisual(style, 1/500, 1/300)
+        self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 10, 24, 10, 1)
+
+        style = TerrestrialBodyStyle(*terrestrial_body_style.GRAY)
+        visual = CelestialBodyVisual(style, 1/500, 1/300)
+        self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", False, 1, 24, 1, 0.00257)
+
+        self.star_system = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon})
 
     def main(self):
         #self.menu_handler.menues["main_menu"].activate()

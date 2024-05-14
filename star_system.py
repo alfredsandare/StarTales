@@ -30,25 +30,31 @@ class StarSystem:
         if max(cb_pixel_sizes) < 10:
             self.allow_zoom_out = False
 
-        base_pos = self._get_base_pos(screen.get_size(), camera_pos, zoom)
+        positions = {}
+
+        positions[self.star.id] = self._get_base_pos(screen.get_size(), 
+                                                     camera_pos, zoom)
 
         size = cb_pixel_sizes[0]
-        self._draw_object(screen, self.star, base_pos, size)
+        self._draw_object(screen, self.star, positions[self.star.id], size)
 
         for i, cb in enumerate(self.celestial_bodies.values()):
+            host_pos = positions[cb.orbital_host]
+
             sma_in_pixels = cb.sma * zoom
 
             planet_pos = (sma_in_pixels * math.cos(2 * math.pi * cb.orbit_progress),
                           -1 * sma_in_pixels * math.sin(2 * math.pi * cb.orbit_progress))
             
-            pos = sum_two_vectors(base_pos, planet_pos)
+            pos = sum_two_vectors(host_pos, planet_pos)
             size = cb_pixel_sizes[i+1]
             
-            pygame.draw.circle(screen, (100, 100, 100), base_pos, 
+            pygame.draw.circle(screen, (100, 100, 100), host_pos, 
                                int(sma_in_pixels), 1)
             
             self._draw_object(screen, cb, pos, size)
 
+            positions[cb.id] = pos
 
     def _draw_object(self, screen, obj, pos, size):
         obj.draw(screen, pos, size)
@@ -83,7 +89,7 @@ class StarSystem:
         smas_in_pixels = [cb.sma * zoom for cb in self.celestial_bodies.values()]
         smallest_sma_diff = self._find_smallest_sma_diff(smas_in_pixels)
 
-        MAX_SIZE_DIVIDENT = 2
+        MAX_SIZE_DIVIDENT = 4
         max_cb_size = smallest_sma_diff / MAX_SIZE_DIVIDENT
 
         size_factor = max_cb_size / max_size

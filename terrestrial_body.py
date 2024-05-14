@@ -6,6 +6,7 @@ class TerrestrialBody(CelestialBody):
                  visual,
                  size,
                  name,
+                 id,
                  orbital_host,
                  is_tidally_locked,
                  orbital_velocity,  # m/s
@@ -13,8 +14,7 @@ class TerrestrialBody(CelestialBody):
                  gravity,
                  sma):  # sma = semi-major axis [AU]
         
-        super().__init__(visual, size)
-        self.name = name
+        super().__init__(visual, size, name, id)
         self.orbital_host = orbital_host
         self.is_tidally_locked = is_tidally_locked
         self.orbital_velocity = orbital_velocity
