@@ -7,8 +7,6 @@
 
     1.3 System view [6]
         1.3.1 Planets rendering [3]
-            Add rings
-            Support for moons
         1.3.2 Movement and zoom [3]
 
     1.4 Outliner [4]
