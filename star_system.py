@@ -30,19 +30,16 @@ class StarSystem:
 
         # pos can be declared here that the loop below uses as a base pos.
 
-        pos = multiply_vector(camera_pos, -1)
-        pos = multiply_vector(pos, zoom)
-        pos = sum_two_vectors(pos, multiply_vector(screen.get_size(), 0.5))
+        base_pos = self._get_base_pos(screen.get_size(), camera_pos, zoom)
+
         size = cb_pixel_sizes[0]
-        self._draw_object(screen, self.star, pos, size)
+        self._draw_object(screen, self.star, base_pos, size)
 
         for i, cb in enumerate(self.celestial_bodies.values()):
-            pos = multiply_vector(camera_pos, -1)
-            pos[0] += cb.sma * math.cos(2 * math.pi * cb.orbit_progress)
-            pos[1] -= cb.sma * math.sin(2 * math.pi * cb.orbit_progress)
-            pos = multiply_vector(pos, zoom)
-            pos = sum_two_vectors(pos, multiply_vector(screen.get_size(), 0.5))
-
+            planet_pos = (zoom * cb.sma * math.cos(2 * math.pi * cb.orbit_progress),
+                          -1 * zoom * cb.sma * math.sin(2 * math.pi * cb.orbit_progress))
+            
+            pos = sum_two_vectors(base_pos, planet_pos)
             size = cb_pixel_sizes[i+1]
             self._draw_object(screen, cb, pos, size)
 
@@ -103,3 +100,8 @@ class StarSystem:
                 smallest_diff = diff
 
         return smallest_diff
+    
+    def _get_base_pos(self, screen_size, camera_pos, zoom):
+        pos = multiply_vector(camera_pos, -1)
+        pos = multiply_vector(pos, zoom)
+        return sum_two_vectors(pos, multiply_vector(screen_size, 0.5))
