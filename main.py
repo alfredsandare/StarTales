@@ -70,6 +70,7 @@ class Game:
             for event in events:
                 if event.type == pygame.MOUSEWHEEL:
                     SENSITIVITY = 0.1
+                    # TODO remove the line below?
                     change = self.system_view_zoom * event.y * SENSITIVITY
                     if ((change > 0 and self.current_star_system.allow_zoom_in)
                         or (change < 0 and self.current_star_system.allow_zoom_out)):
