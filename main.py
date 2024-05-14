@@ -181,25 +181,29 @@ class Game:
         if key_state[pygame.K_w]:
             self.system_view_pos[1] -= movement
 
+    def _switch_menues(self, to_activate, to_deactivate):
+        if type(to_activate) in (tuple, list):
+            for menu in to_activate:
+                self.menu_handler.menues[menu].activate()
+        else:
+            self.menu_handler.menues[to_activate].activate()
+
+        if type(to_deactivate) in (tuple, list):
+            for menu in to_deactivate:
+                self.menu_handler.menues[menu].deactivate()
+        else:
+            self.menu_handler.menues[to_deactivate].deactivate()
+
     def invoke_command(self, command):
         print("COMMANDING:", command)
+
+        command, *args = command.split()
 
         if command == "quit":
             pygame.quit()
         
-        elif command == "enter_play_menu":
-            self.menu_handler.menues["main_menu"].deactivate()
-            self.menu_handler.menues["play_menu"].activate()
-
-        elif command == "enter_settings_menu":
-            pass
-
-        elif command == "enter_credits_menu":
-            pass
-
-        elif command == "enter_main_menu":
-            self.menu_handler.menues["play_menu"].deactivate()
-            self.menu_handler.menues["main_menu"].activate()
+        elif command == "switch_menues":
+            self._switch_menues(args[0], args[1])
 
 if __name__ == "__main__":
     game = Game()

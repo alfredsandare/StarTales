@@ -24,7 +24,7 @@
                 "rect_pady": 8,
                 "rect_length": 200,
                 "anchor": "c",
-                "command": "enter_play_menu"
+                "command": "switch_menues play_menu main_menu"
             },
             "settings_button": {
                 "type": "button",
@@ -37,7 +37,7 @@
                 "rect_pady": 8,
                 "rect_length": 200,
                 "anchor": "c",
-                "command": "enter_settings_menu"
+                "command": "switch_menues settings_menu main_menu"
             },
             "credits_button": {
                 "type": "button",
@@ -50,7 +50,7 @@
                 "rect_pady": 8,
                 "rect_length": 200,
                 "anchor": "c",
-                "command": "enter_credits_menu"
+                "command": "switch_menues credits_menu main_menu"
             },
             "quit_button": {
                 "type": "button",
@@ -94,7 +94,7 @@
                 "rect_length": 200,
                 "anchor": "c"
             },
-            "load_gmae_button": {
+            "load_game_button": {
                 "type": "button",
                 "pos": [125, 100],
                 "enable_rect": true,
@@ -117,7 +117,7 @@
                 "rect_pady": 8,
                 "rect_length": 200,
                 "anchor": "c",
-                "command": "enter_main_menu"
+                "command": "switch_menues main_menu play_menu"
             }
         }
     }
