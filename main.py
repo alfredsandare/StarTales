@@ -1,7 +1,7 @@
 import json
 from PhoenixGUI import *
 import pygame
-from PhoenixGUI.util import update_pos_by_anchor
+from PhoenixGUI.util import update_pos_by_anchor, sum_two_vectors
 from graphics.star_visual_style import StarVisualStyle
 import graphics.star_visual_style as star_visual_style
 from celestial_body import CelestialBody
@@ -42,7 +42,11 @@ class Game:
         visual = CelestialBodyVisual(style, 1/500, 1/300)
         self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", False, 1, 24, 1, 0.00257)
 
-        self.star_system = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon})
+        self.star_systems: dict[str, StarSystem] = {}
+        self.star_systems["sol"] = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon})
+
+        self.current_star_system_key = "sol"
+        self.current_star_system = self.star_systems["sol"]
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
@@ -55,7 +59,7 @@ class Game:
             key_state = pygame.key.get_pressed()
 
             if self.view == "system":
-                self.star_system.render_and_draw(self.screen, 
+                self.current_star_system.render_and_draw(self.screen, 
                                                 self.system_view_pos, 
                                                 self.system_view_zoom)
                 self._update_star_system_pos(key_state)
@@ -67,8 +71,8 @@ class Game:
                 if event.type == pygame.MOUSEWHEEL:
                     SENSITIVITY = 0.1
                     change = self.system_view_zoom * event.y * SENSITIVITY
-                    if ((change > 0 and self.star_system.allow_zoom_in)
-                        or (change < 0 and self.star_system.allow_zoom_out)):
+                    if ((change > 0 and self.current_star_system.allow_zoom_in)
+                        or (change < 0 and self.current_star_system.allow_zoom_out)):
 
                         change = self.system_view_zoom * event.y * SENSITIVITY
                         if change > 0:  # only when zooming in
@@ -208,6 +212,24 @@ class Game:
         elif command == "enter_system_view":
             self.view = "system"
             self.menu_handler.menues["play_menu"].deactivate()
+            self.menu_handler.menues["outliner"].activate()
+            self._update_outliner_content()
+
+    def _update_outliner_content(self):
+        BASE_POS = (10, 40)
+        BUTTON_SIZE = (180, 30)
+        SPACE_BETWEEN = 10
+        for i, cb in enumerate(self.current_star_system.celestial_bodies.values()):
+
+            button = Button(sum_two_vectors(BASE_POS, (0, i*(BUTTON_SIZE[1]+SPACE_BETWEEN))),
+                            enable_rect=True,
+                            rect_length=BUTTON_SIZE[0])
+
+            self.menu_handler.menues["outliner"].add_object(f"cb_button_{i}", button)
+
+    def _switch_system(self, new_system_key):
+        self.current_star_system_key = new_system_key
+        self.current_star_system = self.star_systems[new_system_key]
 
 if __name__ == "__main__":
     game = Game()

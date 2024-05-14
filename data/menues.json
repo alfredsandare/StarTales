@@ -171,5 +171,32 @@
                 "anchor": "n"
             }
         }
+    },
+
+    "outliner": {
+        "size": [200, 400],
+        "pos": "@get frame_size e -200 -200@",
+        "bg_color": [64, 74, 204],
+        "outline_color": [0, 0, 0],
+        "outline_width": 1,
+        "objects": {
+            "title_text": {
+                "type": "text",
+                "pos": [100, 16],
+                "text": "Planets",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "anchor": "c"
+            },
+            "line": {
+                "type": "shape",
+                "pos": [100, 30],
+                "size": [180, 1],
+                "color": [255, 255, 255],
+                "type_": "rect",
+                "anchor": "c"
+            }
+
+        }
     }
 }

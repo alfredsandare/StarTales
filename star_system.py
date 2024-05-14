@@ -1,6 +1,7 @@
 import math
 
 import pygame
+from celestial_body import CelestialBody
 from star import Star
 from util import multiply_vector, set_value_in_boundaries
 from PhoenixGUI.util import sum_two_vectors
@@ -10,7 +11,7 @@ from PhoenixGUI.hitbox import Hitbox
 MAX_CB_SIZE_HARD_LIMIT = 400
 
 class StarSystem:
-    def __init__(self, name: str, star: Star, celestial_bodies: dict):
+    def __init__(self, name: str, star: Star, celestial_bodies: dict[str, CelestialBody]):
         self.name = name
         self.celestial_bodies = celestial_bodies
         self.star = star
