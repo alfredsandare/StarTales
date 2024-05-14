@@ -1,4 +1,6 @@
 import math
+
+import pygame
 from star import Star
 from util import multiply_vector, set_value_in_boundaries
 from PhoenixGUI.util import sum_two_vectors
@@ -28,20 +30,25 @@ class StarSystem:
         if max(cb_pixel_sizes) < 10:
             self.allow_zoom_out = False
 
-        # pos can be declared here that the loop below uses as a base pos.
-
         base_pos = self._get_base_pos(screen.get_size(), camera_pos, zoom)
 
         size = cb_pixel_sizes[0]
         self._draw_object(screen, self.star, base_pos, size)
 
         for i, cb in enumerate(self.celestial_bodies.values()):
-            planet_pos = (zoom * cb.sma * math.cos(2 * math.pi * cb.orbit_progress),
-                          -1 * zoom * cb.sma * math.sin(2 * math.pi * cb.orbit_progress))
+            sma_in_pixels = cb.sma * zoom
+
+            planet_pos = (sma_in_pixels * math.cos(2 * math.pi * cb.orbit_progress),
+                          -1 * sma_in_pixels * math.sin(2 * math.pi * cb.orbit_progress))
             
             pos = sum_two_vectors(base_pos, planet_pos)
             size = cb_pixel_sizes[i+1]
+            
+            pygame.draw.circle(screen, (100, 100, 100), base_pos, 
+                               int(sma_in_pixels), 1)
+            
             self._draw_object(screen, cb, pos, size)
+
 
     def _draw_object(self, screen, obj, pos, size):
         obj.draw(screen, pos, size)

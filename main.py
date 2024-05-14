@@ -72,11 +72,15 @@ class Game:
 
                         self.system_view_zoom += change
 
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
 
             # self.planet.orbit_progress += 0.005
 
             pygame.display.flip()
             clock.tick(60)
+            # print("FPS:", round(clock.get_fps()))
 
     def _adjust_system_position(self, mouse_pos, zoom, prev_zoom):
         # this functions makes adjusts the system_view_pos so that the cursor
