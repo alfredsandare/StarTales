@@ -28,6 +28,7 @@ class Game:
         self.system_view_zoom = 200  # unit is pixels/AU
         self.system_view_pos = [0, 0]  # unit is AU
 
+        self.view = "main"
 
         style = StarVisualStyle(star_visual_style.CLASS_G)
         visual = CelestialBodyVisual(style, 1/600)
@@ -44,19 +45,20 @@ class Game:
         self.star_system = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon})
 
     def main(self):
-        #self.menu_handler.menues["main_menu"].activate()
+        self.menu_handler.menues["main_menu"].activate()
         clock = pygame.time.Clock()
         while True:
             self.screen.fill((0, 0, 0))
             #self.screen.blit(self.planet.planet_surface, (0, 110))
             #self.planet.draw(self.screen, (300, 300), 200)
 
-            self.star_system.render_and_draw(self.screen, 
-                                             self.system_view_pos, 
-                                             self.system_view_zoom)
-            
             key_state = pygame.key.get_pressed()
-            self._update_star_system_pos(key_state)
+
+            if self.view == "system":
+                self.star_system.render_and_draw(self.screen, 
+                                                self.system_view_pos, 
+                                                self.system_view_zoom)
+                self._update_star_system_pos(key_state)
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen)
@@ -122,6 +124,7 @@ class Game:
 
         loaded_data = json.loads(final_data)
 
+        a_shitty_list = []
         for menu_key, menu in loaded_data.items():
             for obj_key, obj in menu["objects"].items():
                 if obj["type"] == "button" and "color_theme" in obj.keys():
@@ -129,6 +132,11 @@ class Game:
                         self._get_button_color_theme(obj["color_theme"]))
                     
                     del loaded_data[menu_key]["objects"][obj_key]["color_theme"]
+
+                if obj["type"] == "button" and "command" in obj.keys():
+                    a_shitty_list.append(obj["command"])
+                    loaded_data[menu_key]["objects"][obj_key]["command"] = \
+                        (self.invoke_command, [obj["command"]], {})
 
         return loaded_data
     
@@ -172,6 +180,26 @@ class Game:
             self.system_view_pos[1] += movement
         if key_state[pygame.K_w]:
             self.system_view_pos[1] -= movement
+
+    def invoke_command(self, command):
+        print("COMMANDING:", command)
+
+        if command == "quit":
+            pygame.quit()
+        
+        elif command == "enter_play_menu":
+            self.menu_handler.menues["main_menu"].deactivate()
+            self.menu_handler.menues["play_menu"].activate()
+
+        elif command == "enter_settings_menu":
+            pass
+
+        elif command == "enter_credits_menu":
+            pass
+
+        elif command == "enter_main_menu":
+            self.menu_handler.menues["play_menu"].deactivate()
+            self.menu_handler.menues["main_menu"].activate()
 
 if __name__ == "__main__":
     game = Game()
