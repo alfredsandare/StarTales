@@ -3,7 +3,8 @@
         "size": [250, 320],
         "pos": "@get frame_size c -125 -160@",
         "bg_color": [64, 74, 204],
-        "outline_color": [19, 23, 74],
+        "outline_color": [0, 0, 0],
+        "outline_width": 1,
         "objects": {
             "title_text": {
                 "type": "text",
@@ -72,7 +73,8 @@
         "size": [250, 320],
         "pos": "@get frame_size c -125 -160@",
         "bg_color": [64, 74, 204],
-        "outline_color": [19, 23, 74],
+        "outline_color": [0, 0, 0],
+        "outline_width": 1,
         "objects": {
             "title_text": {
                 "type": "text",
@@ -119,6 +121,54 @@
                 "rect_length": 200,
                 "anchor": "c",
                 "command": "switch_menues main_menu play_menu"
+            }
+        }
+    },
+
+    "credits_menu": {
+        "size": [400, 450],
+        "pos": "@get frame_size c -200 -225@",
+        "bg_color": [64, 74, 204],
+        "outline_color": [0, 0, 0],
+        "outline_width": 1,
+        "objects": {
+            "top_bar": {
+                "type": "shape",
+                "pos": [0, 0],
+                "size": [400, 30],
+                "color": [39, 48, 148],
+                "type_": "rect",
+                "outline_width": 1,
+                "outline_color": [0, 0, 0]
+            },
+            "title_text": {
+                "type": "text",
+                "pos": [5, 16],
+                "text": "Credits",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "anchor": "w"
+            },
+            "back_button": {
+                "type": "button",
+                "pos": [390, 440],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Back",
+                "font": "@get default_font bold@",
+                "font_size": 25,
+                "rect_pady": 8,
+                "rect_length": 100,
+                "anchor": "se",
+                "command": "switch_menues main_menu credits_menu"
+            },
+            "content": {
+                "type": "text",
+                "pos": [200, 40],
+                "text": "%%245 166 46%Developed by%\nAlfred Sändare Svensson\n\n%%245 166 46%Art by%\nAlfred Sändare Svensson\nfreepik.com\npixabay.com\nfreeimages.com\n\n%%245 166 46%Sound by%\nmixkit.com",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "anchor": "n"
             }
         }
     }
