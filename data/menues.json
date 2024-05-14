@@ -92,7 +92,8 @@
                 "font_size": 25,
                 "rect_pady": 8,
                 "rect_length": 200,
-                "anchor": "c"
+                "anchor": "c",
+                "command": "enter_system_view"
             },
             "load_game_button": {
                 "type": "button",

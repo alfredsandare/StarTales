@@ -205,6 +205,10 @@ class Game:
         elif command == "switch_menues":
             self._switch_menues(args[0], args[1])
 
+        elif command == "enter_system_view":
+            self.view = "system"
+            self.menu_handler.menues["play_menu"].deactivate()
+
 if __name__ == "__main__":
     game = Game()
     game.main()
