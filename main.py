@@ -25,6 +25,8 @@ class Game:
         self.menu_handler.load_data_from_dict(menues_data, None)
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
+        self.game_settings = self.load_game_settings()
+
         self.system_view_zoom = 200  # unit is pixels/AU
         self.system_view_pos = [0, 0]  # unit is AU
 
@@ -112,6 +114,10 @@ class Game:
         
         self.system_view_pos[0] += camera_diff[0]
         self.system_view_pos[1] += camera_diff[1]
+
+    def load_game_settings(self):
+        with open(PATH + "data/game_settings.json") as file:
+            return json.load(file)
 
     def load_menues_data(self):
         with open(PATH + "data/menues.json") as file:
@@ -221,9 +227,16 @@ class Game:
         SPACE_BETWEEN = 10
 
         cbs = self.current_star_system.get_all_cbs()
-        for i, cb in enumerate(cbs):
+        star_id = self.current_star_system.star.id
 
-            button = Button(sum_two_vectors(BASE_POS, (0, i*(BUTTON_SIZE[1]+SPACE_BETWEEN))),
+        added_planets = 0
+        for cb in cbs:
+            if (not self.game_settings["show_moons_in_outliner"]
+                and not isinstance(cb, Star)
+                and cb.orbital_host != star_id):
+                continue
+
+            button = Button(sum_two_vectors(BASE_POS, (0, added_planets*(BUTTON_SIZE[1]+SPACE_BETWEEN))),
                             enable_rect=True,
                             rect_length=BUTTON_SIZE[0],
                             rect_height=BUTTON_SIZE[1],
@@ -231,18 +244,18 @@ class Game:
                             rect_outline_color=(0, 0, 0, 0),
                             rect_outline_hover_color=(255, 255, 255),
                             rect_outline_click_color=(140, 140, 140))
-            self.menu_handler.menues["outliner"].add_object(f"cb_button_{i}", button)
+            self.menu_handler.menues["outliner"].add_object(f"cb_button_{added_planets}", button)
 
             cb_icon = cb.visual.get_surface(30)
             image = Image(sum_two_vectors(button.pos, (5, 5)), cb_icon)
-            self.menu_handler.menues["outliner"].add_object(f"cb_icon_{i}", image)
+            self.menu_handler.menues["outliner"].add_object(f"cb_icon_{added_planets}", image)
 
             title_text = Text(sum_two_vectors(button.pos, (40, 5)), 
                               cb.name, 
                               self.get_values("default_font bold skip_quotes"), 
                               18,
                               anchor="nw")
-            self.menu_handler.add_object("outliner", f"cb_title_{i}", title_text)
+            self.menu_handler.add_object("outliner", f"cb_title_{added_planets}", title_text)
 
             types = {Star: "Star", TerrestrialBody: "Terrestrial World"}
             type_content_text = types[type(cb)]
@@ -252,7 +265,9 @@ class Game:
                                 self.get_values("default_font bold skip_quotes"), 
                                 14,
                                 anchor="sw")
-            self.menu_handler.add_object("outliner", f"cb_type_{i}", cb_type_text)
+            self.menu_handler.add_object("outliner", f"cb_type_{added_planets}", cb_type_text)
+
+            added_planets += 1
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key
