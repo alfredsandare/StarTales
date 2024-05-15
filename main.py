@@ -159,8 +159,7 @@ class Game:
         return {}
 
     def get_values(self, input_):
-        id_ = input_.split()[0]
-        args = input_.split()[1:]
+        id_, *args = input_.split()
 
         if id_ == "frame_size":
             pos = update_pos_by_anchor([0, 0], self.frame_size, args[0])
@@ -168,9 +167,13 @@ class Game:
             return pos
 
         elif id_ == "default_font":
+            font = "rajdhani-regular"
             if "bold" in args:
-                return '"rajdhani-bold"'
-            return '"rajdhani-regular"'
+                font = "rajdhani-bold"
+
+            if "skip_quotes" in args:
+                return font
+            return f'"{font}"'
             
         return ""
     
@@ -200,8 +203,6 @@ class Game:
             self.menu_handler.menues[to_deactivate].deactivate()
 
     def invoke_command(self, command):
-        print("COMMANDING:", command)
-
         command, *args = command.split()
 
         if command == "quit":
@@ -238,7 +239,22 @@ class Game:
             image = Image(sum_two_vectors(button.pos, (5, 5)), cb_icon)
             self.menu_handler.menues["outliner"].add_object(f"cb_icon_{i}", image)
 
-            #title_text = Text(sum_two_vectors(button.pos, (10, 10)),
+            title_text = Text(sum_two_vectors(button.pos, (40, 5)), 
+                              cb.name, 
+                              self.get_values("default_font bold skip_quotes"), 
+                              18,
+                              anchor="nw")
+            self.menu_handler.add_object("outliner", f"cb_title_{i}", title_text)
+
+            types = {Star: "Star", TerrestrialBody: "Terrestrial World"}
+            type_content_text = types[type(cb)]
+
+            cb_type_text = Text(sum_two_vectors(button.pos, (40, 35)), 
+                                type_content_text, 
+                                self.get_values("default_font bold skip_quotes"), 
+                                14,
+                                anchor="sw")
+            self.menu_handler.add_object("outliner", f"cb_type_{i}", cb_type_text)
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key
