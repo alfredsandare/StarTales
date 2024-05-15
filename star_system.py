@@ -119,3 +119,7 @@ class StarSystem:
         pos = multiply_vector(camera_pos, -1)
         pos = multiply_vector(pos, zoom)
         return sum_two_vectors(pos, multiply_vector(screen_size, 0.5))
+    
+    def get_all_cbs(self):
+        # returns a list of all celestial bodies in the system
+        return [self.star, *self.celestial_bodies.values()]

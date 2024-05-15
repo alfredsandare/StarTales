@@ -218,15 +218,27 @@ class Game:
 
     def _update_outliner_content(self):
         BASE_POS = (10, 40)
-        BUTTON_SIZE = (180, 30)
+        BUTTON_SIZE = (180, 40)
         SPACE_BETWEEN = 10
-        for i, cb in enumerate(self.current_star_system.celestial_bodies.values()):
+
+        cbs = self.current_star_system.get_all_cbs()
+        for i, cb in enumerate(cbs):
 
             button = Button(sum_two_vectors(BASE_POS, (0, i*(BUTTON_SIZE[1]+SPACE_BETWEEN))),
                             enable_rect=True,
-                            rect_length=BUTTON_SIZE[0])
-
+                            rect_length=BUTTON_SIZE[0],
+                            rect_height=BUTTON_SIZE[1],
+                            rect_color=(0, 0, 0, 0),
+                            rect_outline_color=(0, 0, 0, 0),
+                            rect_outline_hover_color=(255, 255, 255),
+                            rect_outline_click_color=(140, 140, 140))
             self.menu_handler.menues["outliner"].add_object(f"cb_button_{i}", button)
+
+            cb_icon = cb.visual.get_surface(30)
+            image = Image(sum_two_vectors(button.pos, (5, 5)), cb_icon)
+            self.menu_handler.menues["outliner"].add_object(f"cb_icon_{i}", image)
+
+            #title_text = Text(sum_two_vectors(button.pos, (10, 10)),
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key
