@@ -236,7 +236,8 @@ class Game:
                 and cb.orbital_host != star_id):
                 continue
 
-            button = Button(sum_two_vectors(BASE_POS, (0, added_planets*(BUTTON_SIZE[1]+SPACE_BETWEEN))),
+            button_pos = (0, added_planets*(BUTTON_SIZE[1]+SPACE_BETWEEN))
+            button = Button(sum_two_vectors(BASE_POS, button_pos),
                             enable_rect=True,
                             rect_length=BUTTON_SIZE[0],
                             rect_height=BUTTON_SIZE[1],
@@ -244,18 +245,25 @@ class Game:
                             rect_outline_color=(0, 0, 0, 0),
                             rect_outline_hover_color=(255, 255, 255),
                             rect_outline_click_color=(140, 140, 140))
-            self.menu_handler.menues["outliner"].add_object(f"cb_button_{added_planets}", button)
+            self.menu_handler.add_object("outliner", 
+                                         f"cb_button_{added_planets}", 
+                                         button)
 
             cb_icon = cb.visual.get_surface(30)
             image = Image(sum_two_vectors(button.pos, (5, 5)), cb_icon)
-            self.menu_handler.menues["outliner"].add_object(f"cb_icon_{added_planets}", image)
+            self.menu_handler.add_object("outliner", 
+                                         f"cb_icon_{added_planets}", 
+                                         image)
 
             title_text = Text(sum_two_vectors(button.pos, (40, 5)), 
                               cb.name, 
                               self.get_values("default_font bold skip_quotes"), 
                               18,
                               anchor="nw")
-            self.menu_handler.add_object("outliner", f"cb_title_{added_planets}", title_text)
+            
+            self.menu_handler.add_object("outliner", 
+                                         f"cb_title_{added_planets}", 
+                                         title_text)
 
             types = {Star: "Star", TerrestrialBody: "Terrestrial World"}
             type_content_text = types[type(cb)]
@@ -265,7 +273,10 @@ class Game:
                                 self.get_values("default_font bold skip_quotes"), 
                                 14,
                                 anchor="sw")
-            self.menu_handler.add_object("outliner", f"cb_type_{added_planets}", cb_type_text)
+            
+            self.menu_handler.add_object("outliner", 
+                                         f"cb_type_{added_planets}", 
+                                         cb_type_text)
 
             added_planets += 1
 
