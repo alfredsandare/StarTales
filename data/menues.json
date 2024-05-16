@@ -198,5 +198,88 @@
             }
 
         }
+    },
+
+    "escape_menu": {
+        "size": [250, 340],
+        "pos": "@get frame_size c -125 -160@",
+        "bg_color": [64, 74, 204],
+        "outline_color": [0, 0, 0],
+        "outline_width": 1,
+        "objects": {
+            "title_text": {
+                "type": "text",
+                "pos": [125, 320],
+                "text": "StarTales Alpha 2.0",
+                "font": "@get default_font bold@",
+                "font_size": 14,
+                "anchor": "c"
+            },
+            "resume_button": {
+                "type": "button",
+                "pos": [125, 40],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Resume",
+                "font": "@get default_font bold@",
+                "font_size": 25,
+                "rect_pady": 8,
+                "rect_length": 200,
+                "anchor": "c",
+                "command": "deactivate_menu escape_menu"
+            },
+            "save_game_button": {
+                "type": "button",
+                "pos": [125, 90],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Save Game",
+                "font": "@get default_font bold@",
+                "font_size": 25,
+                "rect_pady": 8,
+                "rect_length": 200,
+                "anchor": "c",
+                "command": ""
+            },
+            "settings_button": {
+                "type": "button",
+                "pos": [125, 140],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Settings",
+                "font": "@get default_font bold@",
+                "font_size": 25,
+                "rect_pady": 8,
+                "rect_length": 200,
+                "anchor": "c",
+                "command": ""
+            },
+            "exit_to_main_menu_button": {
+                "type": "button",
+                "pos": [125, 230],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Exit to Main Menu",
+                "font": "@get default_font bold@",
+                "font_size": 25,
+                "rect_pady": 8,
+                "rect_length": 200,
+                "anchor": "c",
+                "command": "exit_system_view"
+            },
+            "exit_to_desktop_button": {
+                "type": "button",
+                "pos": [125, 280],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Exit to Desktop",
+                "font": "@get default_font bold@",
+                "font_size": 25,
+                "rect_pady": 8,
+                "rect_length": 200,
+                "anchor": "c",
+                "command": "quit"
+            }
+        }
     }
 }

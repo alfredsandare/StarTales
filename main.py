@@ -55,22 +55,30 @@ class Game:
         clock = pygame.time.Clock()
         while True:
             self.screen.fill((0, 0, 0))
-            #self.screen.blit(self.planet.planet_surface, (0, 110))
-            #self.planet.draw(self.screen, (300, 300), 200)
 
             key_state = pygame.key.get_pressed()
 
             if self.view == "system":
-                self.current_star_system.render_and_draw(self.screen, 
-                                                self.system_view_pos, 
-                                                self.system_view_zoom)
+                self.current_star_system.render_and_draw(self.screen,
+                                                         self.system_view_pos,
+                                                         self.system_view_zoom)
                 self._update_star_system_pos(key_state)
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen)
 
             for event in events:
-                if event.type == pygame.MOUSEWHEEL:
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+                
+                elif (event.type == pygame.KEYDOWN 
+                      and event.key == pygame.K_ESCAPE
+                      and self.view == "system"):
+                    self.menu_handler.menues["escape_menu"].activate()
+
+
+                elif event.type == pygame.MOUSEWHEEL:
                     SENSITIVITY = 0.1
                     change = self.system_view_zoom * event.y * SENSITIVITY
 
@@ -83,10 +91,6 @@ class Game:
 
                     elif change < 0 and self.current_star_system.allow_zoom_out:
                         self.system_view_zoom += change
-
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    return
 
             # self.planet.orbit_progress += 0.005
 
@@ -207,6 +211,9 @@ class Game:
             self.menu_handler.menues[to_deactivate].deactivate()
 
     def invoke_command(self, command):
+        if command == "":
+            return
+        
         command, *args = command.split()
 
         if command == "quit":
@@ -215,11 +222,19 @@ class Game:
         elif command == "switch_menues":
             self._switch_menues(args[0], args[1])
 
+        elif command == "deactivate_menu":
+            self.menu_handler.menues[args[0]].deactivate()
+
         elif command == "enter_system_view":
             self.view = "system"
             self.menu_handler.menues["play_menu"].deactivate()
             self.menu_handler.menues["outliner"].activate()
             self._update_outliner_content()
+
+        elif command == "exit_system_view":
+            self.view = "main"
+            self.menu_handler.deactivate_all_menues()
+            self.menu_handler.menues["main_menu"].activate()
 
     def _update_outliner_content(self):
         BASE_POS = (10, 40)
