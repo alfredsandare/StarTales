@@ -16,7 +16,7 @@
             },
             "play_button": {
                 "type": "button",
-                "pos": [125, 50],
+                "pos": [125, 40],
                 "enable_rect": true,
                 "color_theme": "default",
                 "text": "Play",
@@ -29,7 +29,7 @@
             },
             "settings_button": {
                 "type": "button",
-                "pos": [125, 100],
+                "pos": [125, 90],
                 "enable_rect": true,
                 "color_theme": "default",
                 "text": "Settings",
@@ -42,7 +42,7 @@
             },
             "credits_button": {
                 "type": "button",
-                "pos": [125, 150],
+                "pos": [125, 140],
                 "enable_rect": true,
                 "color_theme": "default",
                 "text": "Credits",
@@ -86,7 +86,7 @@
             },
             "new_game_button": {
                 "type": "button",
-                "pos": [125, 50],
+                "pos": [125, 40],
                 "enable_rect": true,
                 "color_theme": "default",
                 "text": "New Game",
@@ -99,7 +99,7 @@
             },
             "load_game_button": {
                 "type": "button",
-                "pos": [125, 100],
+                "pos": [125, 90],
                 "enable_rect": true,
                 "color_theme": "default",
                 "text": "Load Game",
@@ -202,7 +202,7 @@
 
     "escape_menu": {
         "size": [250, 340],
-        "pos": "@get frame_size c -125 -160@",
+        "pos": "@get frame_size c -125 -170@",
         "bg_color": [64, 74, 204],
         "outline_color": [0, 0, 0],
         "outline_width": 1,
