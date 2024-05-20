@@ -1,4 +1,4 @@
-from celestial_body import CelestialBody
+from physics.celestial_body import CelestialBody
 
 
 class Star(CelestialBody):

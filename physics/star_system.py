@@ -1,8 +1,8 @@
 import math
 
 import pygame
-from celestial_body import CelestialBody
-from star import Star
+from physics.celestial_body import CelestialBody
+from physics.star import Star
 from util import multiply_vector, set_value_in_boundaries
 from PhoenixGUI.util import sum_two_vectors
 import data.consts as consts

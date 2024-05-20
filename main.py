@@ -4,13 +4,12 @@ import pygame
 from PhoenixGUI.util import update_pos_by_anchor, sum_two_vectors
 from graphics.star_visual_style import StarVisualStyle
 import graphics.star_visual_style as star_visual_style
-from celestial_body import CelestialBody
 from graphics.celestial_body_visual import CelestialBodyVisual
 from graphics.terrestrial_body_style import TerrestrialBodyStyle
 import graphics.terrestrial_body_style as terrestrial_body_style
-from star import Star
-from star_system import StarSystem
-from terrestrial_body import TerrestrialBody
+from physics.star import Star
+from physics.star_system import StarSystem
+from physics.terrestrial_body import TerrestrialBody
 
 PATH = __file__[:-7]
 
