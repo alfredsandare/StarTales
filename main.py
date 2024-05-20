@@ -65,7 +65,7 @@ class Game:
                 self._update_star_system_pos(key_state)
 
             events = pygame.event.get()
-            self.menu_handler.update(events, self.screen)
+            self.menu_handler.update(events, self.screen, clock.get_time())
 
             for event in events:
                 if event.type == pygame.QUIT:

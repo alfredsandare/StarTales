@@ -22,8 +22,8 @@
                 "text": "Play",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": "switch_menues play_menu main_menu"
             },
@@ -35,8 +35,8 @@
                 "text": "Settings",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": "switch_menues settings_menu main_menu"
             },
@@ -48,8 +48,8 @@
                 "text": "Credits",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": "switch_menues credits_menu main_menu"
             },
@@ -61,8 +61,8 @@
                 "text": "Quit",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": "quit"
             }
@@ -92,8 +92,8 @@
                 "text": "New Game",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": "enter_system_view"
             },
@@ -105,8 +105,8 @@
                 "text": "Load Game",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c"
             },
             "back_button": {
@@ -117,8 +117,8 @@
                 "text": "Back",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": "switch_menues main_menu play_menu"
             }
@@ -157,8 +157,8 @@
                 "text": "Back",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 100,
+                "rect_height": 30,
                 "anchor": "se",
                 "command": "switch_menues main_menu credits_menu"
             },
@@ -223,8 +223,8 @@
                 "text": "Resume",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": "deactivate_menu escape_menu"
             },
@@ -236,8 +236,8 @@
                 "text": "Save Game",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": ""
             },
@@ -249,8 +249,8 @@
                 "text": "Settings",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": ""
             },
@@ -262,8 +262,8 @@
                 "text": "Exit to Main Menu",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": "exit_system_view"
             },
@@ -275,8 +275,8 @@
                 "text": "Exit to Desktop",
                 "font": "@get default_font bold@",
                 "font_size": 25,
-                "rect_pady": 8,
                 "rect_length": 200,
+                "rect_height": 30,
                 "anchor": "c",
                 "command": "quit"
             }
