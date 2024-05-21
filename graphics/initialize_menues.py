@@ -2,8 +2,11 @@
 # function names here are only the name of the menu
 
 import copy
+import math
 from PhoenixGUI.util import sum_two_vectors
 from PhoenixGUI import *
+import pygame
+from physics.celestial_body import CelestialBody
 from physics.star import Star
 from physics.terrestrial_body import TerrestrialBody
 from util import round_seconds, round_to_significant_figures
@@ -71,7 +74,12 @@ def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_co
 
         added_planets += 1
 
-def cb_menu(menu_handler, cb, host_cb, font):
+def cb_menu(menu_handler: MenuHandler, 
+            cb: CelestialBody, 
+            host_cb: CelestialBody, 
+            font: str, 
+            climate_images: dict[str, pygame.Surface]):
+    
     menu_handler.menues["cb_menu"].objects["title_text"].text = cb.name
 
     SIZE = [900, 600]
@@ -119,3 +127,30 @@ def cb_menu(menu_handler, cb, host_cb, font):
         pos = [INFO_POS[0]-10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
         text = Text(pos, str(property), font, 18, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
+
+    # for i, image in enumerate(climate_images.values()):
+    #     menu_img = Image((0, 60*i), image)
+    #     menu_handler.add_object("cb_menu", f"climate_img{i}", menu_img)
+
+    if isinstance(cb, TerrestrialBody):
+        OFFSET = (10, 40)
+        DISTANCE_BETWEEN = 10
+        SIZE = list(climate_images.values())[0].get_size()[0]
+
+        for i, district in enumerate(cb.districts):
+            x, y = i % 4, math.floor(i / 4)
+            pos = sum_two_vectors(OFFSET, ((SIZE+DISTANCE_BETWEEN)*x, (SIZE+DISTANCE_BETWEEN)*y))
+
+            image = climate_images[district.climate.image]
+            menu_image = Image(pos, image)
+            menu_handler.add_object("cb_menu", f"districts_picture_{i}", menu_image)
+
+            button = Button(pos,
+                            enable_rect=True,
+                            rect_length=SIZE,
+                            rect_height=SIZE,
+                            rect_color=(0, 0, 0, 0),
+                            rect_outline_color=(0, 0, 0, 0),
+                            rect_outline_hover_color=(255, 255, 255),
+                            rect_outline_click_color=(140, 140, 140))
+            menu_handler.add_object("cb_menu", f"district_button_{i}", button)

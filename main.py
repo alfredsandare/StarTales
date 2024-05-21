@@ -1,4 +1,5 @@
 import json
+import os
 from PhoenixGUI import *
 import pygame
 from PhoenixGUI.util import update_pos_by_anchor, sum_two_vectors
@@ -7,6 +8,8 @@ import graphics.star_visual_style as star_visual_style
 from graphics.celestial_body_visual import CelestialBodyVisual
 from graphics.terrestrial_body_style import TerrestrialBodyStyle
 import graphics.terrestrial_body_style as terrestrial_body_style
+import physics.climates as climates
+from physics.district import Disctrict
 from physics.star import Star
 from physics.star_system import StarSystem
 from physics.terrestrial_body import TerrestrialBody
@@ -36,19 +39,22 @@ class Game:
         visual = CelestialBodyVisual(style, 1/600)
         self.star = Star(visual, 1740, "Sun", "sun", "G2V")
 
+        districts = [Disctrict(climates.RAINFOREST) for _ in range(16)]
         style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 29782.7, 86400, 10, 1)
+        self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 29782.7, 86400, 10, 1, districts)
 
         style = TerrestrialBodyStyle(*terrestrial_body_style.GRAY)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", True, 1022, 24, 1, 0.00257)
+        self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", True, 1022, 24, 1, 0.00257, districts)
 
         self.star_systems: dict[str, StarSystem] = {}
         self.star_systems["sol"] = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon})
 
         self.current_star_system_key = "sol"
         self.current_star_system = self.star_systems["sol"]
+
+        self.climate_images = self._get_climate_images()
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
@@ -251,12 +257,37 @@ class Game:
             initialize_menues.cb_menu(self.menu_handler, 
                                       cb, 
                                       host_cb, 
-                                      self.get_values("default_font bold skip_quotes"))
+                                      self.get_values("default_font bold skip_quotes"),
+                                      self.climate_images)
             self.menu_handler.menues["cb_menu"].activate()
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key
         self.current_star_system = self.star_systems[new_system_key]
+        
+    def _get_climate_images(self):
+        IMAGE_SIZE = 70
+
+        images = {}
+        path = PATH+"graphics\\climates\\"
+
+        os.chdir(path)
+        files = os.listdir(os.getcwd())
+
+        for file in files:
+            image = pygame.image.load(path+file).convert_alpha()
+
+            # crop it to make it a square
+            size = image.get_size()
+            surface = pygame.Surface((min(size), min(size)), pygame.SRCALPHA)
+            surface.blit(image, (0, 0))
+
+            surface = pygame.transform.scale(surface, (IMAGE_SIZE, IMAGE_SIZE))
+
+            file_name = file.split(".")[0]
+            images[file_name] = surface
+
+        return images
 
 if __name__ == "__main__":
     game = Game()
