@@ -38,11 +38,11 @@ class Game:
 
         style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 10, 24, 10, 1)
+        self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 29782.7, 86400, 10, 1)
 
         style = TerrestrialBodyStyle(*terrestrial_body_style.GRAY)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", False, 1, 24, 1, 0.00257)
+        self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", True, 1022, 24, 1, 0.00257)
 
         self.star_systems: dict[str, StarSystem] = {}
         self.star_systems["sol"] = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon})
@@ -242,8 +242,12 @@ class Game:
             self.menu_handler.menues["main_menu"].activate()
 
         elif command == "open_cb_menu":
-            cb = self.current_star_system.celestial_bodies[args[0]]
-            host_cb = self.current_star_system.celestial_bodies[cb.id]
+            cbs = self.current_star_system.get_all_cbs_dict()
+            cb = cbs[args[0]]
+            host_cb = None
+            if not isinstance(cb, Star):
+                host_cb = cbs[cb.orbital_host]
+
             initialize_menues.cb_menu(self.menu_handler, 
                                       cb, 
                                       host_cb, 

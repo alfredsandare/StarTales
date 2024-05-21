@@ -123,3 +123,9 @@ class StarSystem:
     def get_all_cbs(self) -> list[CelestialBody]:
         # returns a list of all celestial bodies in the system
         return [self.star, *self.celestial_bodies.values()]
+    
+    def get_all_cbs_dict(self) -> dict[str, CelestialBody]:
+        # returns a dict of all celestial bodies in the system
+        cbs = {id_: cb for id_, cb in self.celestial_bodies.items()}
+        cbs[self.star.id] = self.star
+        return cbs

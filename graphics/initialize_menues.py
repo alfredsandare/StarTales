@@ -1,10 +1,12 @@
 # module for adding content to menues
 # function names here are only the name of the menu
 
+import copy
 from PhoenixGUI.util import sum_two_vectors
 from PhoenixGUI import *
 from physics.star import Star
 from physics.terrestrial_body import TerrestrialBody
+from util import round_seconds, round_to_significant_figures
 
 YES_NO = {
     True: "Yes",
@@ -85,16 +87,28 @@ def cb_menu(menu_handler, cb, host_cb, font):
     menu_handler.menues["cb_menu"].objects["info_bg_title"].pos = \
         [INFO_POS[0]-INFO_SIZE[0]/2, INFO_POS[1]+10]
     
-    properties = [["Size", cb.size]]
+    properties = [["Size", round_to_significant_figures(cb.size, 3)]]
+    
+    for key in copy.copy(menu_handler.menues["cb_menu"].objects).keys():
+        if key[:15] == "property_title_" or key[:9] == "property_":
+            del menu_handler.menues["cb_menu"].objects[key]
+
     if isinstance(cb, TerrestrialBody):
+        orbital_velocity = round_to_significant_figures(cb.orbital_velocity/1000,
+                                                        3, make_int=True)
+        
         properties.extend([
             ["Orbital host", host_cb.name],
             ["Tidally locked", YES_NO[cb.is_tidally_locked]],
-            ["Orbital Velocity", cb.orbital_velocity],
-            ["Day length", cb.day_length],
-            ["Gravity", cb.gravity],
+            ["Orbital Velocity", f"{orbital_velocity} km/s"],
+            ["Day length", round_seconds(cb.day_length)],
+            ["Gravity", f"{cb.gravity} N"],
             ["SMA", cb.sma]
         ])
+        
+        # Day length is not interesting if tidally locked.
+        if cb.is_tidally_locked:
+            del properties[4]
 
     ROW_HEIGHT = 40
     for i, (name, property) in enumerate(properties):
@@ -103,5 +117,5 @@ def cb_menu(menu_handler, cb, host_cb, font):
         menu_handler.add_object("cb_menu", f"property_title_{i}", text)
 
         pos = [INFO_POS[0]-10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
-        text = Text(pos, property, font, 18, anchor="e")
+        text = Text(pos, str(property), font, 18, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
