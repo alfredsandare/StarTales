@@ -295,7 +295,18 @@
                 "pos": [0, 0],
                 "size": [400, 30],
                 "color": [30, 35, 140],
-                "type_": "rect"
+                "type_": "rect",
+                "outline_width": 1,
+                "outline_color": [0, 0, 0]
+            },
+
+            "title_text": {
+                "type": "text",
+                "pos": [10, 16],
+                "text": "",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "anchor": "w"
             }
         }
     }

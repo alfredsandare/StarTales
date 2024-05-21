@@ -28,7 +28,7 @@ def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_co
                         rect_outline_color=(0, 0, 0, 0),
                         rect_outline_hover_color=(255, 255, 255),
                         rect_outline_click_color=(140, 140, 140),
-                        command=(invoke_command, ["activate_menu cb_menu"], {}))
+                        command=(invoke_command, [f"open_cb_menu {cb.id}"], {}))
         
         menu_handler.add_object("outliner", 
                                 f"cb_button_{added_planets}", 
@@ -64,3 +64,6 @@ def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_co
                                 cb_type_text)
 
         added_planets += 1
+
+def cb_menu(menu_handler, cb):
+    menu_handler.menues["cb_menu"].objects["title_text"].text = cb.name

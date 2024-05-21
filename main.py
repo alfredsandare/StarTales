@@ -214,6 +214,8 @@ class Game:
         
         command, *args = command.split()
 
+        print(command, args)
+
         if command == "quit":
             pygame.quit()
         
@@ -242,6 +244,10 @@ class Game:
             self.menu_handler.deactivate_all_menues()
             self.menu_handler.menues["main_menu"].activate()
 
+        elif command == "open_cb_menu":
+            cb = self.current_star_system.celestial_bodies[args[0]]
+            initialize_menues.cb_menu(self.menu_handler, cb)
+            self.menu_handler.menues["cb_menu"].activate()
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key
