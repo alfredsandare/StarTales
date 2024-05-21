@@ -196,7 +196,6 @@
                 "type_": "rect",
                 "anchor": "c"
             }
-
         }
     },
 
@@ -284,8 +283,8 @@
     },
 
     "cb_menu": {
-        "size": [400, 300],
-        "pos": "@get frame_size c -200 -150@",
+        "size": [900, 600],
+        "pos": "@get frame_size c -450 -300@",
         "bg_color": [64, 74, 204],
         "outline_color": [0, 0, 0],
         "outline_width": 1, 
@@ -293,7 +292,7 @@
             "top_bar": {
                 "type": "shape",
                 "pos": [0, 0],
-                "size": [400, 30],
+                "size": [0, 0],
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
@@ -302,11 +301,31 @@
 
             "title_text": {
                 "type": "text",
-                "pos": [10, 16],
+                "pos": [10, 17],
                 "text": "",
                 "font": "@get default_font bold@",
                 "font_size": 20,
                 "anchor": "w"
+            },
+
+            "info_bg": {
+                "type": "shape",
+                "pos": [0, 0],
+                "size": [0, 0],
+                "color": [30, 35, 140],
+                "type_": "rect",
+                "outline_width": 1,
+                "outline_color": [0, 0, 0],
+                "anchor": "ne"
+            },
+            
+            "info_bg_title": {
+                "type": "text",
+                "pos": [0, 0],
+                "text": "Info",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "anchor": "n"
             }
         }
     }

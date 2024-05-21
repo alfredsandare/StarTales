@@ -6,6 +6,10 @@ from PhoenixGUI import *
 from physics.star import Star
 from physics.terrestrial_body import TerrestrialBody
 
+YES_NO = {
+    True: "Yes",
+    False: "No"
+}
 
 def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_command):
     BASE_POS = (10, 40)
@@ -65,5 +69,39 @@ def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_co
 
         added_planets += 1
 
-def cb_menu(menu_handler, cb):
+def cb_menu(menu_handler, cb, host_cb, font):
     menu_handler.menues["cb_menu"].objects["title_text"].text = cb.name
+
+    SIZE = [900, 600]
+
+    menu_handler.menues["cb_menu"].size = SIZE
+    menu_handler.menues["cb_menu"].objects["top_bar"].size = [SIZE[0], 30]
+
+    INFO_SIZE = [250, 500]
+    menu_handler.menues["cb_menu"].objects["info_bg"].size = INFO_SIZE
+
+    INFO_POS = [SIZE[0]-10, 40]
+    menu_handler.menues["cb_menu"].objects["info_bg"].pos = INFO_POS
+    menu_handler.menues["cb_menu"].objects["info_bg_title"].pos = \
+        [INFO_POS[0]-INFO_SIZE[0]/2, INFO_POS[1]+10]
+    
+    properties = [["Size", cb.size]]
+    if isinstance(cb, TerrestrialBody):
+        properties.extend([
+            ["Orbital host", host_cb.name],
+            ["Tidally locked", YES_NO[cb.is_tidally_locked]],
+            ["Orbital Velocity", cb.orbital_velocity],
+            ["Day length", cb.day_length],
+            ["Gravity", cb.gravity],
+            ["SMA", cb.sma]
+        ])
+
+    ROW_HEIGHT = 40
+    for i, (name, property) in enumerate(properties):
+        pos = [INFO_POS[0]-INFO_SIZE[0]+10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
+        text = Text(pos, name, font, 18, anchor="w")
+        menu_handler.add_object("cb_menu", f"property_title_{i}", text)
+
+        pos = [INFO_POS[0]-10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
+        text = Text(pos, property, font, 18, anchor="e")
+        menu_handler.add_object("cb_menu", f"property_{i}", text)

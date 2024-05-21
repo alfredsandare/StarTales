@@ -17,7 +17,7 @@ PATH = __file__[:-7]
 
 class Game:
     def __init__(self):
-        self.frame_size = (800, 800)
+        self.frame_size = (1280, 720)
         self.screen = pygame.display.set_mode(self.frame_size)
         self.menu_handler = MenuHandler()
 
@@ -76,7 +76,6 @@ class Game:
                       and event.key == pygame.K_ESCAPE
                       and self.view == "system"):
                     self.menu_handler.menues["escape_menu"].activate()
-
 
                 elif event.type == pygame.MOUSEWHEEL:
                     SENSITIVITY = 0.1
@@ -214,8 +213,6 @@ class Game:
         
         command, *args = command.split()
 
-        print(command, args)
-
         if command == "quit":
             pygame.quit()
         
@@ -246,7 +243,11 @@ class Game:
 
         elif command == "open_cb_menu":
             cb = self.current_star_system.celestial_bodies[args[0]]
-            initialize_menues.cb_menu(self.menu_handler, cb)
+            host_cb = self.current_star_system.celestial_bodies[cb.id]
+            initialize_menues.cb_menu(self.menu_handler, 
+                                      cb, 
+                                      host_cb, 
+                                      self.get_values("default_font bold skip_quotes"))
             self.menu_handler.menues["cb_menu"].activate()
 
     def _switch_system(self, new_system_key):
