@@ -137,17 +137,15 @@ class Game:
 
         loaded_data = json.loads(final_data)
 
-        a_shitty_list = []
         for menu_key, menu in loaded_data.items():
             for obj_key, obj in menu["objects"].items():
                 if obj["type"] == "button" and "color_theme" in obj.keys():
                     loaded_data[menu_key]["objects"][obj_key].update( \
                         self._get_button_color_theme(obj["color_theme"]))
-                    
+
                     del loaded_data[menu_key]["objects"][obj_key]["color_theme"]
 
                 if obj["type"] == "button" and "command" in obj.keys():
-                    a_shitty_list.append(obj["command"])
                     loaded_data[menu_key]["objects"][obj_key]["command"] = \
                         (self.invoke_command, [obj["command"]], {})
 
@@ -224,7 +222,10 @@ class Game:
 
         elif command == "deactivate_menu":
             self.menu_handler.menues[args[0]].deactivate()
-
+            
+        elif command == "activate_menu":
+            self.menu_handler.menues[args[0]].activate()
+            
         elif command == "enter_system_view":
             self.view = "system"
             self.menu_handler.menues["play_menu"].deactivate()
@@ -233,7 +234,8 @@ class Game:
                                        self.current_star_system.get_all_cbs(),
                                        self.current_star_system.star.id,
                                        self.game_settings["show_moons_in_outliner"],
-                                       self.get_values("default_font bold skip_quotes"))
+                                       self.get_values("default_font bold skip_quotes"),
+                                       self.invoke_command)
 
         elif command == "exit_system_view":
             self.view = "main"

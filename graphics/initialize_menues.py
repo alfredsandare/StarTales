@@ -7,7 +7,7 @@ from physics.star import Star
 from physics.terrestrial_body import TerrestrialBody
 
 
-def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font):
+def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_command):
     BASE_POS = (10, 40)
     BUTTON_SIZE = (180, 40)
     SPACE_BETWEEN = 10
@@ -27,7 +27,8 @@ def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font):
                         rect_color=(0, 0, 0, 0),
                         rect_outline_color=(0, 0, 0, 0),
                         rect_outline_hover_color=(255, 255, 255),
-                        rect_outline_click_color=(140, 140, 140))
+                        rect_outline_click_color=(140, 140, 140),
+                        command=(invoke_command, ["activate_menu cb_menu"], {}))
         
         menu_handler.add_object("outliner", 
                                 f"cb_button_{added_planets}", 
