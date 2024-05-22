@@ -128,29 +128,58 @@ def cb_menu(menu_handler: MenuHandler,
         text = Text(pos, str(property), font, 18, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
 
-    # for i, image in enumerate(climate_images.values()):
-    #     menu_img = Image((0, 60*i), image)
-    #     menu_handler.add_object("cb_menu", f"climate_img{i}", menu_img)
-
     if isinstance(cb, TerrestrialBody):
-        OFFSET = (10, 40)
-        DISTANCE_BETWEEN = 10
-        SIZE = list(climate_images.values())[0].get_size()[0]
+        _init_districts(menu_handler, cb, font, climate_images)
+    else:
+        _delete_districts_data(menu_handler)
 
-        for i, district in enumerate(cb.districts):
-            x, y = i % 4, math.floor(i / 4)
-            pos = sum_two_vectors(OFFSET, ((SIZE+DISTANCE_BETWEEN)*x, (SIZE+DISTANCE_BETWEEN)*y))
+def _init_districts(menu_handler: MenuHandler, cb, font, climate_images):
+    OFFSET = [10, 40]
+    DISTANCE_BETWEEN = 10
+    SIZE = list(climate_images.values())[0].get_size()[0]
 
-            image = climate_images[district.climate.image]
-            menu_image = Image(pos, image)
-            menu_handler.add_object("cb_menu", f"districts_picture_{i}", menu_image)
+    BG_SIZE = 4*SIZE + 5*DISTANCE_BETWEEN
+    menu_shape = Shape(OFFSET,
+                       (BG_SIZE, BG_SIZE+20),
+                       (30, 35, 140),
+                       "rect",
+                       outline_width=1,
+                       outline_color=(0, 0, 0))
+    menu_handler.add_object("cb_menu", "districts_bg", menu_shape)
 
-            button = Button(pos,
-                            enable_rect=True,
-                            rect_length=SIZE,
-                            rect_height=SIZE,
-                            rect_color=(0, 0, 0, 0),
-                            rect_outline_color=(0, 0, 0, 0),
-                            rect_outline_hover_color=(255, 255, 255),
-                            rect_outline_click_color=(140, 140, 140))
-            menu_handler.add_object("cb_menu", f"district_button_{i}", button)
+    text = Text((OFFSET[0]+BG_SIZE/2, OFFSET[1]+17), "Districts", font, 20, anchor="c")
+    menu_handler.add_object("cb_menu", "districts_title", text)
+
+    OFFSET = sum_two_vectors(OFFSET, (10, 30))
+
+    for i, district in enumerate(cb.districts):
+        x, y = i % 4, math.floor(i / 4)
+        pos = sum_two_vectors(OFFSET, ((SIZE+DISTANCE_BETWEEN)*x, (SIZE+DISTANCE_BETWEEN)*y))
+
+        image = climate_images[district.climate.image]
+        menu_image = Image(pos, image)
+        menu_handler.add_object("cb_menu", f"district_picture_{i}", menu_image)
+
+        button = Button(pos,
+                        enable_rect=True,
+                        rect_length=SIZE,
+                        rect_height=SIZE,
+                        rect_color=(0, 0, 0, 0),
+                        rect_outline_color=(0, 0, 0),
+                        rect_outline_hover_color=(255, 255, 255),
+                        rect_outline_click_color=(140, 140, 140),
+                        rect_outline_width=2)
+        menu_handler.add_object("cb_menu", f"district_button_{i}", button)
+
+def _delete_districts_data(menu_handler):
+    object_ids = [
+        "districts_bg",
+        "districts_title"
+    ]
+    for obj_id in menu_handler.menues["cb_menu"].objects.keys():
+        if obj_id[:"district_picture_"] == "district_picture_" or \
+            obj_id[:len("district_button_")] == "district_button_":
+            object_ids.append(obj_id)
+
+    for obj_id in object_ids:
+        menu_handler.delete_object("cb_menu", obj_id)
