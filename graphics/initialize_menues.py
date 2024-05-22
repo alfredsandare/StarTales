@@ -177,7 +177,7 @@ def _delete_districts_data(menu_handler):
         "districts_title"
     ]
     for obj_id in menu_handler.menues["cb_menu"].objects.keys():
-        if obj_id[:"district_picture_"] == "district_picture_" or \
+        if obj_id[:len("district_picture_")] == "district_picture_" or \
             obj_id[:len("district_button_")] == "district_button_":
             object_ids.append(obj_id)
 

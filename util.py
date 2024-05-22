@@ -1,4 +1,5 @@
 import math
+from PIL import Image
 
 
 def multiply_vector(vector, factor):
@@ -81,6 +82,14 @@ def run_convert_erv_to_day_length_program():
     erv = float(input("Input equatorial rotation velocity [m/s]: "))
     radius = float(input("Input radius [km]: "))
     print(f"Day length is {convert_erv_to_day_length(erv, radius)} s")
+
+def is_valid_image(file_name):
+    try:
+        with Image.open(file_name) as img:
+            img.verify()
+            return True
+    except (IOError, SyntaxError):
+        return False
 
 if __name__ == "__main__":
     run_convert_erv_to_day_length_program()

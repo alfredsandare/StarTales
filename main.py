@@ -14,6 +14,7 @@ from physics.star import Star
 from physics.star_system import StarSystem
 from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
+from util import is_valid_image
 
 PATH = __file__[:-7]
 
@@ -55,6 +56,8 @@ class Game:
         self.current_star_system = self.star_systems["sol"]
 
         self.climate_images = self._get_climate_images()
+
+        self.images = self._get_images_in_directory(PATH+"graphics\\", PATH+"graphics\\")
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
@@ -288,6 +291,27 @@ class Game:
             images[file_name] = surface
 
         return images
+
+    def _get_images_in_directory(self, path, original_path):
+        os.chdir(path)
+        files = os.listdir(os.getcwd())
+
+        images = {}
+        for file in files:
+            path_here = path+file
+
+            if not os.path.isfile(path_here):
+                images.update(self._get_images_in_directory(path_here+"\\", original_path))
+                continue
+
+            if is_valid_image(path_here):
+                relative_path = path_here[len(original_path):]
+                id_ = "/".join(relative_path.split("\\"))
+                images[id_] = pygame.image.load(path_here).convert_alpha()
+
+        return images
+        
+
 
 if __name__ == "__main__":
     game = Game()
