@@ -2,7 +2,7 @@ import json
 import os
 from PhoenixGUI import *
 import pygame
-from PhoenixGUI.util import update_pos_by_anchor, sum_two_vectors
+from PhoenixGUI.util import update_pos_by_anchor
 from graphics.star_visual_style import StarVisualStyle
 import graphics.star_visual_style as star_visual_style
 from graphics.celestial_body_visual import CelestialBodyVisual
@@ -24,9 +24,11 @@ class Game:
         self.frame_size = (1280, 720)
         self.screen = pygame.display.set_mode(self.frame_size)
         self.menu_handler = MenuHandler()
+        
+        self.images = self._get_images_in_directory(PATH+"graphics\\", PATH+"graphics\\")
 
         menues_data = self.load_menues_data()
-        self.menu_handler.load_data_from_dict(menues_data, None)
+        self.menu_handler.load_data_from_dict(menues_data, self.images)
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
         self.game_settings = self.load_game_settings()
@@ -56,8 +58,6 @@ class Game:
         self.current_star_system = self.star_systems["sol"]
 
         self.climate_images = self._get_climate_images()
-
-        self.images = self._get_images_in_directory(PATH+"graphics\\", PATH+"graphics\\")
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
@@ -310,8 +310,6 @@ class Game:
                 images[id_] = pygame.image.load(path_here).convert_alpha()
 
         return images
-        
-
 
 if __name__ == "__main__":
     game = Game()
