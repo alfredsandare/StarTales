@@ -259,9 +259,11 @@ class Game:
 
             initialize_menues.cb_menu(self.menu_handler, 
                                       cb, 
-                                      host_cb, 
+                                      host_cb,
+                                      list(cbs.values()),
                                       self.get_values("default_font bold skip_quotes"),
-                                      self.climate_images)
+                                      self.climate_images,
+                                      self.invoke_command)
             self.menu_handler.menues["cb_menu"].activate()
 
     def _switch_system(self, new_system_key):

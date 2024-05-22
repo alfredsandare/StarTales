@@ -74,13 +74,15 @@ def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_co
 
         added_planets += 1
 
-def cb_menu(menu_handler: MenuHandler, 
-            cb: CelestialBody, 
-            host_cb: CelestialBody, 
-            font: str, 
-            climate_images: dict[str, pygame.Surface]):
+def cb_menu(menu_handler: MenuHandler,
+            cb: CelestialBody,
+            host_cb: CelestialBody,
+            cbs: list[CelestialBody],
+            font: str,
+            climate_images: dict[str, pygame.Surface],
+            invoke_command):
     
-    menu_handler.menues["cb_menu"].objects["title_text"].text = cb.name
+    menu_handler.menues["cb_menu"].objects["title_text"].change_property("text", cb.name)
 
     SIZE = [900, 600]
 
@@ -128,10 +130,13 @@ def cb_menu(menu_handler: MenuHandler,
         text = Text(pos, str(property), font, 18, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
 
+    _delete_moons_data(menu_handler)
     if isinstance(cb, TerrestrialBody):
         _init_districts(menu_handler, cb, font, climate_images)
     else:
         _delete_districts_data(menu_handler)
+
+    _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
 def _init_districts(menu_handler: MenuHandler, cb, font, climate_images):
     OFFSET = [10, 40]
@@ -171,7 +176,7 @@ def _init_districts(menu_handler: MenuHandler, cb, font, climate_images):
                         rect_outline_width=2)
         menu_handler.add_object("cb_menu", f"district_button_{i}", button)
 
-def _delete_districts_data(menu_handler):
+def _delete_districts_data(menu_handler: MenuHandler):
     object_ids = [
         "districts_bg",
         "districts_title"
@@ -183,3 +188,81 @@ def _delete_districts_data(menu_handler):
 
     for obj_id in object_ids:
         menu_handler.delete_object("cb_menu", obj_id)
+
+def _delete_moons_data(menu_handler: MenuHandler):
+    object_ids = [
+        "moons_bg",
+        "moons_title"
+    ]
+    for obj_id in menu_handler.menues["cb_menu"].objects.keys():
+        if obj_id[:len("cb_button_")] == "cb_button_" or \
+            obj_id[:len("cb_icon_")] == "cb_icon_" or \
+            obj_id[:len("cb_title_")] == "cb_title_":
+            object_ids.append(obj_id)
+            
+    for obj_id in object_ids:
+        menu_handler.delete_object("cb_menu", obj_id)
+
+def _init_moons(menu_handler: MenuHandler, 
+                font, 
+                this_cb: CelestialBody, 
+                cbs: list[CelestialBody],
+                invoke_command):
+    
+    BASE_POS = [350, 40]
+    SIZE = [200, 400]
+
+    menu_shape = Shape(BASE_POS,
+                       SIZE,
+                       (30, 35, 140),
+                       "rect",
+                       outline_width=1,
+                       outline_color=(0, 0, 0))
+    menu_handler.add_object("cb_menu", "moons_bg", menu_shape)
+
+    text = "Moons"
+    if isinstance(this_cb, Star):
+        text = "Planets"
+
+    pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
+    menu_text = Text(pos, text, font, 20, anchor="c")
+    menu_handler.add_object("cb_menu", "moons_title", menu_text)
+
+    BUTTON_SIZE = (180, 40)
+    SPACE_BETWEEN = 10
+    BUTTONS_OFFSET = 30
+
+    added_cbs = 0
+    for cb in cbs:
+        if not isinstance(cb, Star) and cb.orbital_host == this_cb.id:
+            button_pos = (10, added_cbs*(BUTTON_SIZE[1]+SPACE_BETWEEN)+BUTTONS_OFFSET)
+            button = Button(sum_two_vectors(BASE_POS, button_pos),
+                            enable_rect=True,
+                            rect_length=BUTTON_SIZE[0],
+                            rect_height=BUTTON_SIZE[1],
+                            rect_color=(0, 0, 0, 0),
+                            rect_outline_color=(0, 0, 0, 0),
+                            rect_outline_hover_color=(255, 255, 255),
+                            rect_outline_click_color=(140, 140, 140),
+                            command=(invoke_command, [f"open_cb_menu {cb.id}"], {}))
+            
+            menu_handler.add_object("cb_menu", 
+                                    f"cb_button_{added_cbs}", 
+                                    button)
+
+            cb_icon = cb.visual.get_surface(30)
+            image = Image(sum_two_vectors(button.pos, (5, 5)), cb_icon)
+            menu_handler.add_object("cb_menu", 
+                                    f"cb_icon_{added_cbs}", 
+                                    image)
+
+            title_text = Text(sum_two_vectors(button.pos, (40, BUTTON_SIZE[1]/2)), 
+                            cb.name,
+                            font,
+                            18,
+                            anchor="w")
+
+            menu_handler.add_object("cb_menu", 
+                                    f"cb_title_{added_cbs}", 
+                                    title_text)
+                
