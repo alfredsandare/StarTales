@@ -272,7 +272,9 @@ def _init_moons(menu_handler: MenuHandler,
 def _delete_atmosphere_data(menu_handler: MenuHandler):
     object_ids = [
         "atmosphere_bg",
-        "atmosphere_title"
+        "atmosphere_title",
+        "thickness_text",
+        "thickness_text_2"
     ]
 
     for obj_id in menu_handler.menues["cb_menu"].objects.keys():
@@ -299,7 +301,17 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, font):
     menu_text = Text(pos, "Atmosphere", font, 20, anchor="c")
     menu_handler.add_object("cb_menu", "atmosphere_title", menu_text)
 
-    Y_COMPONENT_OFFSET = 0
+    menu_text = Text(sum_two_vectors(BASE_POS, (10, 40)), 
+                     "Thickness:", font, 18, anchor="w")
+    menu_handler.add_object("cb_menu", "thickness_text", menu_text)
+
+    text = str(round(tb.atmosphere.get_thickness(tb.size)))
+    menu_text = Text(sum_two_vectors(BASE_POS, (SIZE[0]-10, 40)), 
+                     text, 
+                     font, 18, anchor="e")
+    menu_handler.add_object("cb_menu", "thickness_text_2", menu_text)
+
+    Y_COMPONENT_OFFSET = 70
     Y_SHARE_OFFSET = 30
     shares = tb.atmosphere.get_composition_shares()
     for i, (name, share) in enumerate(shares.items()):
