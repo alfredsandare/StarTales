@@ -130,13 +130,30 @@ def cb_menu(menu_handler: MenuHandler,
         text = Text(pos, str(property), font, 18, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
 
-    _delete_moons_data(menu_handler)
-    _delete_atmosphere_data(menu_handler)
+    object_ids = [
+        "atmosphere_bg",
+        "atmosphere_title",
+        "thickness_text",
+        "thickness_text_2",
+        "moons_bg",
+        "moons_title",
+        "districts_bg",
+        "districts_title"
+    ]
+    object_ids_startswith = [
+        "atmosphere_name_text_",
+        "atmosphere_share_text_",
+        "cb_button_",
+        "cb_icon_",
+        "cb_title_",
+        "district_picture_",
+        "district_button_"
+    ]
+    menu_handler.delete_multiple_objects("cb_menu", object_ids, object_ids_startswith)
+
     if isinstance(cb, TerrestrialBody):
         _init_districts(menu_handler, cb, font, climate_images)
         _init_atmosphere(menu_handler, cb, font)
-    else:
-        _delete_districts_data(menu_handler)
 
     _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
@@ -177,34 +194,6 @@ def _init_districts(menu_handler: MenuHandler, cb, font, climate_images):
                         rect_outline_click_color=(140, 140, 140),
                         rect_outline_width=2)
         menu_handler.add_object("cb_menu", f"district_button_{i}", button)
-
-def _delete_districts_data(menu_handler: MenuHandler):
-    object_ids = [
-        "districts_bg",
-        "districts_title"
-    ]
-    for obj_id in menu_handler.menues["cb_menu"].objects.keys():
-        if obj_id[:len("district_picture_")] == "district_picture_" or \
-            obj_id[:len("district_button_")] == "district_button_":
-            object_ids.append(obj_id)
-
-    for obj_id in object_ids:
-        menu_handler.delete_object("cb_menu", obj_id)
-
-def _delete_moons_data(menu_handler: MenuHandler):
-    object_ids = [
-        "moons_bg",
-        "moons_title"
-    ]
-
-    for obj_id in menu_handler.menues["cb_menu"].objects.keys():
-        if obj_id[:len("cb_button_")] == "cb_button_" or \
-            obj_id[:len("cb_icon_")] == "cb_icon_" or \
-            obj_id[:len("cb_title_")] == "cb_title_":
-            object_ids.append(obj_id)
-            
-    for obj_id in object_ids:
-        menu_handler.delete_object("cb_menu", obj_id)
 
 def _init_moons(menu_handler: MenuHandler, 
                 font, 
@@ -268,22 +257,6 @@ def _init_moons(menu_handler: MenuHandler,
             menu_handler.add_object("cb_menu", 
                                     f"cb_title_{added_cbs}", 
                                     title_text)
-
-def _delete_atmosphere_data(menu_handler: MenuHandler):
-    object_ids = [
-        "atmosphere_bg",
-        "atmosphere_title",
-        "thickness_text",
-        "thickness_text_2"
-    ]
-
-    for obj_id in menu_handler.menues["cb_menu"].objects.keys():
-        if obj_id[:len("atmosphere_name_text_")] == "atmosphere_name_text_" or \
-            obj_id[:len("atmosphere_share_text_")] == "atmosphere_share_text_":
-            object_ids.append(obj_id)
-            
-    for obj_id in object_ids:
-        menu_handler.delete_object("cb_menu", obj_id)
 
 def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, font):
     BASE_POS = (350, 300)
