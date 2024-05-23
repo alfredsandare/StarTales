@@ -8,6 +8,7 @@ import graphics.star_visual_style as star_visual_style
 from graphics.celestial_body_visual import CelestialBodyVisual
 from graphics.terrestrial_body_style import TerrestrialBodyStyle
 import graphics.terrestrial_body_style as terrestrial_body_style
+from physics.atmosphere import Atmosphere
 import physics.climates as climates
 from physics.district import Disctrict
 from physics.star import Star
@@ -42,14 +43,15 @@ class Game:
         visual = CelestialBodyVisual(style, 1/600)
         self.star = Star(visual, 1740, "Sun", "sun", "G2V")
 
+        atmosphere = Atmosphere({"oxygen": 5398, "nitrogen": 20049, "water_vapor": 257})
         districts = [Disctrict(climates.RAINFOREST) for _ in range(16)]
         style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 29782.7, 86400, 10, 1, districts)
+        self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 29782.7, 86400, 10, 1, districts, atmosphere)
 
         style = TerrestrialBodyStyle(*terrestrial_body_style.GRAY)
         visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", True, 1022, 24, 1, 0.00257, districts)
+        self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", True, 1022, 24, 1, 0.00257, districts, Atmosphere({}))
 
         self.star_systems: dict[str, StarSystem] = {}
         self.star_systems["sol"] = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon})

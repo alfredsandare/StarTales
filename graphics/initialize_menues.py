@@ -131,8 +131,10 @@ def cb_menu(menu_handler: MenuHandler,
         menu_handler.add_object("cb_menu", f"property_{i}", text)
 
     _delete_moons_data(menu_handler)
+    _delete_atmosphere_data(menu_handler)
     if isinstance(cb, TerrestrialBody):
         _init_districts(menu_handler, cb, font, climate_images)
+        _init_atmosphere(menu_handler, cb, font)
     else:
         _delete_districts_data(menu_handler)
 
@@ -194,6 +196,7 @@ def _delete_moons_data(menu_handler: MenuHandler):
         "moons_bg",
         "moons_title"
     ]
+
     for obj_id in menu_handler.menues["cb_menu"].objects.keys():
         if obj_id[:len("cb_button_")] == "cb_button_" or \
             obj_id[:len("cb_icon_")] == "cb_icon_" or \
@@ -210,7 +213,7 @@ def _init_moons(menu_handler: MenuHandler,
                 invoke_command):
     
     BASE_POS = [350, 40]
-    SIZE = [200, 400]
+    SIZE = [200, 250]
 
     menu_shape = Shape(BASE_POS,
                        SIZE,
@@ -265,4 +268,51 @@ def _init_moons(menu_handler: MenuHandler,
             menu_handler.add_object("cb_menu", 
                                     f"cb_title_{added_cbs}", 
                                     title_text)
-                
+
+def _delete_atmosphere_data(menu_handler: MenuHandler):
+    object_ids = [
+        "atmosphere_bg",
+        "atmosphere_title"
+    ]
+
+    for obj_id in menu_handler.menues["cb_menu"].objects.keys():
+        if obj_id[:len("atmosphere_name_text_")] == "atmosphere_name_text_" or \
+            obj_id[:len("atmosphere_share_text_")] == "atmosphere_share_text_":
+            object_ids.append(obj_id)
+            
+    for obj_id in object_ids:
+        menu_handler.delete_object("cb_menu", obj_id)
+
+def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, font):
+    BASE_POS = (350, 300)
+    SIZE = (200, 250)
+
+    menu_shape = Shape(BASE_POS,
+                       SIZE,
+                       (30, 35, 140),
+                       "rect",
+                       outline_width=1,
+                       outline_color=(0, 0, 0))
+    menu_handler.add_object("cb_menu", "atmosphere_bg", menu_shape)
+
+    pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
+    menu_text = Text(pos, "Atmosphere", font, 20, anchor="c")
+    menu_handler.add_object("cb_menu", "atmosphere_title", menu_text)
+
+    Y_COMPONENT_OFFSET = 0
+    Y_SHARE_OFFSET = 30
+    shares = tb.atmosphere.get_composition_shares()
+    for i, (name, share) in enumerate(shares.items()):
+        menu_text = Text(sum_two_vectors(BASE_POS, (10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET)),
+                         name,
+                         font,
+                         18,
+                         anchor="w")
+        menu_handler.add_object("cb_menu", f"atmosphere_name_text_{i}", menu_text)
+        
+        menu_text = Text(sum_two_vectors(BASE_POS, (SIZE[0]-10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET)),
+                         f"{round(100*share, 2)} %",
+                         font,
+                         18,
+                         anchor="e")
+        menu_handler.add_object("cb_menu", f"atmosphere_share_text_{i}", menu_text)
