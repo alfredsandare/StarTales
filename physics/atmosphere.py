@@ -1,6 +1,5 @@
-# Earth's atmosphere's thickness is ~39, it consists of ~8k nitrogen and ~2k oxygen.
-# Earth is the reference point, all other planets are assigned total amount of composition
-# so that their thickness is correct relatively to Earth.
+# Thickness is the atmospheric pressure at the surface in kPa.
+# Use the calculator in utils to calculate total amount of units.
 
 class Atmosphere:
     def __init__(self, composition: dict[str: int]):

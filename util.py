@@ -79,8 +79,8 @@ def convert_erv_to_day_length(erv, radius):
 
 def run_convert_erv_to_day_length_program():
     print("Convert equatorial rotation velocity to day length")
-    erv = float(input("Input equatorial rotation velocity [m/s]: "))
-    radius = float(input("Input radius [km]: "))
+    erv = float(input("Enter equatorial rotation velocity [m/s]: "))
+    radius = float(input("Enter radius [km]: "))
     print(f"Day length is {convert_erv_to_day_length(erv, radius)} s")
 
 def is_valid_image(file_name):
@@ -90,6 +90,22 @@ def is_valid_image(file_name):
             return True
     except (IOError, SyntaxError):
         return False
+    
+def calculate_total_atmosphere_units(thickness, radius):
+    # thickness in kPa
+    # radius in km
+
+    cb_size = radius / 400
+
+    return thickness * cb_size**2
+
+def run_calculate_total_atmosphere_units_program():
+    print("Calculate total amount of atmosphere units from atmospheric pressure and radius")
+    thickness = float(input("Enter atmospheric pressure [kPa]: "))
+    radius = float(input("Enter radius [km]: "))
+    atmosphere_units = calculate_total_atmosphere_units(thickness, radius)
+    print(f"Total amount of atmosphere units: {atmosphere_units}")
 
 if __name__ == "__main__":
-    run_convert_erv_to_day_length_program()
+    # run_convert_erv_to_day_length_program()
+    run_calculate_total_atmosphere_units_program()
