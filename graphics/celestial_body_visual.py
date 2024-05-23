@@ -22,6 +22,9 @@ class CelestialBodyVisual:
         elif type(style) is StarVisualStyle:
             self.planet_surface = cbvg.generate_star_surface(self.surface_size, style)
 
+        elif type(style) is dict:
+            self.planet_surface = cbvg.generate_gas_giant_surface(self.surface_size, style)
+
         # elif type(style) is 
 
         self.surface_speed = surface_speed

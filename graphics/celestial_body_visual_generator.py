@@ -62,6 +62,49 @@ def generate_star_surface(surface_size, style):
 
     return _repeat_surface(surface, 2, surface_size)
 
+def generate_gas_giant_surface(surface_size, style: dict[int, float]):
+    height_map = DS.diamond_square(shape=(1, surface_size[1]), 
+                                   min_height=1, 
+                                   max_height=80,
+                                   roughness=0.8,
+                                   as_ndarray=False)
+    
+    height_map = [height_map[0] for _ in range(surface_size[0])]
+
+    random_overlay = DS.diamond_square(shape=surface_size, 
+                                   min_height=1, 
+                                   max_height=20,
+                                   roughness=0.9,
+                                   as_ndarray=False)
+    
+    height_map = _combine_maps(height_map, random_overlay)
+
+    surface = pygame.Surface(surface_size, pygame.SRCALPHA)
+    for x in range(surface_size[0]):
+        for y in range(surface_size[1]):
+            height = height_map[x][y]
+            color = ()
+            for limit, color in style.items():
+                if height <= limit:
+                    color = color
+                    break
+            surface.set_at((x, y), color)
+            
+    return _repeat_surface(surface, 2, surface_size)
+
+def _combine_maps(map1, map2):
+    out_map = []
+    for x in range(len(map1)):
+        x_map = []
+
+        for y in range(len(map1[0])):
+            x_map.append(map1[x][y] + map2[x][y])
+
+        out_map.append(x_map)
+
+    return out_map
+        
+
 def _repeat_surface(surface, num_of_blits, surface_size):
     size = (num_of_blits*surface_size[0], surface_size[1])
     new_surface = pygame.Surface(size, pygame.SRCALPHA)

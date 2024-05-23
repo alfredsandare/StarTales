@@ -7,6 +7,7 @@ from PhoenixGUI.util import sum_two_vectors
 from PhoenixGUI import *
 import pygame
 from physics.celestial_body import CelestialBody
+from physics.gas_giant import GasGiant
 from physics.star import Star
 from physics.terrestrial_body import TerrestrialBody
 from util import round_seconds, round_to_significant_figures
@@ -59,7 +60,7 @@ def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_co
                                 f"cb_title_{added_planets}", 
                                 title_text)
 
-        types = {Star: "Star", TerrestrialBody: "Terrestrial World"}
+        types = {Star: "Star", TerrestrialBody: "Terrestrial World", GasGiant: "Gas Giant"}
         type_content_text = types[type(cb)]
 
         cb_type_text = Text(sum_two_vectors(button.pos, (40, 35)), 

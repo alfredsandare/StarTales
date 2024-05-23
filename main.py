@@ -11,13 +11,17 @@ import graphics.terrestrial_body_style as terrestrial_body_style
 from physics.atmosphere import Atmosphere
 import physics.climates as climates
 from physics.district import Disctrict
+from physics.gas_giant import GasGiant
 from physics.star import Star
 from physics.star_system import StarSystem
 from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
 from util import is_valid_image
+from graphics import gas_giant_visual_style
 
 PATH = __file__[:-7]
+
+pygame.init()
 
 
 class Game:
@@ -53,8 +57,12 @@ class Game:
         visual = CelestialBodyVisual(style, 1/500, 1/300)
         self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", True, 1022, 24, 1, 0.00257, districts, Atmosphere({}))
 
+        style = gas_giant_visual_style.JUPITER
+        visual = CelestialBodyVisual(style, 1/500)
+        self.gas_giant = GasGiant(visual, 175, "Jupiter", "jupiter", "sun", False, 13000, 1, 1, 5.2)
+
         self.star_systems: dict[str, StarSystem] = {}
-        self.star_systems["sol"] = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon})
+        self.star_systems["sol"] = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon, "jupiter": self.gas_giant})
 
         self.current_star_system_key = "sol"
         self.current_star_system = self.star_systems["sol"]
