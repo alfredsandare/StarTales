@@ -47,13 +47,13 @@ class CelestialBodyVisual:
                          (cloud_rotation_progress * self.surface_size[0], 0, 
                          self.surface_size[1], self.surface_size[1]))
         
-        # Masks the part of the surface that is not in the circle
-        mask = pygame.Surface((diameter, diameter), pygame.SRCALPHA)
-        pygame.draw.circle(mask, (255, 255, 255), 
-                           (diameter//2, diameter//2), diameter//2)
-        surface.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-
         surface = pygame.transform.scale(surface, (size, size))
+        
+        # Masks the part of the surface that is not in the circle
+        mask = pygame.Surface((size, size), pygame.SRCALPHA)
+        pygame.draw.circle(mask, (255, 255, 255), 
+                           (size//2, size//2), size//2)
+        surface.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
 
         #mask = self.create_alpha_gradient(surface)
         #surface.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
