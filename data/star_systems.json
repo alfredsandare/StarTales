@@ -2,10 +2,7 @@
     "sol": {
         "name": "Sol",
         "star": {
-            "visual": {
-                "style": "CLASS_G",
-                "surface_speed": 0.0015
-            },
+            "visual_style": "CLASS_G",
             "size": 1740,
             "name": "Sun",
             "id": "sun",
@@ -14,11 +11,7 @@
         "celestial_bodies": {
             "earth": {
                 "type": "terrestrial_world",
-                "visual": {
-                    "style": "EARTHLY2",
-                    "surface_speed": 0.002,
-                    "cloud_speed": 0.00333
-                },
+                "visual_style": "EARTHLY2",
                 "size": 15.9,
                 "name": "Earth",
                 "id": "earth",
@@ -26,8 +19,45 @@
                 "is_tidally_locked": false,
                 "orbital_velocity": 29782.7,
                 "day_length": 86400,
-                "gravity": 10,
+                "gravity": 9.81,
                 "sma": 1,
+                "districts": [
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST"
+                ],
+                "atmosphere": {
+                    "oxygen": 5398,
+                    "nitrogen": 20049,
+                    "water_vapor": 257
+                }
+            },
+
+            "moon": {
+                "type": "terrestrial_world",
+                "visual_style": "GRAY",
+                "size": 4.34,
+                "name": "Moon",
+                "id": "moon",
+                "orbital_host": "earth",
+                "is_tidally_locked": true,
+                "orbital_velocity": 1022,
+                "day_length": 86400,
+                "gravity": 1.622,
+                "sma": 0.00257,
                 "districts": [
                     "RAINFOREST",
                     "RAINFOREST",

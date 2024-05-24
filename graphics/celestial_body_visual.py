@@ -3,9 +3,12 @@ import graphics.celestial_body_visual_generator as cbvg
 
 
 class CelestialBodyVisual:
-    def __init__(self, type_, style, surface_speed, cloud_speed=None):
+    def __init__(self, type_, style):
         self.type_ = type_
         self.style = style
+
+        self.surface_speed = 1/600
+        self.cloud_speed = 1.5 * self.surface_speed
 
         self.surface_size = (314, 100)
 
@@ -15,7 +18,7 @@ class CelestialBodyVisual:
         if self.type_ == "terrestrial":
             self.planet_surface = cbvg.generate_planet_surface(self.surface_size, style)
             self.cloud_surface = None
-            if cloud_speed is not None:
+            if self.cloud_speed is not None:
                 self.cloud_surface = cbvg.generate_cloud_surface(self.surface_size, style)
 
         elif self.type_ == "star":
@@ -24,8 +27,6 @@ class CelestialBodyVisual:
         elif self.type_ == "gas_giant":
             self.planet_surface = cbvg.generate_gas_giant_surface(self.surface_size, style)
 
-        self.surface_speed = surface_speed
-        self.cloud_speed = cloud_speed
         self.rotation_progress = 0  # 0 - 1
         self.cloud_rotation_progress = 0  # 0 - 1
         

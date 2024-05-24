@@ -76,25 +76,23 @@ class Game:
             for id, star_system in star_system_data.items():
 
                 style = getattr(star_visual_style, 
-                                star_system["star"]["visual"]["style"])
+                                star_system["star"]["visual_style"])
 
-                surface_speed = star_system["star"]["visual"]["surface_speed"]
-                visual = CelestialBodyVisual("star", style, surface_speed)
+                visual = CelestialBodyVisual("star", style)
 
                 kwargs = {key: value for key, value in star_system["star"].items()
-                          if key != "visual"}
+                          if key != "visual_style"}
                 star = Star(visual, **kwargs)
 
                 cbs = {}
                 for cb in star_system["celestial_bodies"].values():
                     if cb["type"] == "terrestrial_world":
                         style = getattr(terrestrial_body_style, 
-                                        cb["visual"]["style"])
+                                        cb["visual_style"])
                         
-                        visual = CelestialBodyVisual("terrestrial", style,
-                                                     cb["visual"]["surface_speed"])
+                        visual = CelestialBodyVisual("terrestrial", style)
 
-                        blacklist = ["visual", "type", "districts", "atmosphere"]
+                        blacklist = ["visual_style", "type", "districts", "atmosphere"]
                         kwargs = {key: value for key, value in cb.items() 
                                   if key not in blacklist}
 
@@ -105,6 +103,18 @@ class Game:
                         cbs[cb["id"]] = TerrestrialBody(visual, **kwargs, 
                                                         districts=districts, 
                                                         atmosphere=atmosphere)
+
+                    elif cb["type"] == "gas_giant":
+                        style = getattr(gas_giant_visual_style,
+                                        cb["visual"]["style"])
+
+                        visual = CelestialBodyVisual("gas_giant", style)
+
+                        blacklist = ["visual_style", "type"]
+                        kwargs = {key: value for key, value in cb.items() 
+                                  if key not in blacklist}
+
+                        cbs[cb["id"]] = GasGiant(visual, **kwargs)
 
                 self.star_systems[id] = StarSystem(star_system["name"], star, cbs)
 
