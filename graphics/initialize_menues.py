@@ -6,6 +6,7 @@ import math
 from PhoenixGUI.util import sum_two_vectors
 from PhoenixGUI import *
 import pygame
+from data.consts import CELESTIAL_BODY_TYPES_NAMES
 from physics.celestial_body import CelestialBody
 from physics.gas_giant import GasGiant
 from physics.star import Star
@@ -17,7 +18,13 @@ YES_NO = {
     False: "No"
 }
 
-def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_command):
+def outliner(menu_handler: MenuHandler, 
+             cbs: list[CelestialBody], 
+             star_id: str, 
+             show_moons_in_outliner: bool, 
+             font, 
+             invoke_command):
+    
     BASE_POS = (10, 40)
     BUTTON_SIZE = (180, 40)
     SPACE_BETWEEN = 10
@@ -51,23 +58,15 @@ def outliner(menu_handler, cbs, star_id, show_moons_in_outliner, font, invoke_co
                                 image)
 
         title_text = Text(sum_two_vectors(button.pos, (40, 5)), 
-                          cb.name, 
-                          font, 
-                          18,
-                          anchor="nw")
+                          cb.name, font, 18, anchor="nw")
         
         menu_handler.add_object("outliner", 
                                 f"cb_title_{added_planets}", 
                                 title_text)
 
-        types = {Star: "Star", TerrestrialBody: "Terrestrial World", GasGiant: "Gas Giant"}
-        type_content_text = types[type(cb)]
-
-        cb_type_text = Text(sum_two_vectors(button.pos, (40, 35)), 
-                            type_content_text, 
-                            font, 
-                            14,
-                            anchor="sw")
+        cb_type_text = Text(sum_two_vectors(button.pos, (40, 35)),
+                            CELESTIAL_BODY_TYPES_NAMES[type(cb)],
+                            font, 14, anchor="sw")
         
         menu_handler.add_object("outliner", 
                                 f"cb_type_{added_planets}", 
@@ -83,31 +82,33 @@ def cb_menu(menu_handler: MenuHandler,
             climate_images: dict[str, pygame.Surface],
             invoke_command):
     
-    menu_handler.menues["cb_menu"].objects["title_text"].change_property("text", cb.name)
+    cb_menu = menu_handler.menues["cb_menu"]
+    
+    cb_menu.objects["title_text"].change_property("text", cb.name)
 
     SIZE = [900, 600]
 
-    menu_handler.menues["cb_menu"].size = SIZE
-    menu_handler.menues["cb_menu"].objects["top_bar"].size = [SIZE[0], 30]
+    cb_menu.size = SIZE
+    cb_menu.objects["top_bar"].size = [SIZE[0], 30]
 
     INFO_SIZE = [250, 500]
-    menu_handler.menues["cb_menu"].objects["info_bg"].size = INFO_SIZE
+    cb_menu.objects["info_bg"].size = INFO_SIZE
 
     INFO_POS = [SIZE[0]-10, 40]
-    menu_handler.menues["cb_menu"].objects["info_bg"].pos = INFO_POS
-    menu_handler.menues["cb_menu"].objects["info_bg_title"].pos = \
+    cb_menu.objects["info_bg"].pos = INFO_POS
+    cb_menu.objects["info_bg_title"].pos = \
         [INFO_POS[0]-INFO_SIZE[0]/2, INFO_POS[1]+10]
     
     properties = [["Size", round_to_significant_figures(cb.size, 3)]]
     
-    for key in copy.copy(menu_handler.menues["cb_menu"].objects).keys():
+    for key in copy.copy(cb_menu.objects).keys():
         if key[:15] == "property_title_" or key[:9] == "property_":
-            del menu_handler.menues["cb_menu"].objects[key]
+            del cb_menu.objects[key]
 
     if isinstance(cb, TerrestrialBody):
         orbital_velocity = round_to_significant_figures(cb.orbital_velocity/1000,
                                                         3, make_int=True)
-        
+
         properties.extend([
             ["Orbital host", host_cb.name],
             ["Tidally locked", YES_NO[cb.is_tidally_locked]],
@@ -116,8 +117,8 @@ def cb_menu(menu_handler: MenuHandler,
             ["Gravity", f"{cb.gravity} N"],
             ["SMA", cb.sma]
         ])
-        
-        # Day length is not interesting if tidally locked.
+
+        # Remove day length if tidally locked, because it is not interesting.
         if cb.is_tidally_locked:
             del properties[4]
 
@@ -150,7 +151,8 @@ def cb_menu(menu_handler: MenuHandler,
         "district_picture_",
         "district_button_"
     ]
-    menu_handler.delete_multiple_objects("cb_menu", object_ids, object_ids_startswith)
+    menu_handler.delete_multiple_objects("cb_menu", object_ids, 
+                                         object_ids_startswith)
 
     if isinstance(cb, TerrestrialBody):
         _init_districts(menu_handler, cb, font, climate_images)
@@ -172,14 +174,16 @@ def _init_districts(menu_handler: MenuHandler, cb, font, climate_images):
                        outline_color=(0, 0, 0))
     menu_handler.add_object("cb_menu", "districts_bg", menu_shape)
 
-    text = Text((OFFSET[0]+BG_SIZE/2, OFFSET[1]+17), "Districts", font, 20, anchor="c")
+    pos = (OFFSET[0]+BG_SIZE/2, OFFSET[1]+17)
+    text = Text(pos, "Districts", font, 20, anchor="c")
     menu_handler.add_object("cb_menu", "districts_title", text)
 
     OFFSET = sum_two_vectors(OFFSET, (10, 30))
 
     for i, district in enumerate(cb.districts):
         x, y = i % 4, math.floor(i / 4)
-        pos = sum_two_vectors(OFFSET, ((SIZE+DISTANCE_BETWEEN)*x, (SIZE+DISTANCE_BETWEEN)*y))
+        pos = sum_two_vectors(OFFSET, ((SIZE+DISTANCE_BETWEEN)*x, 
+                                       (SIZE+DISTANCE_BETWEEN)*y))
 
         image = climate_images[district.climate.image]
         menu_image = Image(pos, image)
@@ -228,7 +232,10 @@ def _init_moons(menu_handler: MenuHandler,
     added_cbs = 0
     for cb in cbs:
         if not isinstance(cb, Star) and cb.orbital_host == this_cb.id:
-            button_pos = (10, added_cbs*(BUTTON_SIZE[1]+SPACE_BETWEEN)+BUTTONS_OFFSET)
+
+            button_pos = (10, added_cbs * (BUTTON_SIZE[1] + SPACE_BETWEEN)
+                              + BUTTONS_OFFSET)
+            
             button = Button(sum_two_vectors(BASE_POS, button_pos),
                             enable_rect=True,
                             rect_length=BUTTON_SIZE[0],
@@ -249,11 +256,8 @@ def _init_moons(menu_handler: MenuHandler,
                                     f"cb_icon_{added_cbs}", 
                                     image)
 
-            title_text = Text(sum_two_vectors(button.pos, (40, BUTTON_SIZE[1]/2)), 
-                            cb.name,
-                            font,
-                            18,
-                            anchor="w")
+            title_text = Text(sum_two_vectors(button.pos, (40, BUTTON_SIZE[1]/2)),
+                              cb.name, font, 18, anchor="w")
 
             menu_handler.add_object("cb_menu", 
                                     f"cb_title_{added_cbs}", 
@@ -283,24 +287,25 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, font):
 
     text = str(round(tb.atmosphere.get_thickness(tb.size)))
     menu_text = Text(sum_two_vectors(BASE_POS, (SIZE[0]-10, 40)), 
-                     text, 
-                     font, 18, anchor="e")
+                     text, font, 18, anchor="e")
     menu_handler.add_object("cb_menu", "thickness_text_2", menu_text)
 
     Y_COMPONENT_OFFSET = 70
     Y_SHARE_OFFSET = 30
     shares = tb.atmosphere.get_composition_shares()
     for i, (name, share) in enumerate(shares.items()):
-        menu_text = Text(sum_two_vectors(BASE_POS, (10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET)),
-                         name,
-                         font,
-                         18,
-                         anchor="w")
-        menu_handler.add_object("cb_menu", f"atmosphere_name_text_{i}", menu_text)
+        pos = sum_two_vectors(BASE_POS, 
+                              (10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET))
         
-        menu_text = Text(sum_two_vectors(BASE_POS, (SIZE[0]-10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET)),
-                         f"{round(100*share, 2)} %",
-                         font,
-                         18,
-                         anchor="e")
-        menu_handler.add_object("cb_menu", f"atmosphere_share_text_{i}", menu_text)
+        menu_text = Text(pos, name, font, 18, anchor="w")
+        menu_handler.add_object("cb_menu",
+                                f"atmosphere_name_text_{i}",
+                                menu_text)
+        
+        pos = sum_two_vectors(BASE_POS, 
+                              (SIZE[0]-10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET))
+        
+        menu_text = Text(pos, f"{round(100*share, 2)} %", font, 18, anchor="e")
+        menu_handler.add_object("cb_menu", 
+                                f"atmosphere_share_text_{i}", 
+                                menu_text)
