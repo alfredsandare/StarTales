@@ -43,31 +43,74 @@ class Game:
 
         self.view = "main"
 
-        style = StarVisualStyle(star_visual_style.CLASS_G)
-        visual = CelestialBodyVisual(style, 1/600)
-        self.star = Star(visual, 1740, "Sun", "sun", "G2V")
+        # style = StarVisualStyle(star_visual_style.CLASS_G)
+        # visual = CelestialBodyVisual(style, 1/600)
+        # self.star = Star(visual, 1740, "Sun", "sun", "G2V")
 
-        atmosphere = Atmosphere({"oxygen": 5398, "nitrogen": 20049, "water_vapor": 257})
-        districts = [Disctrict(climates.RAINFOREST) for _ in range(16)]
-        style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
-        visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 29782.7, 86400, 10, 1, districts, atmosphere)
+        # atmosphere = Atmosphere({"oxygen": 5398, "nitrogen": 20049, "water_vapor": 257})
+        # districts = [Disctrict(climates.RAINFOREST) for _ in range(16)]
+        # style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
+        # visual = CelestialBodyVisual(style, 1/500, 1/300)
+        # self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 29782.7, 86400, 10, 1, districts, atmosphere)
 
-        style = TerrestrialBodyStyle(*terrestrial_body_style.GRAY)
-        visual = CelestialBodyVisual(style, 1/500, 1/300)
-        self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", True, 1022, 24, 1, 0.00257, districts, Atmosphere({}))
+        # style = TerrestrialBodyStyle(*terrestrial_body_style.GRAY)
+        # visual = CelestialBodyVisual(style, 1/500, 1/300)
+        # self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", True, 1022, 24, 1, 0.00257, districts, Atmosphere({}))
 
-        style = gas_giant_visual_style.JUPITER
-        visual = CelestialBodyVisual(style, 1/500)
-        self.gas_giant = GasGiant(visual, 175, "Jupiter", "jupiter", "sun", False, 13000, 1, 1, 5.2)
+        # style = gas_giant_visual_style.JUPITER
+        # visual = CelestialBodyVisual(style, 1/500)
+        # self.gas_giant = GasGiant(visual, 175, "Jupiter", "jupiter", "sun", False, 13000, 1, 1, 5.2)
 
         self.star_systems: dict[str, StarSystem] = {}
-        self.star_systems["sol"] = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon, "jupiter": self.gas_giant})
+        # self.star_systems["sol"] = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon, "jupiter": self.gas_giant})
+
+        self._load_star_system_data()
 
         self.current_star_system_key = "sol"
         self.current_star_system = self.star_systems["sol"]
 
         self.climate_images = self._get_climate_images()
+
+    def _load_star_system_data(self):
+        with open(PATH + "data/star_systems.json") as file:
+            star_system_data = json.load(file)
+
+            for id, star_system in star_system_data.items():
+
+                style_name = star_system["star"]["visual"]["style"]
+                style = StarVisualStyle(getattr(star_visual_style, style_name))
+
+                surface_speed = star_system["star"]["visual"]["surface_speed"]
+                visual = CelestialBodyVisual(style, surface_speed)
+
+                kwargs = {key: value for key, value in star_system["star"].items()
+                          if key != "visual"}
+                star = Star(visual, **kwargs)
+
+                cbs = {}
+                for cb in star_system["celestial_bodies"].values():
+                    if cb["type"] == "terrestrial_world":
+
+                        style_name = getattr(terrestrial_body_style, 
+                                             cb["visual"]["style"])
+
+                        style = TerrestrialBodyStyle(*style_name)
+                        visual = CelestialBodyVisual(style,
+                                                     cb["visual"]["surface_speed"])
+
+                        blacklist = ["visual", "type", "districts", "atmosphere"]
+                        kwargs = {key: value for key, value in cb.items() 
+                                  if key not in blacklist}
+
+                        districts = [Disctrict(getattr(climates, district_type))
+                                     for district_type in cb["districts"]]
+                        atmosphere = Atmosphere(cb["atmosphere"])
+
+                        cbs[cb["id"]] = TerrestrialBody(visual, **kwargs, 
+                                                        districts=districts, 
+                                                        atmosphere=atmosphere)
+
+                self.star_systems[id] = StarSystem(star_system["name"], star, cbs)
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()

@@ -1,0 +1,57 @@
+{
+    "sol": {
+        "name": "Sol",
+        "star": {
+            "visual": {
+                "style": "CLASS_G",
+                "surface_speed": 0.0015
+            },
+            "size": 1740,
+            "name": "Sun",
+            "id": "sun",
+            "star_class": "G2V"
+        },
+        "celestial_bodies": {
+            "earth": {
+                "type": "terrestrial_world",
+                "visual": {
+                    "style": "EARTHLY2",
+                    "surface_speed": 0.002,
+                    "cloud_speed": 0.00333
+                },
+                "size": 15.9,
+                "name": "Earth",
+                "id": "earth",
+                "orbital_host": "sun",
+                "is_tidally_locked": false,
+                "orbital_velocity": 29782.7,
+                "day_length": 86400,
+                "gravity": 10,
+                "sma": 1,
+                "districts": [
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST",
+                    "RAINFOREST"
+                ],
+                "atmosphere": {
+                    "oxygen": 5398,
+                    "nitrogen": 20049,
+                    "water_vapor": 257
+                }
+            }
+        }
+    }
+}
