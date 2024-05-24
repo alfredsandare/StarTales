@@ -258,6 +258,8 @@ def _init_moons(menu_handler: MenuHandler,
             menu_handler.add_object("cb_menu", 
                                     f"cb_title_{added_cbs}", 
                                     title_text)
+            
+            added_cbs += 1
 
 def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, font):
     BASE_POS = (350, 300)
