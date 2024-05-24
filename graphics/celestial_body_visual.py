@@ -1,11 +1,10 @@
 import pygame
 import graphics.celestial_body_visual_generator as cbvg
-from graphics.terrestrial_body_style import TerrestrialBodyStyle
-from graphics.star_visual_style import StarVisualStyle
 
 
 class CelestialBodyVisual:
-    def __init__(self, style, surface_speed, cloud_speed=None):
+    def __init__(self, type_, style, surface_speed, cloud_speed=None):
+        self.type_ = type_
         self.style = style
 
         self.surface_size = (314, 100)
@@ -13,19 +12,17 @@ class CelestialBodyVisual:
         self.planet_surface = None
         self.cloud_surface = None
 
-        if type(style) is TerrestrialBodyStyle:
+        if self.type_ == "terrestrial":
             self.planet_surface = cbvg.generate_planet_surface(self.surface_size, style)
             self.cloud_surface = None
             if cloud_speed is not None:
                 self.cloud_surface = cbvg.generate_cloud_surface(self.surface_size, style)
 
-        elif type(style) is StarVisualStyle:
+        elif self.type_ == "star":
             self.planet_surface = cbvg.generate_star_surface(self.surface_size, style)
 
-        elif type(style) is dict:
+        elif self.type_ == "gas_giant":
             self.planet_surface = cbvg.generate_gas_giant_surface(self.surface_size, style)
-
-        # elif type(style) is 
 
         self.surface_speed = surface_speed
         self.cloud_speed = cloud_speed

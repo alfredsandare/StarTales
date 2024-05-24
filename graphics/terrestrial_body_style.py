@@ -1,9 +1,3 @@
-class TerrestrialBodyStyle:
-    def __init__(self, color_limits, cloud_color):
-        self.color_limits = color_limits
-        self.cloud_color = cloud_color
-
-
 EARTHLY = [
     {
         50: (0, 0, 255),

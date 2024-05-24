@@ -14,7 +14,7 @@ def generate_planet_surface(surface_size, style):
         for y in range(surface_size[1]):
             height = height_map[x][y]
             color = ()
-            for limit, color in style.color_limits.items():
+            for limit, color in style[0].items():
                 if height <= limit:
                     color = color
                     break
@@ -35,7 +35,7 @@ def generate_cloud_surface(surface_size, style):
             height = height_map[x][y]
             color = ()
             if height < 40:
-                color = style.cloud_color
+                color = style[1]
             else:
                 color = (0, 0, 0, 0)
             surface.set_at((x, y), color)
@@ -54,7 +54,7 @@ def generate_star_surface(surface_size, style):
         for y in range(surface_size[1]):
             height = height_map[x][y]
             color = ()
-            for limit, color in style.color_limits.items():
+            for limit, color in style.items():
                 if height <= limit:
                     color = color
                     break

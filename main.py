@@ -3,10 +3,8 @@ import os
 from PhoenixGUI import *
 import pygame
 from PhoenixGUI.util import update_pos_by_anchor
-from graphics.star_visual_style import StarVisualStyle
 import graphics.star_visual_style as star_visual_style
 from graphics.celestial_body_visual import CelestialBodyVisual
-from graphics.terrestrial_body_style import TerrestrialBodyStyle
 import graphics.terrestrial_body_style as terrestrial_body_style
 from physics.atmosphere import Atmosphere
 import physics.climates as climates
@@ -77,11 +75,11 @@ class Game:
 
             for id, star_system in star_system_data.items():
 
-                style_name = star_system["star"]["visual"]["style"]
-                style = StarVisualStyle(getattr(star_visual_style, style_name))
+                style = getattr(star_visual_style, 
+                                star_system["star"]["visual"]["style"])
 
                 surface_speed = star_system["star"]["visual"]["surface_speed"]
-                visual = CelestialBodyVisual(style, surface_speed)
+                visual = CelestialBodyVisual("star", style, surface_speed)
 
                 kwargs = {key: value for key, value in star_system["star"].items()
                           if key != "visual"}
@@ -90,12 +88,10 @@ class Game:
                 cbs = {}
                 for cb in star_system["celestial_bodies"].values():
                     if cb["type"] == "terrestrial_world":
-
-                        style_name = getattr(terrestrial_body_style, 
-                                             cb["visual"]["style"])
-
-                        style = TerrestrialBodyStyle(*style_name)
-                        visual = CelestialBodyVisual(style,
+                        style = getattr(terrestrial_body_style, 
+                                        cb["visual"]["style"])
+                        
+                        visual = CelestialBodyVisual("terrestrial", style,
                                                      cb["visual"]["surface_speed"])
 
                         blacklist = ["visual", "type", "districts", "atmosphere"]
