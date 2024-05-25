@@ -25,7 +25,7 @@ class Climate:
         return cost
 
 
-WATER_OCEAN = Climate("Water Ocean", "ocean1", True, 0.3, False)
+WATER_OCEAN = Climate("Water Ocean", "ocean2", True, 0.3, False)
 RAINFOREST = Climate("Rainforest", "forest1", False, 0.35, False)
 ARID = Climate("Arid", "barren5", False, 0.4, False)
 DESERT = Climate("Desert", "desert1", False, 0.5, False)
