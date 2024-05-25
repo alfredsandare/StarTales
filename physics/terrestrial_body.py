@@ -1,7 +1,7 @@
 from graphics.celestial_body_visual import CelestialBodyVisual
 from physics.atmosphere import Atmosphere
 from physics.celestial_body import CelestialBody
-from physics.district import Disctrict
+from physics.district import District
 
 
 class TerrestrialBody(CelestialBody):
@@ -16,7 +16,7 @@ class TerrestrialBody(CelestialBody):
                  day_length: int,  # seconds
                  gravity: float,
                  sma: float,  # sma = semi-major axis [AU]
-                 districts: list[Disctrict],
+                 districts: list[District],
                  atmosphere: Atmosphere):
         
         super().__init__(visual, size, name, id)

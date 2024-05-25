@@ -8,7 +8,7 @@ from graphics.celestial_body_visual import CelestialBodyVisual
 import graphics.terrestrial_body_style as terrestrial_body_style
 from physics.atmosphere import Atmosphere
 import physics.climates as climates
-from physics.district import Disctrict
+from physics.district import District
 from physics.gas_giant import GasGiant
 from physics.star import Star
 from physics.star_system import StarSystem
@@ -335,7 +335,7 @@ class Game:
             kwargs = {key: value for key, value in cb_data.items() 
                       if key not in blacklist}
 
-            districts = [Disctrict(getattr(climates, district_type))
+            districts = [District(getattr(climates, district_type))
                          for district_type in cb_data["districts"]]
 
             atmosphere = Atmosphere(cb_data["atmosphere"])
