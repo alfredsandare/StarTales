@@ -66,7 +66,7 @@ def generate_gas_giant_surface(surface_size, style: dict[int, float]):
     height_map = DS.diamond_square(shape=(1, surface_size[1]), 
                                    min_height=1, 
                                    max_height=80,
-                                   roughness=0.8,
+                                   roughness=0.85,
                                    as_ndarray=False)
     
     height_map = [height_map[0] for _ in range(surface_size[0])]
@@ -74,7 +74,7 @@ def generate_gas_giant_surface(surface_size, style: dict[int, float]):
     random_overlay = DS.diamond_square(shape=surface_size, 
                                    min_height=1, 
                                    max_height=20,
-                                   roughness=0.9,
+                                   roughness=0.6,
                                    as_ndarray=False)
     
     height_map = _combine_maps(height_map, random_overlay)
