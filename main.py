@@ -41,26 +41,7 @@ class Game:
 
         self.view = "main"
 
-        # style = StarVisualStyle(star_visual_style.CLASS_G)
-        # visual = CelestialBodyVisual(style, 1/600)
-        # self.star = Star(visual, 1740, "Sun", "sun", "G2V")
-
-        # atmosphere = Atmosphere({"oxygen": 5398, "nitrogen": 20049, "water_vapor": 257})
-        # districts = [Disctrict(climates.RAINFOREST) for _ in range(16)]
-        # style = TerrestrialBodyStyle(*terrestrial_body_style.EARTHLY2)
-        # visual = CelestialBodyVisual(style, 1/500, 1/300)
-        # self.planet = TerrestrialBody(visual, 15.9, "Earth", "earth", "sun", False, 29782.7, 86400, 10, 1, districts, atmosphere)
-
-        # style = TerrestrialBodyStyle(*terrestrial_body_style.GRAY)
-        # visual = CelestialBodyVisual(style, 1/500, 1/300)
-        # self.moon = TerrestrialBody(visual, 4.34, "Moon", "moon", "earth", True, 1022, 24, 1, 0.00257, districts, Atmosphere({}))
-
-        # style = gas_giant_visual_style.JUPITER
-        # visual = CelestialBodyVisual(style, 1/500)
-        # self.gas_giant = GasGiant(visual, 175, "Jupiter", "jupiter", "sun", False, 13000, 1, 1, 5.2)
-
         self.star_systems: dict[str, StarSystem] = {}
-        # self.star_systems["sol"] = StarSystem("sol", self.star, {"earth": self.planet, "moon": self.moon, "jupiter": self.gas_giant})
 
         self._load_star_system_data()
 
@@ -68,55 +49,6 @@ class Game:
         self.current_star_system = self.star_systems["sol"]
 
         self.climate_images = self._get_climate_images()
-
-    def _load_star_system_data(self):
-        with open(PATH + "data/star_systems.json") as file:
-            star_system_data = json.load(file)
-
-            for id, star_system in star_system_data.items():
-
-                style = getattr(star_visual_style, 
-                                star_system["star"]["visual_style"])
-
-                visual = CelestialBodyVisual("star", style)
-
-                kwargs = {key: value for key, value in star_system["star"].items()
-                          if key != "visual_style"}
-                star = Star(visual, **kwargs)
-
-                cbs = {}
-                for cb in star_system["celestial_bodies"].values():
-                    if cb["type"] == "terrestrial_world":
-                        style = getattr(terrestrial_body_style, 
-                                        cb["visual_style"])
-                        
-                        visual = CelestialBodyVisual("terrestrial", style)
-
-                        blacklist = ["visual_style", "type", "districts", "atmosphere"]
-                        kwargs = {key: value for key, value in cb.items() 
-                                  if key not in blacklist}
-
-                        districts = [Disctrict(getattr(climates, district_type))
-                                     for district_type in cb["districts"]]
-                        atmosphere = Atmosphere(cb["atmosphere"])
-
-                        cbs[cb["id"]] = TerrestrialBody(visual, **kwargs, 
-                                                        districts=districts, 
-                                                        atmosphere=atmosphere)
-
-                    elif cb["type"] == "gas_giant":
-                        style = getattr(gas_giant_visual_style,
-                                        cb["visual"]["style"])
-
-                        visual = CelestialBodyVisual("gas_giant", style)
-
-                        blacklist = ["visual_style", "type"]
-                        kwargs = {key: value for key, value in cb.items() 
-                                  if key not in blacklist}
-
-                        cbs[cb["id"]] = GasGiant(visual, **kwargs)
-
-                self.star_systems[id] = StarSystem(star_system["name"], star, cbs)
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
@@ -371,6 +303,59 @@ class Game:
                 images[id_] = pygame.image.load(path_here).convert_alpha()
 
         return images
+
+    def _load_star_system_data(self):
+        with open(PATH + "data/star_systems.json") as file:
+            star_system_data = json.load(file)
+
+            for id, star_system in star_system_data.items():
+
+                style = getattr(star_visual_style, 
+                                star_system["star"]["visual_style"])
+
+                visual = CelestialBodyVisual("star", style)
+
+                kwargs = {key: value for key, value in star_system["star"].items()
+                          if key != "visual_style"}
+                star = Star(visual, **kwargs)
+
+                cbs = {}
+                for cb_data in star_system["celestial_bodies"].values():
+                    cbs[cb_data["id"]] = self._create_cb_from_data(cb_data)
+
+                self.star_systems[id] = StarSystem(star_system["name"], star, cbs)
+
+    def _create_cb_from_data(self, cb_data):
+        if cb_data["type"] == "terrestrial_world":
+            style = getattr(terrestrial_body_style, cb_data["visual_style"])
+            
+            visual = CelestialBodyVisual("terrestrial", style)
+
+            blacklist = ["visual_style", "type", "districts", "atmosphere"]
+            kwargs = {key: value for key, value in cb_data.items() 
+                      if key not in blacklist}
+
+            districts = [Disctrict(getattr(climates, district_type))
+                         for district_type in cb_data["districts"]]
+
+            atmosphere = Atmosphere(cb_data["atmosphere"])
+
+            return TerrestrialBody(visual, **kwargs, 
+                                   districts=districts, 
+                                   atmosphere=atmosphere)
+
+        elif cb_data["type"] == "gas_giant":
+            style = getattr(gas_giant_visual_style, cb_data["visual_style"])
+
+            visual = CelestialBodyVisual("gas_giant", style)
+
+            blacklist = ["visual_style", "type"]
+            kwargs = {key: value for key, value in cb_data.items() 
+                      if key not in blacklist}
+
+            return GasGiant(visual, **kwargs)
+
+        raise Exception(f"Invalid cb type: {cb_data["type"]}")
 
 if __name__ == "__main__":
     game = Game()

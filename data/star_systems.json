@@ -81,6 +81,20 @@
                     "nitrogen": 20049,
                     "water_vapor": 257
                 }
+            },
+
+            "jupiter": {
+                "type": "gas_giant",
+                "visual_style": "JUPITER",
+                "size": 175,
+                "name": "Jupiter",
+                "id": "jupiter",
+                "orbital_host": "sun",
+                "is_tidally_locked": false,
+                "orbital_velocity": 13000,
+                "day_length": 1,
+                "gravity": 1,
+                "sma": 5.2
             }
         }
     }
