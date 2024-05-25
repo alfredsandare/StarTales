@@ -1,4 +1,5 @@
 import json
+import math
 import os
 from PhoenixGUI import *
 import pygame
@@ -16,6 +17,7 @@ from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
 from util import is_valid_image
 from graphics import gas_giant_visual_style
+from data import consts
 
 PATH = __file__[:-7]
 
@@ -50,6 +52,22 @@ class Game:
 
         self.climate_images = self._get_climate_images()
 
+        self.time_speed = 500  # real time ms per game time week
+        self.game_time_since_last_time_tick = 0
+
+    def time_tick(self):
+        for star_system in self.star_systems.values():
+            for cb in star_system.celestial_bodies.values():
+                orbit_length = 2 * math.pi * cb.sma * consts.METERS_PER_AU
+                seconds_passed = consts.SECONDS_PER_WEEK
+                length_traveled = cb.orbital_velocity * seconds_passed
+                
+                progress = length_traveled / orbit_length
+                cb.orbit_progress += progress
+
+                if cb.orbit_progress >= 1:
+                    cb.orbit_progress -= 1
+
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
         clock = pygame.time.Clock()
@@ -63,6 +81,11 @@ class Game:
                                                          self.system_view_pos,
                                                          self.system_view_zoom)
                 self._update_star_system_pos(key_state)
+
+            self.game_time_since_last_time_tick += clock.get_time()
+            if self.game_time_since_last_time_tick >= self.time_speed:
+                self.time_tick()
+                self.game_time_since_last_time_tick -= self.time_speed
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen, clock.get_time())
