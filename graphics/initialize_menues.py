@@ -8,7 +8,7 @@ from PhoenixGUI import *
 import pygame
 from data.consts import CELESTIAL_BODY_TYPES_NAMES
 from physics.celestial_body import CelestialBody
-from physics.gas_giant import GasGiant
+from physics.planetary_body import PlanetaryBody
 from physics.star import Star
 from physics.terrestrial_body import TerrestrialBody
 from util import round_seconds, round_to_significant_figures
@@ -32,7 +32,7 @@ def outliner(menu_handler: MenuHandler,
     added_planets = 0
     for cb in cbs:
         if (not show_moons_in_outliner
-            and not isinstance(cb, Star)
+            and isinstance(cb, PlanetaryBody)
             and cb.orbital_host != star_id):
             continue
 
@@ -231,7 +231,7 @@ def _init_moons(menu_handler: MenuHandler,
 
     added_cbs = 0
     for cb in cbs:
-        if not isinstance(cb, Star) and cb.orbital_host == this_cb.id:
+        if isinstance(cb, PlanetaryBody) and cb.orbital_host == this_cb.id:
 
             button_pos = (10, added_cbs * (BUTTON_SIZE[1] + SPACE_BETWEEN)
                               + BUTTONS_OFFSET)

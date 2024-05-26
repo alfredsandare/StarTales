@@ -2,6 +2,7 @@ import math
 
 import pygame
 from physics.celestial_body import CelestialBody
+from physics.planetary_body import PlanetaryBody
 from physics.star import Star
 from util import multiply_vector, set_value_in_boundaries
 from PhoenixGUI.util import sum_two_vectors
@@ -11,9 +12,9 @@ from PhoenixGUI.hitbox import Hitbox
 MAX_CB_SIZE_HARD_LIMIT = 400
 
 class StarSystem:
-    def __init__(self, name: str, star: Star, celestial_bodies: dict[str, CelestialBody]):
+    def __init__(self, name: str, star: Star, planetary_bodies: dict[str, PlanetaryBody]):
         self.name = name
-        self.celestial_bodies = celestial_bodies
+        self.planetary_bodies = planetary_bodies
         self.star = star
         self.allow_zoom_in = True
         self.allow_zoom_out = True
@@ -23,7 +24,7 @@ class StarSystem:
         self.allow_zoom_out = True
 
         cb_sizes = [self.star.size, 
-                    *(cb.size for cb in self.celestial_bodies.values())]
+                    *(pb.size for pb in self.planetary_bodies.values())]
         
         cb_pixel_sizes = [self._get_cb_pixel_size(size, zoom) for size in cb_sizes]
         cb_pixel_sizes = self._adjust_sizes(cb_pixel_sizes, zoom)
@@ -39,13 +40,13 @@ class StarSystem:
         size = cb_pixel_sizes[0]
         self._draw_object(screen, self.star, positions[self.star.id], size)
 
-        for i, cb in enumerate(self.celestial_bodies.values()):
-            host_pos = positions[cb.orbital_host]
+        for i, pb in enumerate(self.planetary_bodies.values()):
+            host_pos = positions[pb.orbital_host]
 
-            sma_in_pixels = cb.sma * zoom
+            sma_in_pixels = pb.sma * zoom
 
-            planet_pos = (sma_in_pixels * math.cos(2 * math.pi * cb.orbit_progress),
-                          -1 * sma_in_pixels * math.sin(2 * math.pi * cb.orbit_progress))
+            planet_pos = (sma_in_pixels * math.cos(2 * math.pi * pb.orbit_progress),
+                          -1 * sma_in_pixels * math.sin(2 * math.pi * pb.orbit_progress))
             
             pos = sum_two_vectors(host_pos, planet_pos)
             size = cb_pixel_sizes[i+1]
@@ -53,9 +54,9 @@ class StarSystem:
             pygame.draw.circle(screen, (100, 100, 100), host_pos, 
                                int(sma_in_pixels), 1)
             
-            self._draw_object(screen, cb, pos, size)
+            self._draw_object(screen, pb, pos, size)
 
-            positions[cb.id] = pos
+            positions[pb.id] = pos
 
     def _draw_object(self, screen, obj, pos, size):
         obj.draw(screen, pos, size)
@@ -87,7 +88,7 @@ class StarSystem:
 
         exponent = math.log(size_quotient) / math.log(max_size/min_size)
 
-        smas_in_pixels = [cb.sma * zoom for cb in self.celestial_bodies.values()]
+        smas_in_pixels = [cb.sma * zoom for cb in self.planetary_bodies.values()]
         smallest_sma_diff = self._find_smallest_sma_diff(smas_in_pixels)
 
         MAX_SIZE_DIVIDENT = 4
@@ -122,10 +123,10 @@ class StarSystem:
     
     def get_all_cbs(self) -> list[CelestialBody]:
         # returns a list of all celestial bodies in the system
-        return [self.star, *self.celestial_bodies.values()]
+        return [self.star, *self.planetary_bodies.values()]
     
     def get_all_cbs_dict(self) -> dict[str, CelestialBody]:
         # returns a dict of all celestial bodies in the system
-        cbs = {id_: cb for id_, cb in self.celestial_bodies.items()}
+        cbs = {id_: cb for id_, cb in self.planetary_bodies.items()}
         cbs[self.star.id] = self.star
         return cbs

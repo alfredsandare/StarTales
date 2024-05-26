@@ -95,9 +95,9 @@ def calculate_total_atmosphere_units(thickness, radius):
     # thickness in kPa
     # radius in km
 
-    cb_size = radius / 400
+    tb_size = radius / 400
 
-    return thickness * cb_size**2
+    return thickness * tb_size**2
 
 def run_calculate_total_atmosphere_units_program():
     print("Calculate total amount of atmosphere units from atmospheric pressure and radius")

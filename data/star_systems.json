@@ -8,7 +8,7 @@
             "id": "sun",
             "star_class": "G2V"
         },
-        "celestial_bodies": {
+        "planetary_bodies": {
             "earth": {
                 "type": "terrestrial_world",
                 "visual_style": "EARTHLY2",

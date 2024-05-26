@@ -57,16 +57,16 @@ class Game:
 
     def time_tick(self):
         for star_system in self.star_systems.values():
-            for cb in star_system.celestial_bodies.values():
-                orbit_length = 2 * math.pi * cb.sma * consts.METERS_PER_AU
+            for pb in star_system.planetary_bodies.values():
+                orbit_length = 2 * math.pi * pb.sma * consts.METERS_PER_AU
                 seconds_passed = consts.SECONDS_PER_WEEK
-                length_traveled = cb.orbital_velocity * seconds_passed
+                length_traveled = pb.orbital_velocity * seconds_passed
                 
                 progress = length_traveled / orbit_length
-                cb.orbit_progress += progress
+                pb.orbit_progress += progress
 
-                if cb.orbit_progress >= 1:
-                    cb.orbit_progress -= 1
+                if pb.orbit_progress >= 1:
+                    pb.orbit_progress -= 1
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
@@ -342,43 +342,43 @@ class Game:
                           if key != "visual_style"}
                 star = Star(visual, **kwargs)
 
-                cbs = {}
-                for cb_data in star_system["celestial_bodies"].values():
-                    cbs[cb_data["id"]] = self._create_cb_from_data(cb_data)
+                pbs = {}
+                for pb_data in star_system["planetary_bodies"].values():
+                    pbs[pb_data["id"]] = self._create_pb_from_data(pb_data)
 
-                self.star_systems[id] = StarSystem(star_system["name"], star, cbs)
+                self.star_systems[id] = StarSystem(star_system["name"], star, pbs)
 
-    def _create_cb_from_data(self, cb_data):
-        if cb_data["type"] == "terrestrial_world":
-            style = getattr(terrestrial_body_style, cb_data["visual_style"])
+    def _create_pb_from_data(self, pb_data):
+        if pb_data["type"] == "terrestrial_world":
+            style = getattr(terrestrial_body_style, pb_data["visual_style"])
             
             visual = CelestialBodyVisual("terrestrial", style)
 
             blacklist = ["visual_style", "type", "districts", "atmosphere"]
-            kwargs = {key: value for key, value in cb_data.items() 
+            kwargs = {key: value for key, value in pb_data.items() 
                       if key not in blacklist}
 
             districts = [District(getattr(climates, district_type))
-                         for district_type in cb_data["districts"]]
+                         for district_type in pb_data["districts"]]
 
-            atmosphere = Atmosphere(cb_data["atmosphere"])
+            atmosphere = Atmosphere(pb_data["atmosphere"])
 
             return TerrestrialBody(visual, **kwargs, 
                                    districts=districts, 
                                    atmosphere=atmosphere)
 
-        elif cb_data["type"] == "gas_giant":
-            style = getattr(gas_giant_visual_style, cb_data["visual_style"])
+        elif pb_data["type"] == "gas_giant":
+            style = getattr(gas_giant_visual_style, pb_data["visual_style"])
 
             visual = CelestialBodyVisual("gas_giant", style)
 
             blacklist = ["visual_style", "type"]
-            kwargs = {key: value for key, value in cb_data.items() 
+            kwargs = {key: value for key, value in pb_data.items() 
                       if key not in blacklist}
 
             return GasGiant(visual, **kwargs)
 
-        raise Exception(f"Invalid cb type: {cb_data["type"]}")
+        raise Exception(f"Invalid pb type: {pb_data["type"]}")
 
 if __name__ == "__main__":
     game = Game()
