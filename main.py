@@ -398,7 +398,7 @@ class Game:
 
             return GasGiant(visual, **kwargs)
 
-        raise Exception(f"Invalid pb type: {pb_data["type"]}")
+        raise Exception(f"Invalid pb type: {pb_data['type']}")
 
 if __name__ == "__main__":
     game = Game()
