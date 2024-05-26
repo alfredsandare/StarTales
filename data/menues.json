@@ -338,5 +338,61 @@
                 "command": "deactivate_menu cb_menu"
             }
         }
+    },
+
+    "time_menu": {
+        "size": [200, 100],
+        "pos": "@get frame_size ne -200 0@",
+        "bg_color": [39, 48, 148],
+        "outline_color": [0, 0, 0],
+        "outline_width": 1,
+        "objects": {
+            "line": {
+                "type": "shape",
+                "pos": [70, 5],
+                "size": [1, 90],
+                "color": [0, 0, 0],
+                "type_": "rect"
+            },
+
+            "time_button": {
+                "type": "button",
+                "pos": [135, 40],
+                "image": "buttons/pause_icon.png",
+                "hover_image": "buttons/pause_icon_hover.png",
+                "click_image": "buttons/pause_icon_hover.png",
+                "anchor": "c",
+                "command": "change_time"
+            },
+
+            "increase_time_speed_button": {
+                "type": "button",
+                "pos": [35, 20],
+                "image": "buttons/19x19_plus_icon.png",
+                "hover_image": "buttons/19x19_plus_icon_hover.png",
+                "click_image": "buttons/19x19_plus_icon_hover.png",
+                "anchor": "c",
+                "command": "increase_time_speed"
+            },
+
+            "decrease_time_speed_button": {
+                "type": "button",
+                "pos": [35, 80],
+                "image": "buttons/19x19_minus_icon.png",
+                "hover_image": "buttons/19x19_minus_icon_hover.png",
+                "click_image": "buttons/19x19_minus_icon_hover.png",
+                "anchor": "c",
+                "command": "decrease_time_speed"
+            },
+
+            "time_text": {
+                "type": "text",
+                "pos": [135, 80],
+                "text": "",
+                "font": "@get default_font bold@",
+                "font_size": 14,
+                "anchor": "c"
+            }
+        }
     }
 }

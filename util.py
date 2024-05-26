@@ -106,6 +106,29 @@ def run_calculate_total_atmosphere_units_program():
     atmosphere_units = calculate_total_atmosphere_units(thickness, radius)
     print(f"Total amount of atmosphere units: {atmosphere_units}")
 
+
+def convert_weeks_to_years(weeks, format="time"):
+    # converts weeks to years and weeks
+    done = False
+    years = 0
+    while not done:
+        if weeks > (51 if format == "time" else 52):
+            weeks -= 52
+            years += 1
+        else:
+            done = True
+
+    if format == "time":
+        if years == 0:
+            return f'{weeks} weeks'
+        elif weeks == 0:
+            return f'{years} years'
+        else:
+            return f'{years} years and {weeks} weeks'
+
+    elif format == "date":
+        return f"week {weeks}, {years}"
+
 if __name__ == "__main__":
     # run_convert_erv_to_day_length_program()
     run_calculate_total_atmosphere_units_program()

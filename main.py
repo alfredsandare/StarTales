@@ -14,7 +14,7 @@ from physics.star import Star
 from physics.star_system import StarSystem
 from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
-from util import is_valid_image
+from util import convert_weeks_to_years, is_valid_image
 from graphics import gas_giant_visual_style
 
 PATH = __file__[:-7]
@@ -50,7 +50,8 @@ class Game:
 
         self.climate_images = self._get_climate_images()
 
-        self.ms_per_in_game_week = 500
+        self.time = 104001  # number of weeks after year 0. 104000 weeks is 2000 years
+        self.ms_per_in_game_week = 200
         self.game_time_since_last_time_tick = 0
         self.game_time_is_active = False
 
@@ -85,7 +86,7 @@ class Game:
                     self.menu_handler.menues["escape_menu"].activate()
 
                 elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and self.view == "system"):
-                    self.game_time_is_active = not self.game_time_is_active
+                    self.invoke_command("change_time")
 
                 elif event.type == pygame.MOUSEWHEEL:
                     SENSITIVITY = 0.1
@@ -106,6 +107,8 @@ class Game:
             # print("FPS:", round(clock.get_fps()))
 
     def _time_tick(self):
+        self.time += 1
+
         for star_system in self.star_systems.values():
             for pb in star_system.get_pbs_list():
                 pb.orbit_progress += pb.get_progress_per_week()
@@ -113,6 +116,12 @@ class Game:
                 if pb.orbit_progress >= 1:
                     pb.orbit_progress -= 1
                     pb.visual_orbit_progress -= 1
+
+        self._update_time_menu_text()
+
+    def _update_time_menu_text(self):
+        self.menu_handler.menues["time_menu"].objects["time_text"] \
+            .change_property("text", convert_weeks_to_years(self.time, format="date"))
 
     def _perform_time_tick_logic(self, time_per_tick):
         if self.game_time_is_active:
@@ -272,12 +281,15 @@ class Game:
             self.view = "system"
             self.menu_handler.menues["play_menu"].deactivate()
             self.menu_handler.menues["outliner"].activate()
+            self.menu_handler.menues["time_menu"].activate()
             initialize_menues.outliner(self.menu_handler,
                                        self.current_star_system.get_all_cbs(),
                                        self.current_star_system.star.id,
                                        self.game_settings["show_moons_in_outliner"],
                                        self.get_values("default_font bold skip_quotes"),
                                        self.invoke_command)
+
+            self._update_time_menu_text()
 
         elif command == "exit_system_view":
             self.view = "main"
@@ -299,6 +311,19 @@ class Game:
                                       self.climate_images,
                                       self.invoke_command)
             self.menu_handler.menues["cb_menu"].activate()
+
+        elif command == "change_time":
+            time_button = self.menu_handler.menues["time_menu"].objects["time_button"]
+            if self.game_time_is_active:
+                time_button.change_property("image", self.images["buttons/pause_icon.png"])
+                time_button.change_property("hover_image", self.images["buttons/pause_icon_hover.png"])
+                time_button.change_property("click_image", self.images["buttons/pause_icon_hover.png"])
+            else:
+                time_button.change_property("image", self.images["buttons/play_icon.png"])
+                time_button.change_property("hover_image", self.images["buttons/play_icon_hover.png"])
+                time_button.change_property("click_image", self.images["buttons/play_icon_hover.png"])
+
+            self.game_time_is_active = not self.game_time_is_active
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key
