@@ -1,5 +1,4 @@
 import json
-import math
 import os
 from PhoenixGUI import *
 import pygame
@@ -17,7 +16,6 @@ from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
 from util import is_valid_image
 from graphics import gas_giant_visual_style
-from data import consts
 
 PATH = __file__[:-7]
 
@@ -52,21 +50,9 @@ class Game:
 
         self.climate_images = self._get_climate_images()
 
-        self.time_speed = 500  # real time ms per game time week
+        self.ms_per_in_game_week = 500
         self.game_time_since_last_time_tick = 0
-
-    def time_tick(self):
-        for star_system in self.star_systems.values():
-            for pb in star_system.planetary_bodies.values():
-                orbit_length = 2 * math.pi * pb.sma * consts.METERS_PER_AU
-                seconds_passed = consts.SECONDS_PER_WEEK
-                length_traveled = pb.orbital_velocity * seconds_passed
-                
-                progress = length_traveled / orbit_length
-                pb.orbit_progress += progress
-
-                if pb.orbit_progress >= 1:
-                    pb.orbit_progress -= 1
+        self.game_time_is_active = False
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
@@ -82,10 +68,8 @@ class Game:
                                                          self.system_view_zoom)
                 self._update_star_system_pos(key_state)
 
-            self.game_time_since_last_time_tick += clock.get_time()
-            if self.game_time_since_last_time_tick >= self.time_speed:
-                self.time_tick()
-                self.game_time_since_last_time_tick -= self.time_speed
+            self._perform_time_tick_logic(clock.get_time())
+            self._perform_visual_orbit_progress_calculations(clock.get_fps())
 
             events = pygame.event.get()
             self.menu_handler.update(events, self.screen, clock.get_time())
@@ -99,6 +83,9 @@ class Game:
                       and event.key == pygame.K_ESCAPE
                       and self.view == "system"):
                     self.menu_handler.menues["escape_menu"].activate()
+
+                elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and self.view == "system"):
+                    self.game_time_is_active = not self.game_time_is_active
 
                 elif event.type == pygame.MOUSEWHEEL:
                     SENSITIVITY = 0.1
@@ -114,11 +101,44 @@ class Game:
                     elif change < 0 and self.current_star_system.allow_zoom_out:
                         self.system_view_zoom += change
 
-            # self.planet.orbit_progress += 0.005
-
             pygame.display.flip()
             clock.tick(60)
             # print("FPS:", round(clock.get_fps()))
+
+    def _time_tick(self):
+        for star_system in self.star_systems.values():
+            for pb in star_system.get_pbs_list():
+                pb.orbit_progress += pb.get_progress_per_week()
+
+                if pb.orbit_progress >= 1:
+                    pb.orbit_progress -= 1
+                    pb.visual_orbit_progress -= 1
+
+    def _perform_time_tick_logic(self, time_per_tick):
+        if self.game_time_is_active:
+            self.game_time_since_last_time_tick += time_per_tick
+            if self.game_time_since_last_time_tick >= self.ms_per_in_game_week:
+                self._time_tick()
+                self.game_time_since_last_time_tick -= self.ms_per_in_game_week
+        else:
+            self.game_time_since_last_time_tick = 0
+
+    def _perform_visual_orbit_progress_calculations(self, fps):
+        time_speed_in_s = self.ms_per_in_game_week / 1000  # in seconds
+        time_ticks_per_s = 1 / time_speed_in_s
+
+        for pb in self.current_star_system.get_pbs_list():
+            if pb.visual_orbit_progress < pb.orbit_progress:
+
+                progress = pb.get_progress_per_week()
+
+                progress_per_s = progress * time_ticks_per_s
+                progress_per_frame = progress_per_s / fps
+
+                pb.visual_orbit_progress += progress_per_frame
+
+                if pb.visual_orbit_progress > pb.orbit_progress:
+                    pb.orbit_progress = pb.visual_orbit_progress
 
     def _adjust_system_position(self, mouse_pos, zoom, prev_zoom):
         # this functions makes adjusts the system_view_pos so that the cursor

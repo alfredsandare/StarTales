@@ -45,8 +45,9 @@ class StarSystem:
 
             sma_in_pixels = pb.sma * zoom
 
-            planet_pos = (sma_in_pixels * math.cos(2 * math.pi * pb.orbit_progress),
-                          -1 * sma_in_pixels * math.sin(2 * math.pi * pb.orbit_progress))
+            vop = pb.visual_orbit_progress
+            planet_pos = (sma_in_pixels * math.cos(2 * math.pi * vop),
+                          -1 * sma_in_pixels * math.sin(2 * math.pi * vop))
             
             pos = sum_two_vectors(host_pos, planet_pos)
             size = cb_pixel_sizes[i+1]
@@ -130,3 +131,6 @@ class StarSystem:
         cbs = {id_: cb for id_, cb in self.planetary_bodies.items()}
         cbs[self.star.id] = self.star
         return cbs
+
+    def get_pbs_list(self) -> list[PlanetaryBody]:
+        return list(self.planetary_bodies.values())

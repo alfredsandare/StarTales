@@ -12,7 +12,5 @@ class CelestialBody:
         self.name = name
         self.id = id
 
-        self.orbit_progress = 0  # 0 - 1. 
-
     def draw(self, screen: pygame.Surface, pos: tuple[int, int], size: int):
         self.visual.draw(screen, pos, size)
