@@ -1,9 +1,8 @@
 from graphics.celestial_body_visual import CelestialBodyVisual
 from physics.celestial_body import CelestialBody
-from physics.planetary_body import PlanetaryBody
 
 
-class GasGiant(PlanetaryBody):
+class PlanetaryBody(CelestialBody):
     def __init__(self,
                  visual: CelestialBodyVisual,
                  size: float,
@@ -16,13 +15,10 @@ class GasGiant(PlanetaryBody):
                  gravity: float,
                  sma: float):
         
-        super().__init__(visual,
-                         size,
-                         name,
-                         id,
-                         orbital_host,
-                         is_tidally_locked,
-                         orbital_velocity,
-                         day_length,
-                         gravity,
-                         sma)
+        super().__init__(visual, size, name, id)
+        self.orbital_host = orbital_host
+        self.is_tidally_locked = is_tidally_locked
+        self.orbital_velocity = orbital_velocity
+        self.day_length = day_length
+        self.gravity = gravity
+        self.sma = sma
