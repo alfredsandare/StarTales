@@ -69,7 +69,8 @@ class Game:
                     self.screen,
                     self.system_view_pos,
                     self.system_view_zoom,
-                    self.get_values("default_font bold skip_quotes")
+                    self.get_values("default_font bold skip_quotes"),
+                    self.images["other/planet_nameplate.png"]
                 )
                 self._update_star_system_pos(key_state)
 

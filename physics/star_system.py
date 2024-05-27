@@ -3,13 +3,15 @@ import pygame
 from physics.celestial_body import CelestialBody
 from physics.planetary_body import PlanetaryBody
 from physics.star import Star
-from util import multiply_vector, set_value_in_boundaries
+from util import check_rect_overlap, multiply_vector, set_value_in_boundaries
 from PhoenixGUI.util import sum_two_vectors, get_font
 import data.consts as consts
 from PhoenixGUI.hitbox import Hitbox
 
 MAX_CB_SIZE_HARD_LIMIT = 400
 NAMEPLATE_Y_OFFSET = 10  # amount of pixels between cb and nameplate
+NAMEPLATE_SIZE = (120, 20)
+SPACE_BETWEEN_NAMEPLATES = 5
 
 class StarSystem:
     def __init__(self, name: str, star: Star, planetary_bodies: dict[str, PlanetaryBody]):
@@ -19,7 +21,7 @@ class StarSystem:
         self.allow_zoom_in = True
         self.allow_zoom_out = True
 
-    def render_and_draw(self, screen, camera_pos, zoom, font_name):
+    def render_and_draw(self, screen, camera_pos, zoom, font_name, nameplate_image):
         self.allow_zoom_in = True
         self.allow_zoom_out = True
 
@@ -67,16 +69,31 @@ class StarSystem:
             nameplate_offset = (0, cb_pixel_sizes[i+1]/2+NAMEPLATE_Y_OFFSET)
             nameplate_positions[pb.id] = sum_two_vectors(pos, nameplate_offset)
 
-        self._draw_nameplates(screen, nameplate_positions, font_name)
+        self._resolve_nameplate_overlaps(nameplate_positions)
+        self._draw_nameplates(screen, nameplate_positions, 
+                              font_name, nameplate_image)
 
-    def _draw_nameplates(self, screen, positions, font_name):
+    def _resolve_nameplate_overlaps(self, nameplate_positions):
+        for id1, pos1 in nameplate_positions.items():
+            for id2, pos2 in nameplate_positions.items():
+                if id1 != id2 and check_rect_overlap(*pos1, *NAMEPLATE_SIZE, 
+                                                     *pos2, *NAMEPLATE_SIZE):
+
+                    offset = NAMEPLATE_SIZE[1]+SPACE_BETWEEN_NAMEPLATES
+                    nameplate_positions[id2] = sum_two_vectors(pos1, (0, offset))
+                    self._resolve_nameplate_overlaps(nameplate_positions)
+
+    def _draw_nameplates(self, screen, positions, font_name, nameplate_image):
         path = "\\".join(__file__.split("\\")[:-2]) + "\\data\\fonts\\"
-        font = get_font(path, font_name, 20)
+        font = get_font(path, font_name, 18)
 
         for cb in self.get_all_cbs():
+            pos = sum_two_vectors(positions[cb.id], (-NAMEPLATE_SIZE[0]/2, 0))
+            screen.blit(nameplate_image, pos)
+
             text = font.render(cb.name, True, (255, 255, 255))
-            screen.blit(text, sum_two_vectors(positions[cb.id], 
-                                              (-text.get_width()/2, 0)))
+            pos = sum_two_vectors(positions[cb.id], (-text.get_width()/2, 1))
+            screen.blit(text, pos)
 
     def _draw_object(self, screen, obj, pos, size):
         obj.draw(screen, pos, size)

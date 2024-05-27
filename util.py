@@ -106,7 +106,6 @@ def run_calculate_total_atmosphere_units_program():
     atmosphere_units = calculate_total_atmosphere_units(thickness, radius)
     print(f"Total amount of atmosphere units: {atmosphere_units}")
 
-
 def convert_weeks_to_years(weeks, format="time"):
     # converts weeks to years and weeks
     done = False
@@ -128,6 +127,11 @@ def convert_weeks_to_years(weeks, format="time"):
 
     elif format == "date":
         return f"week {weeks}, {years}"
+    
+def check_rect_overlap(x1, y1, w1, h1, x2, y2, w2, h2):
+    # This function works by checking if one rectangle is to the left, right, above, or below the other. 
+    # If none of these conditions are true, then the rectangles must overlap.
+    return not (x1 + w1 < x2 or x2 + w2 < x1 or y1 + h1 < y2 or y2 + h2 < y1)
 
 if __name__ == "__main__":
     # run_convert_erv_to_day_length_program()
