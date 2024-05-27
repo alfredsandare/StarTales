@@ -1,15 +1,15 @@
 import math
-
 import pygame
 from physics.celestial_body import CelestialBody
 from physics.planetary_body import PlanetaryBody
 from physics.star import Star
 from util import multiply_vector, set_value_in_boundaries
-from PhoenixGUI.util import sum_two_vectors
+from PhoenixGUI.util import sum_two_vectors, get_font
 import data.consts as consts
 from PhoenixGUI.hitbox import Hitbox
 
 MAX_CB_SIZE_HARD_LIMIT = 400
+NAMEPLATE_Y_OFFSET = 10  # amount of pixels between cb and nameplate
 
 class StarSystem:
     def __init__(self, name: str, star: Star, planetary_bodies: dict[str, PlanetaryBody]):
@@ -19,7 +19,7 @@ class StarSystem:
         self.allow_zoom_in = True
         self.allow_zoom_out = True
 
-    def render_and_draw(self, screen, camera_pos, zoom):
+    def render_and_draw(self, screen, camera_pos, zoom, font_name):
         self.allow_zoom_in = True
         self.allow_zoom_out = True
 
@@ -33,9 +33,14 @@ class StarSystem:
             self.allow_zoom_out = False
 
         positions = {}
+        nameplate_positions = {}
 
         positions[self.star.id] = self._get_base_pos(screen.get_size(), 
                                                      camera_pos, zoom)
+        
+        nameplate_offset = (0, cb_pixel_sizes[0]/2+NAMEPLATE_Y_OFFSET)
+        nameplate_positions[self.star.id] = sum_two_vectors(positions[self.star.id],
+                                                            nameplate_offset)
 
         size = cb_pixel_sizes[0]
         self._draw_object(screen, self.star, positions[self.star.id], size)
@@ -58,6 +63,20 @@ class StarSystem:
             self._draw_object(screen, pb, pos, size)
 
             positions[pb.id] = pos
+            
+            nameplate_offset = (0, cb_pixel_sizes[i+1]/2+NAMEPLATE_Y_OFFSET)
+            nameplate_positions[pb.id] = sum_two_vectors(pos, nameplate_offset)
+
+        self._draw_nameplates(screen, nameplate_positions, font_name)
+
+    def _draw_nameplates(self, screen, positions, font_name):
+        path = "\\".join(__file__.split("\\")[:-2]) + "\\data\\fonts\\"
+        font = get_font(path, font_name, 20)
+
+        for cb in self.get_all_cbs():
+            text = font.render(cb.name, True, (255, 255, 255))
+            screen.blit(text, sum_two_vectors(positions[cb.id], 
+                                              (-text.get_width()/2, 0)))
 
     def _draw_object(self, screen, obj, pos, size):
         obj.draw(screen, pos, size)

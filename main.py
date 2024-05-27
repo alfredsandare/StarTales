@@ -65,9 +65,12 @@ class Game:
             key_state = pygame.key.get_pressed()
 
             if self.view == "system":
-                self.current_star_system.render_and_draw(self.screen,
-                                                         self.system_view_pos,
-                                                         self.system_view_zoom)
+                self.current_star_system.render_and_draw(
+                    self.screen,
+                    self.system_view_pos,
+                    self.system_view_zoom,
+                    self.get_values("default_font bold skip_quotes")
+                )
                 self._update_star_system_pos(key_state)
 
             self._perform_time_tick_logic(clock.get_time())
