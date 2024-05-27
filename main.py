@@ -3,6 +3,7 @@ import os
 from PhoenixGUI import *
 import pygame
 from PhoenixGUI.util import update_pos_by_anchor
+from data.consts import MS_PER_IN_GAME_WEEK_STATES
 import graphics.star_visual_style as star_visual_style
 from graphics.celestial_body_visual import CelestialBodyVisual
 import graphics.terrestrial_body_style as terrestrial_body_style
@@ -51,7 +52,7 @@ class Game:
         self.climate_images = self._get_climate_images()
 
         self.time = 104001  # number of weeks after year 0. 104000 weeks is 2000 years
-        self.ms_per_in_game_week = 200
+        self.ms_per_in_game_week = 250
         self.game_time_since_last_time_tick = 0
         self.game_time_is_active = False
 
@@ -324,6 +325,28 @@ class Game:
                 time_button.change_property("click_image", self.images["buttons/play_icon_hover.png"])
 
             self.game_time_is_active = not self.game_time_is_active
+
+        elif command == "increase_time_speed":
+            state_index = MS_PER_IN_GAME_WEEK_STATES \
+                .index(self.ms_per_in_game_week)
+            
+            if state_index < 4:
+                self.ms_per_in_game_week = \
+                    MS_PER_IN_GAME_WEEK_STATES[state_index + 1]
+                
+                self.menu_handler.menues["time_menu"].objects["time_speed_text"] \
+                    .change_property("text", str(state_index + 2))
+            
+        elif command == "decrease_time_speed":
+            state_index = MS_PER_IN_GAME_WEEK_STATES \
+                .index(self.ms_per_in_game_week)
+
+            if state_index > 0:
+                self.ms_per_in_game_week = \
+                    MS_PER_IN_GAME_WEEK_STATES[state_index - 1]
+                
+                self.menu_handler.menues["time_menu"].objects["time_speed_text"] \
+                    .change_property("text", str(state_index))
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key

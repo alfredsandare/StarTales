@@ -287,7 +287,8 @@
         "pos": "@get frame_size c -450 -300@",
         "bg_color": [64, 74, 204],
         "outline_color": [0, 0, 0],
-        "outline_width": 1, 
+        "outline_width": 1,
+        "layer": 1,
         "objects": {
             "top_bar": {
                 "type": "shape",
@@ -391,6 +392,15 @@
                 "text": "",
                 "font": "@get default_font bold@",
                 "font_size": 14,
+                "anchor": "c"
+            },
+
+            "time_speed_text": {
+                "type": "text",
+                "pos": [35, 50],
+                "text": "4",
+                "font": "@get default_font bold@",
+                "font_size": 20,
                 "anchor": "c"
             }
         }
