@@ -17,6 +17,7 @@ from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
 from util import convert_weeks_to_years, is_valid_image
 from graphics import gas_giant_visual_style
+from PhoenixGUI.hitbox import Hitbox
 
 PATH = __file__[:-7]
 
@@ -64,8 +65,10 @@ class Game:
 
             key_state = pygame.key.get_pressed()
 
+            hitboxes = {}
+
             if self.view == "system":
-                self.current_star_system.render_and_draw(
+                hitboxes = self.current_star_system.render_and_draw(
                     self.screen,
                     self.system_view_pos,
                     self.system_view_zoom,
@@ -106,6 +109,11 @@ class Game:
 
                     elif change < 0 and self.current_star_system.allow_zoom_out:
                         self.system_view_zoom += change
+
+                elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                    for id, hitbox in hitboxes:
+                        if hitbox.is_pos_inside(*pygame.mouse.get_pos()):
+                            print(f"{id} clicked on")
 
             pygame.display.flip()
             clock.tick(60)

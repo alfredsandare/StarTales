@@ -21,7 +21,9 @@ class StarSystem:
         self.allow_zoom_in = True
         self.allow_zoom_out = True
 
-    def render_and_draw(self, screen, camera_pos, zoom, font_name, nameplate_image):
+    def render_and_draw(self, screen, camera_pos, zoom, font_name,
+                        nameplate_image) -> list[tuple[str, Hitbox]]:
+
         self.allow_zoom_in = True
         self.allow_zoom_out = True
 
@@ -47,6 +49,10 @@ class StarSystem:
         size = cb_pixel_sizes[0]
         self._draw_object(screen, self.star, positions[self.star.id], size)
 
+        borders = (*sum_two_vectors(positions[self.star.id], (-size/2, -size/2)),
+                   *sum_two_vectors(positions[self.star.id], (size/2, size/2)))
+        hitboxes = [(self.star.id, Hitbox(*borders))]
+
         for i, pb in enumerate(self.planetary_bodies.values()):
             host_pos = positions[pb.orbital_host]
 
@@ -69,9 +75,15 @@ class StarSystem:
             nameplate_offset = (0, cb_pixel_sizes[i+1]/2+NAMEPLATE_Y_OFFSET)
             nameplate_positions[pb.id] = sum_two_vectors(pos, nameplate_offset)
 
+            borders = (*sum_two_vectors(pos, (-size/2, -size/2)), 
+                       *sum_two_vectors(pos, (size/2, size/2)))
+            hitboxes.append((pb.id, Hitbox(*borders)))
+
         self._resolve_nameplate_overlaps(nameplate_positions)
-        self._draw_nameplates(screen, nameplate_positions, 
-                              font_name, nameplate_image)
+        hitboxes.extend(self._draw_nameplates(screen, nameplate_positions, 
+                                              font_name, nameplate_image))
+        
+        return hitboxes
 
     def _resolve_nameplate_overlaps(self, nameplate_positions):
         for id1, pos1 in nameplate_positions.items():
@@ -83,9 +95,13 @@ class StarSystem:
                     nameplate_positions[id2] = sum_two_vectors(pos1, (0, offset))
                     self._resolve_nameplate_overlaps(nameplate_positions)
 
-    def _draw_nameplates(self, screen, positions, font_name, nameplate_image):
+    def _draw_nameplates(self, screen, positions, font_name, 
+                         nameplate_image) -> list[tuple[str, Hitbox]]:
+
         path = "\\".join(__file__.split("\\")[:-2]) + "\\data\\fonts\\"
         font = get_font(path, font_name, 18)
+
+        hitboxes = []
 
         for cb in self.get_all_cbs():
             pos = sum_two_vectors(positions[cb.id], (-NAMEPLATE_SIZE[0]/2, 0))
@@ -95,6 +111,10 @@ class StarSystem:
             pos = sum_two_vectors(positions[cb.id], (-text.get_width()/2, 1))
             screen.blit(text, pos)
 
+            hitboxes.append((cb.id, Hitbox(*pos, *sum_two_vectors(pos, NAMEPLATE_SIZE))))
+
+        return hitboxes
+    
     def _draw_object(self, screen, obj, pos, size):
         obj.draw(screen, pos, size)
 
