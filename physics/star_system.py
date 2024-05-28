@@ -190,3 +190,11 @@ class StarSystem:
 
     def get_pbs_list(self) -> list[PlanetaryBody]:
         return list(self.planetary_bodies.values())
+
+    def get_child_pbs(self, host_id) -> list[PlanetaryBody]:
+        pbs = [pb for pb in self.planetary_bodies.values() 
+               if pb.orbital_host == host_id]
+
+        pbs.sort(key=lambda pb: pb.sma)
+
+        return pbs

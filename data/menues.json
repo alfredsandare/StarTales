@@ -404,5 +404,52 @@
                 "anchor": "c"
             }
         }
-    }
+    },
+
+    "small_planet_menu": {
+        "size": [300, 150],
+        "pos": "@get frame_size sw 10 -160@",
+        "bg_color": [64, 74, 204],
+        "outline_color": [0, 0, 0],
+        "outline_width": 1,
+        "objects": {
+            "top_bar": {
+                "type": "shape",
+                "pos": [0, 0],
+                "size": [360, 30],
+                "color": [39, 48, 148],
+                "type_": "rect",
+                "outline_width": 1,
+                "outline_color": [0, 0, 0]
+            },
+
+            "title_text": {
+                "type": "text",
+                "pos": [10, 16],
+                "text": "",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "anchor": "w"
+            },
+            
+            "close_button": {
+                "type": "button",
+                "pos": [297, 15],
+                "anchor": "e",
+                "image": "buttons/24x24_cross.png",
+                "hover_image": "buttons/24x24_cross_hover.png",
+                "click_image": "buttons/24x24_cross_click.png",
+                "command": "deactivate_menu small_planet_menu"
+            },
+
+            "info_text": {
+                "type": "text",
+                "pos": [10, 40],
+                "text": "",
+                "font": "@get default_font bold@",
+                "font_size": 14,
+                "anchor": "nw"
+            }
+        }
+    } 
 }

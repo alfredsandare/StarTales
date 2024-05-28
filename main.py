@@ -114,6 +114,8 @@ class Game:
                     for id, hitbox in hitboxes:
                         if hitbox.is_pos_inside(*pygame.mouse.get_pos()):
                             print(f"{id} clicked on")
+                            self._open_small_planet_menu(id)
+                            break
 
             pygame.display.flip()
             clock.tick(60)
@@ -459,6 +461,27 @@ class Game:
             return GasGiant(visual, **kwargs)
 
         raise Exception(f"Invalid pb type: {pb_data['type']}")
+    
+    def _open_small_planet_menu(self, id):
+        self.menu_handler.menues["small_planet_menu"].activate()
+
+        name = self.current_star_system.get_all_cbs_dict()[id].name
+        self.menu_handler.menues["small_planet_menu"].objects["title_text"] \
+            .change_property("text", name)
+
+        host_id = self.current_star_system.get_all_cbs_dict()[id].orbital_host
+        host_name = self.current_star_system.get_all_cbs_dict()[host_id].name
+
+        # get the index of this cb.
+        child_cbs = self.current_star_system.get_child_pbs(host_id)
+        index = next((index for (index, cb) in enumerate(child_cbs) 
+                      if cb.id == id), None)
+
+        number_endings = ["st", "nd", "rd", "th"]
+        text = f"{index+1}{number_endings[min(index, 3)]} of {host_name}"
+
+        self.menu_handler.menues["small_planet_menu"].objects["info_text"] \
+            .change_property("text", text)
 
 if __name__ == "__main__":
     game = Game()
