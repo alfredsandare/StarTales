@@ -3,7 +3,7 @@ import os
 from PhoenixGUI import *
 import pygame
 from PhoenixGUI.util import update_pos_by_anchor
-from data.consts import MS_PER_IN_GAME_WEEK_STATES
+from data.consts import CELESTIAL_BODY_TYPES_NAMES, MS_PER_IN_GAME_WEEK_STATES
 import graphics.star_visual_style as star_visual_style
 from graphics.celestial_body_visual import CelestialBodyVisual
 import graphics.terrestrial_body_style as terrestrial_body_style
@@ -113,7 +113,6 @@ class Game:
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     for id, hitbox in hitboxes:
                         if hitbox.is_pos_inside(*pygame.mouse.get_pos()):
-                            print(f"{id} clicked on")
                             self._open_small_planet_menu(id)
                             break
 
@@ -465,20 +464,26 @@ class Game:
     def _open_small_planet_menu(self, id):
         self.menu_handler.menues["small_planet_menu"].activate()
 
-        name = self.current_star_system.get_all_cbs_dict()[id].name
+        cb = self.current_star_system.get_all_cbs_dict()[id]
         self.menu_handler.menues["small_planet_menu"].objects["title_text"] \
-            .change_property("text", name)
+            .change_property("text", cb.name)
 
-        host_id = self.current_star_system.get_all_cbs_dict()[id].orbital_host
-        host_name = self.current_star_system.get_all_cbs_dict()[host_id].name
+        text = f"{CELESTIAL_BODY_TYPES_NAMES[cb.type]}\n"
 
-        # get the index of this cb.
-        child_cbs = self.current_star_system.get_child_pbs(host_id)
-        index = next((index for (index, cb) in enumerate(child_cbs) 
-                      if cb.id == id), None)
+        if cb.type == "star":
+            text += f"{cb.star_class}-class"
+        else:
+            host = self.current_star_system.get_all_cbs_dict()[cb.orbital_host]
 
-        number_endings = ["st", "nd", "rd", "th"]
-        text = f"{index+1}{number_endings[min(index, 3)]} of {host_name}"
+            # get the index of this cb.
+            child_cbs = self.current_star_system.get_child_pbs(host.id)
+            index = next((index for (index, cb) in enumerate(child_cbs) 
+                        if cb.id == id), None)
+
+            type_text = "planet" if host.type == "star" else "moon"
+
+            number_endings = ["st", "nd", "rd", "th"]
+            text += f"{index+1}{number_endings[min(index, 3)]} {type_text} of {host.name}"
 
         self.menu_handler.menues["small_planet_menu"].objects["info_text"] \
             .change_property("text", text)

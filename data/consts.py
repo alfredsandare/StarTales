@@ -12,3 +12,9 @@ MS_PER_IN_GAME_WEEK_STATES = [
     250,
     125
 ]
+
+CELESTIAL_BODY_TYPES_NAMES = {
+    "star": "Star", 
+    "terrestrial_body": "Terrestrial World", 
+    "gas_giant": "Gas Giant"
+}

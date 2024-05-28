@@ -447,7 +447,7 @@
                 "pos": [10, 40],
                 "text": "",
                 "font": "@get default_font bold@",
-                "font_size": 14,
+                "font_size": 18,
                 "anchor": "nw"
             }
         }
