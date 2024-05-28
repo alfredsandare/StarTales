@@ -106,12 +106,11 @@ class StarSystem:
         for cb in self.get_all_cbs():
             pos = sum_two_vectors(positions[cb.id], (-NAMEPLATE_SIZE[0]/2, 0))
             screen.blit(nameplate_image, pos)
+            hitboxes.append((cb.id, Hitbox(*pos, *sum_two_vectors(pos, NAMEPLATE_SIZE))))
 
             text = font.render(cb.name, True, (255, 255, 255))
             pos = sum_two_vectors(positions[cb.id], (-text.get_width()/2, 1))
             screen.blit(text, pos)
-
-            hitboxes.append((cb.id, Hitbox(*pos, *sum_two_vectors(pos, NAMEPLATE_SIZE))))
 
         return hitboxes
     
