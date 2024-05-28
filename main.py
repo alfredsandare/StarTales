@@ -374,6 +374,10 @@ class Game:
         elif command == "deselect_cb":
             self._deselect_cb()
 
+        elif command == "open_cb_menu_from_small_planet_menu":
+            self.invoke_command("open_cb_menu "
+                                + self.current_star_system.selected_cb_id)
+
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key
         self.current_star_system = self.star_systems[new_system_key]

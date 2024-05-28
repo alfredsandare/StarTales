@@ -449,6 +449,20 @@
                 "font": "@get default_font bold@",
                 "font_size": 18,
                 "anchor": "nw"
+            },
+
+            "open_cb_menu_button": {
+                "type": "button",
+                "pos": [290, 40],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Open Menu",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "rect_padx": 10,
+                "rect_height": 30,
+                "anchor": "ne",
+                "command": "open_cb_menu_from_small_planet_menu"
             }
         }
     } 
