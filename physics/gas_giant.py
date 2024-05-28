@@ -26,3 +26,5 @@ class GasGiant(PlanetaryBody):
                          day_length,
                          gravity,
                          sma)
+
+        self.type = "gas_giant"

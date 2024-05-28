@@ -30,5 +30,7 @@ class TerrestrialBody(PlanetaryBody):
                          gravity,
                          sma),
 
+        self.type = "terrestrial_body"
+
         self.districts = districts
         self.atmosphere = atmosphere

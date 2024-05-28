@@ -12,5 +12,8 @@ class CelestialBody:
         self.name = name
         self.id = id
 
+        # overridden in subclasses
+        self.type = None
+
     def draw(self, screen: pygame.Surface, pos: tuple[int, int], size: int):
         self.visual.draw(screen, pos, size)
