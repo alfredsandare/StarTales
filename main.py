@@ -68,6 +68,9 @@ class Game:
             hitboxes = {}
 
             if self.view == "system":
+                new_pos = self.current_star_system.get_camera_pos()
+                self.system_view_pos = new_pos if new_pos else self.system_view_pos
+
                 hitboxes = self.current_star_system.render_and_draw(
                     self.screen,
                     self.system_view_pos,
@@ -91,7 +94,13 @@ class Game:
                 elif (event.type == pygame.KEYDOWN 
                       and event.key == pygame.K_ESCAPE
                       and self.view == "system"):
-                    self.menu_handler.menues["escape_menu"].activate()
+                    if self.current_star_system.selected_cb_id is not None:
+                        self._deselect_cb()
+                    elif not self.menu_handler.menues["escape_menu"].active:
+                        self.menu_handler.menues["escape_menu"].activate()
+                    else:
+                        print("deactivatin escape menu")
+                        self.menu_handler.menues["escape_menu"].deactivate()
 
                 elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and self.view == "system"):
                     self.invoke_command("change_time")
@@ -114,6 +123,7 @@ class Game:
                     for id, hitbox in hitboxes:
                         if hitbox.is_pos_inside(*pygame.mouse.get_pos()):
                             self._open_small_planet_menu(id)
+                            self.current_star_system.selected_cb_id = id
                             break
 
             pygame.display.flip()
@@ -361,6 +371,9 @@ class Game:
                 self.menu_handler.menues["time_menu"].objects["time_speed_text"] \
                     .change_property("text", str(state_index))
 
+        elif command == "deselect_cb":
+            self._deselect_cb()
+
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key
         self.current_star_system = self.star_systems[new_system_key]
@@ -463,30 +476,12 @@ class Game:
     
     def _open_small_planet_menu(self, id):
         self.menu_handler.menues["small_planet_menu"].activate()
-
-        cb = self.current_star_system.get_all_cbs_dict()[id]
-        self.menu_handler.menues["small_planet_menu"].objects["title_text"] \
-            .change_property("text", cb.name)
-
-        text = f"{CELESTIAL_BODY_TYPES_NAMES[cb.type]}\n"
-
-        if cb.type == "star":
-            text += f"{cb.star_class}-class"
-        else:
-            host = self.current_star_system.get_all_cbs_dict()[cb.orbital_host]
-
-            # get the index of this cb.
-            child_cbs = self.current_star_system.get_child_pbs(host.id)
-            index = next((index for (index, cb) in enumerate(child_cbs) 
-                        if cb.id == id), None)
-
-            type_text = "planet" if host.type == "star" else "moon"
-
-            number_endings = ["st", "nd", "rd", "th"]
-            text += f"{index+1}{number_endings[min(index, 3)]} {type_text} of {host.name}"
-
-        self.menu_handler.menues["small_planet_menu"].objects["info_text"] \
-            .change_property("text", text)
+        initialize_menues.small_planet_menu(self.menu_handler, id, 
+                                            self.current_star_system)
+        
+    def _deselect_cb(self):
+        self.current_star_system.selected_cb_id = None
+        self.menu_handler.menues["small_planet_menu"].deactivate()
 
 if __name__ == "__main__":
     game = Game()

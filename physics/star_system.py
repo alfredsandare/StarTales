@@ -20,6 +20,7 @@ class StarSystem:
         self.star = star
         self.allow_zoom_in = True
         self.allow_zoom_out = True
+        self.selected_cb_id = None
 
     def render_and_draw(self, screen, camera_pos, zoom, font_name,
                         nameplate_image) -> list[tuple[str, Hitbox]]:
@@ -197,3 +198,28 @@ class StarSystem:
         pbs.sort(key=lambda pb: pb.sma)
 
         return pbs
+
+    def get_camera_pos(self):
+        if self.selected_cb_id is None:
+            return
+
+        selected_cb = self.get_all_cbs_dict()[self.selected_cb_id]
+
+        pos = [0, 0]
+        if selected_cb.type == "star":
+            return pos
+
+        vop = selected_cb.visual_orbit_progress
+        pos = [selected_cb.sma * math.cos(2 * math.pi * vop),
+               -1 * selected_cb.sma * math.sin(2 * math.pi * vop)]
+
+        if selected_cb.orbital_host == self.star.id:
+            return pos
+
+        # now the selected cb must be a moon
+        host = self.planetary_bodies[selected_cb.orbital_host]
+        vop = host.visual_orbit_progress
+        host_pos = [host.sma * math.cos(2 * math.pi * vop),
+                    -1 * host.sma * math.sin(2 * math.pi * vop)]
+
+        return sum_two_vectors(pos, host_pos)

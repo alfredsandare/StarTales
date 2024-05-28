@@ -11,6 +11,7 @@ from physics.celestial_body import CelestialBody
 from physics.gas_giant import GasGiant
 from physics.planetary_body import PlanetaryBody
 from physics.star import Star
+from physics.star_system import StarSystem
 from physics.terrestrial_body import TerrestrialBody
 from util import round_seconds, round_to_significant_figures
 
@@ -310,3 +311,30 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, font):
         menu_handler.add_object("cb_menu", 
                                 f"atmosphere_share_text_{i}", 
                                 menu_text)
+
+def small_planet_menu(menu_handler: MenuHandler, 
+                      id: str, star_system: StarSystem):
+    
+    cb = star_system.get_all_cbs_dict()[id]
+    menu_handler.menues["small_planet_menu"].objects["title_text"] \
+        .change_property("text", cb.name)
+
+    text = f"{CELESTIAL_BODY_TYPES_NAMES[cb.type]}\n"
+
+    if cb.type == "star":
+        text += f"{cb.star_class}-class"
+    else:
+        host = star_system.get_all_cbs_dict()[cb.orbital_host]
+
+        # get the index of this cb.
+        child_cbs = star_system.get_child_pbs(host.id)
+        index = next((index for (index, cb) in enumerate(child_cbs) 
+                    if cb.id == id), None)
+
+        type_text = "planet" if host.type == "star" else "moon"
+
+        number_endings = ["st", "nd", "rd", "th"]
+        text += f"{index+1}{number_endings[min(index, 3)]} {type_text} of {host.name}"
+
+    menu_handler.menues["small_planet_menu"].objects["info_text"] \
+        .change_property("text", text)
