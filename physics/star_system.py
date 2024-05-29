@@ -40,45 +40,37 @@ class StarSystem:
         positions = {}
         nameplate_positions = {}
 
-        positions[self.star.id] = self._get_base_pos(screen.get_size(), 
-                                                     camera_pos, zoom)
-        
-        nameplate_offset = (0, cb_pixel_sizes[0]/2+NAMEPLATE_Y_OFFSET)
-        nameplate_positions[self.star.id] = sum_two_vectors(positions[self.star.id],
-                                                            nameplate_offset)
+        hitboxes = []
 
-        size = cb_pixel_sizes[0]
-        self._draw_object(screen, self.star, positions[self.star.id], size)
+        for i, cb in enumerate(self.get_all_cbs()):
+            pos = None
+            if cb.type != "star":
+                sma_in_pixels = cb.sma * zoom
 
-        borders = (*sum_two_vectors(positions[self.star.id], (-size/2, -size/2)),
-                   *sum_two_vectors(positions[self.star.id], (size/2, size/2)))
-        hitboxes = [(self.star.id, Hitbox(*borders))]
+                vop = cb.visual_orbit_progress
+                planet_pos = (sma_in_pixels * math.cos(2 * math.pi * vop),
+                            -1 * sma_in_pixels * math.sin(2 * math.pi * vop))
 
-        for i, pb in enumerate(self.planetary_bodies.values()):
-            host_pos = positions[pb.orbital_host]
+                host_pos = positions[cb.orbital_host]
+                pygame.draw.circle(screen, (100, 100, 100), host_pos, 
+                                int(sma_in_pixels), 1)
 
-            sma_in_pixels = pb.sma * zoom
+                pos = sum_two_vectors(host_pos, planet_pos)
 
-            vop = pb.visual_orbit_progress
-            planet_pos = (sma_in_pixels * math.cos(2 * math.pi * vop),
-                          -1 * sma_in_pixels * math.sin(2 * math.pi * vop))
+            else:
+                pos = self._get_base_pos(screen.get_size(), camera_pos, zoom)
+
+            size = cb_pixel_sizes[i]
+            self._draw_object(screen, cb, pos, size)
+
+            positions[cb.id] = pos
             
-            pos = sum_two_vectors(host_pos, planet_pos)
-            size = cb_pixel_sizes[i+1]
-            
-            pygame.draw.circle(screen, (100, 100, 100), host_pos, 
-                               int(sma_in_pixels), 1)
-            
-            self._draw_object(screen, pb, pos, size)
-
-            positions[pb.id] = pos
-            
-            nameplate_offset = (0, cb_pixel_sizes[i+1]/2+NAMEPLATE_Y_OFFSET)
-            nameplate_positions[pb.id] = sum_two_vectors(pos, nameplate_offset)
+            nameplate_offset = (0, cb_pixel_sizes[i]/2+NAMEPLATE_Y_OFFSET)
+            nameplate_positions[cb.id] = sum_two_vectors(pos, nameplate_offset)
 
             borders = (*sum_two_vectors(pos, (-size/2, -size/2)), 
                        *sum_two_vectors(pos, (size/2, size/2)))
-            hitboxes.append((pb.id, Hitbox(*borders)))
+            hitboxes.append((cb.id, Hitbox(*borders)))
 
         self._resolve_nameplate_overlaps(nameplate_positions)
         hitboxes.extend(self._draw_nameplates(screen, nameplate_positions, 
@@ -180,8 +172,21 @@ class StarSystem:
     
     def get_all_cbs(self) -> list[CelestialBody]:
         # returns a list of all celestial bodies in the system
-        return [self.star, *self.planetary_bodies.values()]
-    
+
+        planets = [planet for planet in self.planetary_bodies.values()
+                   if planet.orbital_host == self.star.id]
+        planets.sort(key=lambda cb: cb.sma)
+
+        pbs = []
+        for planet in planets:
+            moons = [moon for moon in self.planetary_bodies.values()
+                     if moon.orbital_host == planet.id]
+            moons.sort(key=lambda cb: cb.sma)
+            pbs.append(planet)
+            pbs.extend(moons)
+
+        return [self.star, *pbs]
+
     def get_all_cbs_dict(self) -> dict[str, CelestialBody]:
         # returns a dict of all celestial bodies in the system
         cbs = {id_: cb for id_, cb in self.planetary_bodies.items()}
