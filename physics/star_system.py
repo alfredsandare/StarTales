@@ -14,7 +14,9 @@ NAMEPLATE_SIZE = (120, 20)
 SPACE_BETWEEN_NAMEPLATES = 5
 
 class StarSystem:
-    def __init__(self, name: str, star: Star, planetary_bodies: dict[str, PlanetaryBody]):
+    def __init__(self, name: str, star: Star,
+                 planetary_bodies: dict[str, PlanetaryBody]):
+
         self.name = name
         self.planetary_bodies = planetary_bodies
         self.star = star
@@ -22,8 +24,8 @@ class StarSystem:
         self.allow_zoom_out = True
         self.selected_cb_id = None
 
-    def render_and_draw(self, screen, camera_pos, zoom, font_name,
-                        nameplate_image) -> list[tuple[str, Hitbox]]:
+    def render_and_draw(self, screen: pygame.Surface, camera_pos, zoom,
+                        font_name, nameplate_image) -> list[tuple[str, Hitbox]]:
 
         self.allow_zoom_in = True
         self.allow_zoom_out = True
@@ -31,7 +33,8 @@ class StarSystem:
         cb_sizes = [self.star.size, 
                     *(pb.size for pb in self.planetary_bodies.values())]
         
-        cb_pixel_sizes = [self._get_cb_pixel_size(size, zoom) for size in cb_sizes]
+        cb_pixel_sizes = [self._get_cb_pixel_size(size, zoom)
+                          for size in cb_sizes]
         cb_pixel_sizes = self._adjust_sizes(cb_pixel_sizes, zoom)
 
         if max(cb_pixel_sizes) < 10:
@@ -42,29 +45,27 @@ class StarSystem:
 
         hitboxes = []
 
+        skipped_ids = []
+
         for i, cb in enumerate(self.get_all_cbs()):
             pos = None
-            if cb.type != "star":
-                sma_in_pixels = cb.sma * zoom
-
-                vop = cb.visual_orbit_progress
-                planet_pos = (sma_in_pixels * math.cos(2 * math.pi * vop),
-                            -1 * sma_in_pixels * math.sin(2 * math.pi * vop))
-
-                host_pos = positions[cb.orbital_host]
-                pygame.draw.circle(screen, (100, 100, 100), host_pos, 
-                                int(sma_in_pixels), 1)
-
-                pos = sum_two_vectors(host_pos, planet_pos)
-
-            else:
-                pos = self._get_base_pos(screen.get_size(), camera_pos, zoom)
-
             size = cb_pixel_sizes[i]
+
+            pos = self._get_cb_pos(cb, positions, zoom, 
+                                   screen.get_size(), camera_pos)
+            positions[cb.id] = pos
+
+            if not self._is_planet_on_screen(pos, size, screen.get_size()):
+                skipped_ids.append(cb.id)
+                continue
+
+            if cb.type != "star":
+                pygame.draw.circle(screen, (100, 100, 100), 
+                                   positions[cb.orbital_host],
+                                   int(cb.sma * zoom), 1)
+
             self._draw_object(screen, cb, pos, size)
 
-            positions[cb.id] = pos
-            
             nameplate_offset = (0, cb_pixel_sizes[i]/2+NAMEPLATE_Y_OFFSET)
             nameplate_positions[cb.id] = sum_two_vectors(pos, nameplate_offset)
 
@@ -74,9 +75,27 @@ class StarSystem:
 
         self._resolve_nameplate_overlaps(nameplate_positions)
         hitboxes.extend(self._draw_nameplates(screen, nameplate_positions, 
-                                              font_name, nameplate_image))
-        
+                                              font_name, nameplate_image, skipped_ids))
+
         return hitboxes
+
+    def _get_cb_pos(self, cb, positions, zoom, screen_size, camera_pos):
+        if cb.type != "star":
+            sma_in_pixels = cb.sma * zoom
+
+            vop = cb.visual_orbit_progress
+            planet_pos = (sma_in_pixels * math.cos(2 * math.pi * vop),
+                        -1 * sma_in_pixels * math.sin(2 * math.pi * vop))
+
+            pos = sum_two_vectors(positions[cb.orbital_host], planet_pos)
+
+        else:
+            pos = self._get_base_pos(screen_size, camera_pos, zoom)
+
+        return pos
+
+    def _is_planet_on_screen(self, pos, size, screen_size):
+        return check_rect_overlap(*pos, size, size, 0, 0, *screen_size)
 
     def _resolve_nameplate_overlaps(self, nameplate_positions):
         for id1, pos1 in nameplate_positions.items():
@@ -89,7 +108,7 @@ class StarSystem:
                     self._resolve_nameplate_overlaps(nameplate_positions)
 
     def _draw_nameplates(self, screen, positions, font_name, 
-                         nameplate_image) -> list[tuple[str, Hitbox]]:
+                         nameplate_image, skipped_ids) -> list[tuple[str, Hitbox]]:
 
         path = "\\".join(__file__.split("\\")[:-2]) + "\\data\\fonts\\"
         font = get_font(path, font_name, 18)
@@ -97,6 +116,9 @@ class StarSystem:
         hitboxes = []
 
         for cb in self.get_all_cbs():
+            if cb.id in skipped_ids:
+                continue
+
             pos = sum_two_vectors(positions[cb.id], (-NAMEPLATE_SIZE[0]/2, 0))
             screen.blit(nameplate_image, pos)
             hitboxes.append((cb.id, Hitbox(*pos, *sum_two_vectors(pos, NAMEPLATE_SIZE))))
