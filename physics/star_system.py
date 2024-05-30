@@ -20,11 +20,12 @@ class StarSystem:
         self.name = name
         self.planetary_bodies = planetary_bodies
         self.star = star
+        self.zoom = 200  # unit is pixels/AU
         self.allow_zoom_in = True
         self.allow_zoom_out = True
         self.selected_cb_id = None
 
-    def render_and_draw(self, screen: pygame.Surface, camera_pos, zoom,
+    def render_and_draw(self, screen: pygame.Surface, camera_pos,
                         font_name, nameplate_image) -> list[tuple[str, Hitbox]]:
 
         self.allow_zoom_in = True
@@ -35,13 +36,12 @@ class StarSystem:
         hitboxes = []
         skipped_ids = []
 
-        cb_pixel_sizes = self._get_cb_pixel_sizes(zoom)
+        cb_pixel_sizes = self._get_cb_pixel_sizes()
         if min(cb_pixel_sizes.values()) >= MAX_CB_SIZE_HARD_LIMIT:
             self.allow_zoom_in = False
 
         for cb in self.get_all_cbs():
-            pos = self._get_cb_pos(cb, positions, zoom, 
-                                   screen.get_size(), camera_pos)
+            pos = self._get_cb_pos(cb, positions, screen.get_size(), camera_pos)
             positions[cb.id] = pos
 
             size = cb_pixel_sizes[cb.id]
@@ -50,7 +50,7 @@ class StarSystem:
                 skipped_ids.append(cb.id)
                 continue
 
-            self._draw_object(screen, cb, pos, size, positions, zoom)
+            self._draw_object(screen, cb, pos, size, positions)
 
             nameplate_offset = (0, size/2 + NAMEPLATE_Y_OFFSET)
             nameplate_positions[cb.id] = sum_two_vectors(pos, nameplate_offset)
@@ -63,11 +63,11 @@ class StarSystem:
 
         return hitboxes
 
-    def _get_cb_pixel_sizes(self, zoom):
-        cb_pixel_sizes = {cb.id: self._get_cb_pixel_size(cb.size, zoom)
+    def _get_cb_pixel_sizes(self):
+        cb_pixel_sizes = {cb.id: self._get_cb_pixel_size(cb.size)
                           for cb in self.get_all_cbs()}
 
-        cb_pixel_sizes = self._adjust_sizes(cb_pixel_sizes, zoom)
+        cb_pixel_sizes = self._adjust_sizes(cb_pixel_sizes)
 
         if max(cb_pixel_sizes.values()) < 10:
             self.allow_zoom_out = False
@@ -79,9 +79,9 @@ class StarSystem:
                    *sum_two_vectors(pos, (size/2, size/2)))
         return Hitbox(*borders)
 
-    def _get_cb_pos(self, cb, positions, zoom, screen_size, camera_pos):
+    def _get_cb_pos(self, cb, positions, screen_size, camera_pos):
         if cb.type != "star":
-            sma_in_pixels = cb.sma * zoom
+            sma_in_pixels = cb.sma * self.zoom
 
             vop = cb.visual_orbit_progress
             planet_pos = (sma_in_pixels * math.cos(2 * math.pi * vop),
@@ -89,7 +89,7 @@ class StarSystem:
 
             return sum_two_vectors(positions[cb.orbital_host], planet_pos)
 
-        return self._get_base_pos(screen_size, camera_pos, zoom)
+        return self._get_base_pos(screen_size, camera_pos)
 
     def _is_planet_on_screen(self, pos, size, screen_size):
         return check_rect_overlap(*pos, size, size, 0, 0, *screen_size)
@@ -126,11 +126,11 @@ class StarSystem:
 
         return hitboxes
     
-    def _draw_object(self, screen, cb, pos, size, positions, zoom):
+    def _draw_object(self, screen, cb, pos, size, positions):
         if cb.type != "star":
             pygame.draw.circle(screen, (100, 100, 100), 
                                positions[cb.orbital_host],
-                               int(cb.sma * zoom), 1)
+                               int(cb.sma * self.zoom), 1)
 
         screen_size = screen.get_size()
         screen_hitbox = Hitbox(-size/2, -size/2, 
@@ -144,15 +144,15 @@ class StarSystem:
 
         cb.draw(screen, pos, size)
             
-    def _get_cb_pixel_size(self, size, zoom):
+    def _get_cb_pixel_size(self, size):
         radius_in_m = size * 400_000
         diameter_in_m = radius_in_m * 2
         diameter_in_au = diameter_in_m / consts.METERS_PER_AU
-        diameter_in_pixels = diameter_in_au * zoom  # zoom has unit pixels/au
+        diameter_in_pixels = diameter_in_au * self.zoom  # self.zoom has unit pixels/au
 
         return set_value_in_boundaries(diameter_in_pixels, 0, 400)
     
-    def _adjust_sizes(self, sizes: dict[str, float], zoom):
+    def _adjust_sizes(self, sizes: dict[str, float]):
         # sizes here are in pixels
         max_size = set_value_in_boundaries(max(sizes.values()), lower_boundary=1e-6)
         min_size = set_value_in_boundaries(min(sizes.values()), lower_boundary=1e-5)
@@ -164,7 +164,7 @@ class StarSystem:
 
         exponent = math.log(size_quotient) / math.log(max_size/min_size)
 
-        smas_in_pixels = [cb.sma * zoom for cb in self.planetary_bodies.values()]
+        smas_in_pixels = [cb.sma * self.zoom for cb in self.planetary_bodies.values()]
         smallest_sma_diff = self._find_smallest_sma_diff(smas_in_pixels)
 
         MAX_SIZE_DIVIDENT = 4
@@ -191,9 +191,9 @@ class StarSystem:
 
         return smallest_diff
     
-    def _get_base_pos(self, screen_size, camera_pos, zoom):
+    def _get_base_pos(self, screen_size, camera_pos):
         pos = multiply_vector(camera_pos, -1)
-        pos = multiply_vector(pos, zoom)
+        pos = multiply_vector(pos, self.zoom)
         return sum_two_vectors(pos, multiply_vector(screen_size, 0.5))
     
     def get_all_cbs(self) -> list[CelestialBody]:

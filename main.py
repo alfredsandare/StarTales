@@ -74,7 +74,6 @@ class Game:
                 hitboxes = self.current_star_system.render_and_draw(
                     self.screen,
                     self.system_view_pos,
-                    self.system_view_zoom,
                     self.get_values("default_font bold skip_quotes"),
                     self.images["other/planet_nameplate.png"]
                 )
@@ -107,17 +106,16 @@ class Game:
 
                 elif event.type == pygame.MOUSEWHEEL:
                     SENSITIVITY = 0.1
-                    change = self.system_view_zoom * event.y * SENSITIVITY
+                    zoom = self.current_star_system.zoom
+                    change = zoom * event.y * SENSITIVITY
 
                     if change > 0 and self.current_star_system.allow_zoom_in:
-                        self._adjust_system_position(
-                            pygame.mouse.get_pos(),
-                            self.system_view_zoom + change,
-                            self.system_view_zoom)
-                        self.system_view_zoom += change
+                        self._adjust_system_position(pygame.mouse.get_pos(),
+                                                     zoom + change, zoom)
+                        self.current_star_system.zoom += change
 
                     elif change < 0 and self.current_star_system.allow_zoom_out:
-                        self.system_view_zoom += change
+                        self.current_star_system.zoom += change
 
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                     for id, hitbox in hitboxes:
@@ -260,7 +258,7 @@ class Game:
     
     def _update_star_system_pos(self, key_state):
         MOVEMENT_SPEED = 5  # pixels per frame
-        movement = MOVEMENT_SPEED / self.system_view_zoom
+        movement = MOVEMENT_SPEED / self.current_star_system.zoom
         if key_state[pygame.K_d]:
             self.system_view_pos[0] += movement
         if key_state[pygame.K_a]:
