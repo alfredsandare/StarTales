@@ -30,8 +30,7 @@ class StarSystem:
         self.allow_zoom_in = True
         self.allow_zoom_out = True
 
-        cb_sizes = [self.star.size, 
-                    *(pb.size for pb in self.planetary_bodies.values())]
+        cb_sizes = [cb.size for cb in self.get_all_cbs()]
         
         cb_pixel_sizes = [self._get_cb_pixel_size(size, zoom)
                           for size in cb_sizes]
