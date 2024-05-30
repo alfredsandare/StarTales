@@ -36,6 +36,8 @@ class StarSystem:
         skipped_ids = []
 
         cb_pixel_sizes = self._get_cb_pixel_sizes(zoom)
+        if min(cb_pixel_sizes.values()) >= MAX_CB_SIZE_HARD_LIMIT:
+            self.allow_zoom_in = False
 
         for cb in self.get_all_cbs():
             pos = self._get_cb_pos(cb, positions, zoom, 
@@ -50,7 +52,7 @@ class StarSystem:
 
             self._draw_object(screen, cb, pos, size, positions, zoom)
 
-            nameplate_offset = (0, cb_pixel_sizes[cb.id]/2+NAMEPLATE_Y_OFFSET)
+            nameplate_offset = (0, size/2 + NAMEPLATE_Y_OFFSET)
             nameplate_positions[cb.id] = sum_two_vectors(pos, nameplate_offset)
 
             hitboxes.append((cb.id, self._get_hitbox(pos, size)))
@@ -130,14 +132,17 @@ class StarSystem:
                                positions[cb.orbital_host],
                                int(cb.sma * zoom), 1)
 
-        cb.draw(screen, pos, size)
-
         screen_size = screen.get_size()
         screen_hitbox = Hitbox(-size/2, -size/2, 
                                screen_size[0]+size/2, screen_size[1]+size/2)
         
-        if size == MAX_CB_SIZE_HARD_LIMIT and screen_hitbox.is_pos_inside(*pos):
+        if size >= MAX_CB_SIZE_HARD_LIMIT and screen_hitbox.is_pos_inside(*pos):
             self.allow_zoom_in = False
+
+        if size > MAX_CB_SIZE_HARD_LIMIT:
+            size = MAX_CB_SIZE_HARD_LIMIT
+
+        cb.draw(screen, pos, size)
             
     def _get_cb_pixel_size(self, size, zoom):
         radius_in_m = size * 400_000
@@ -167,8 +172,8 @@ class StarSystem:
 
         size_factor = max_cb_size / max_size
 
-        return {key: set_value_in_boundaries(size_factor * size ** exponent, 
-                                             0, MAX_CB_SIZE_HARD_LIMIT) 
+        return {key: set_value_in_boundaries(size_factor * size ** exponent,
+                                             0, MAX_CB_SIZE_HARD_LIMIT)
                                              for key, size in sizes.items()}
 
     def _find_smallest_sma_diff(self, smas):
