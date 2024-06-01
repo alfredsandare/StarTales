@@ -12,6 +12,7 @@ MAX_CB_SIZE_HARD_LIMIT = 400
 NAMEPLATE_Y_OFFSET = 10  # amount of pixels between cb and nameplate
 NAMEPLATE_SIZE = (120, 20)
 SPACE_BETWEEN_NAMEPLATES = 5
+REQUIRED_SIZE_FOR_RENDERING = 10
 
 class StarSystem:
     def __init__(self, name: str, star: Star,
@@ -47,7 +48,8 @@ class StarSystem:
 
             size = cb_pixel_sizes[cb.id]
 
-            if not self._is_planet_on_screen(pos, size, screen.get_size()):
+            if (not self._is_planet_on_screen(pos, size, screen.get_size())) or \
+                (self.is_moon(cb.id) and size < REQUIRED_SIZE_FOR_RENDERING):
                 skipped_ids.append(cb.id)
                 continue
 
@@ -275,3 +277,8 @@ class StarSystem:
                        (old_window_size[1] - new_window_size[1])/2 * mouse_pos[1]]
 
         self.camera_pos = sum_two_vectors(self.camera_pos, camera_diff)
+
+    def is_moon(self, cb_id):
+        if cb_id == self.star.id:
+            return False
+        return self.get_all_cbs_dict()[cb_id].orbital_host != self.star.id
