@@ -64,14 +64,14 @@ class Game:
             hitboxes = {}
 
             if self.view == "system":
-                self.current_star_system.set_camera_pos()
+                self.current_star_system.update_camera_pos_by_cb_movement()
 
                 hitboxes = self.current_star_system.render_and_draw(
                     self.screen,
                     self.get_values("default_font bold skip_quotes"),
                     self.images["other/planet_nameplate.png"]
                 )
-                self._update_star_system_pos(key_state)
+                self.current_star_system.update_camera_pos_by_key_state(key_state)
 
             self._perform_time_tick_logic(clock.get_time())
             self._perform_visual_orbit_progress_calculations(clock.get_fps())
@@ -149,7 +149,7 @@ class Game:
             change = zoom * event.y * SENSITIVITY
 
             if change > 0 and self.current_star_system.allow_zoom_in:
-                self.current_star_system.adjust_camera_pos_by_zoom(
+                self.current_star_system.update_camera_pos_by_zoom(
                     pygame.mouse.get_pos(), zoom + change, 
                     zoom, self.frame_size)
                 self.current_star_system.zoom += change
@@ -244,18 +244,6 @@ class Game:
             return f'"{font}"'
             
         return ""
-    
-    def _update_star_system_pos(self, key_state):
-        MOVEMENT_SPEED = 5  # pixels per frame
-        movement = MOVEMENT_SPEED / self.current_star_system.zoom
-        if key_state[pygame.K_d]:
-            self.current_star_system.camera_pos[0] += movement
-        if key_state[pygame.K_a]:
-            self.current_star_system.camera_pos[0] -= movement
-        if key_state[pygame.K_s]:
-            self.current_star_system.camera_pos[1] += movement
-        if key_state[pygame.K_w]:
-            self.current_star_system.camera_pos[1] -= movement
 
     def _switch_menues(self, to_activate, to_deactivate):
         if type(to_activate) in (tuple, list):
@@ -359,6 +347,7 @@ class Game:
                     .change_property("text", str(state_index))
 
         elif command == "deselect_cb":
+            self.menu_handler.menues["small_planet_menu"].deactivate()
             self.current_star_system.selected_cb_id = None
 
         elif command == "open_cb_menu_from_small_planet_menu":

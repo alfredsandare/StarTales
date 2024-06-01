@@ -233,7 +233,7 @@ class StarSystem:
 
         return pbs
 
-    def set_camera_pos(self):
+    def update_camera_pos_by_cb_movement(self):
         if self.selected_cb_id is None:
             return
 
@@ -241,14 +241,16 @@ class StarSystem:
 
         pos = [0, 0]
         if selected_cb.type == "star":
-            return pos
+            self.camera_pos = pos
+            return
 
         vop = selected_cb.visual_orbit_progress
         pos = [selected_cb.sma * math.cos(2 * math.pi * vop),
                -1 * selected_cb.sma * math.sin(2 * math.pi * vop)]
 
         if selected_cb.orbital_host == self.star.id:
-            return pos
+            self.camera_pos = pos
+            return
 
         # now the selected cb must be a moon
         host = self.planetary_bodies[selected_cb.orbital_host]
@@ -258,7 +260,7 @@ class StarSystem:
 
         self.camera_pos = sum_two_vectors(pos, host_pos)
 
-    def adjust_camera_pos_by_zoom(self, mouse_pos, zoom, prev_zoom, frame_size):
+    def update_camera_pos_by_zoom(self, mouse_pos, zoom, prev_zoom, frame_size):
         # this functions adjusts the self.camera_pos so that the cursor
         # has the same relative position as it had before zooming.
 
@@ -282,3 +284,15 @@ class StarSystem:
         if cb_id == self.star.id:
             return False
         return self.get_all_cbs_dict()[cb_id].orbital_host != self.star.id
+
+    def update_camera_pos_by_key_state(self, key_state):
+        MOVEMENT_SPEED = 5  # pixels per frame
+        movement = MOVEMENT_SPEED / self.zoom
+        if key_state[pygame.K_d]:
+            self.camera_pos[0] += movement
+        if key_state[pygame.K_a]:
+            self.camera_pos[0] -= movement
+        if key_state[pygame.K_s]:
+            self.camera_pos[1] += movement
+        if key_state[pygame.K_w]:
+            self.camera_pos[1] -= movement
