@@ -83,9 +83,35 @@ def cb_menu(menu_handler: MenuHandler,
             font: str,
             climate_images: dict[str, pygame.Surface],
             invoke_command):
-    
+
+    object_ids = [
+        "atmosphere_bg",
+        "atmosphere_title",
+        "thickness_text",
+        "thickness_text_2",
+        "moons_bg",
+        "moons_title",
+        "districts_bg",
+        "districts_title"
+    ]
+
+    object_ids_startswith = [
+        "property_",
+        "property_title_",
+        "atmosphere_name_text_",
+        "atmosphere_share_text_",
+        "cb_button_",
+        "cb_icon_",
+        "cb_title_",
+        "district_picture_",
+        "district_button_"
+    ]
+
+    menu_handler.delete_multiple_objects("cb_menu", object_ids, 
+                                         object_ids_startswith)
+
     cb_menu = menu_handler.menues["cb_menu"]
-    
+
     cb_menu.objects["title_text"].change_property("text", cb.name)
 
     SIZE = [900, 600]
@@ -102,10 +128,6 @@ def cb_menu(menu_handler: MenuHandler,
         [INFO_POS[0]-INFO_SIZE[0]/2, INFO_POS[1]+10]
     
     properties = [["Size", round_to_significant_figures(cb.size, 3)]]
-    
-    for key in copy.copy(cb_menu.objects).keys():
-        if key[:15] == "property_title_" or key[:9] == "property_":
-            del cb_menu.objects[key]
 
     if isinstance(cb, TerrestrialBody):
         orbital_velocity = round_to_significant_figures(cb.orbital_velocity/1000,
@@ -133,28 +155,6 @@ def cb_menu(menu_handler: MenuHandler,
         pos = [INFO_POS[0]-10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
         text = Text(pos, str(property), font, 18, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
-
-    object_ids = [
-        "atmosphere_bg",
-        "atmosphere_title",
-        "thickness_text",
-        "thickness_text_2",
-        "moons_bg",
-        "moons_title",
-        "districts_bg",
-        "districts_title"
-    ]
-    object_ids_startswith = [
-        "atmosphere_name_text_",
-        "atmosphere_share_text_",
-        "cb_button_",
-        "cb_icon_",
-        "cb_title_",
-        "district_picture_",
-        "district_button_"
-    ]
-    menu_handler.delete_multiple_objects("cb_menu", object_ids, 
-                                         object_ids_startswith)
 
     if isinstance(cb, TerrestrialBody):
         _init_districts(menu_handler, cb, font, climate_images)
