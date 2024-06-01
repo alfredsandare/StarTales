@@ -80,44 +80,8 @@ class Game:
             self.menu_handler.update(events, self.screen, clock.get_time())
 
             for event in events:
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    return
+                self._handle_event(event, hitboxes)
                 
-                elif (event.type == pygame.KEYDOWN 
-                      and event.key == pygame.K_ESCAPE
-                      and self.view == "system"):
-                    if self.current_star_system.selected_cb_id is not None:
-                        self._deselect_cb()
-                    elif not self.menu_handler.menues["escape_menu"].active:
-                        self.menu_handler.menues["escape_menu"].activate()
-                    else:
-                        print("deactivatin escape menu")
-                        self.menu_handler.menues["escape_menu"].deactivate()
-
-                elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and self.view == "system"):
-                    self.invoke_command("change_time")
-
-                elif event.type == pygame.MOUSEWHEEL:
-                    SENSITIVITY = 0.1
-                    zoom = self.current_star_system.zoom
-                    change = zoom * event.y * SENSITIVITY
-
-                    if change > 0 and self.current_star_system.allow_zoom_in:
-                        self.current_star_system.adjust_camera_pos_by_zoom(
-                            pygame.mouse.get_pos(), zoom + change, 
-                            zoom, self.frame_size)
-                        self.current_star_system.zoom += change
-
-                    elif change < 0 and self.current_star_system.allow_zoom_out:
-                        self.current_star_system.zoom += change
-
-                elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                    for id, hitbox in hitboxes:
-                        if hitbox.is_pos_inside(*pygame.mouse.get_pos()):
-                            self._open_small_planet_menu(id)
-                            self.current_star_system.selected_cb_id = id
-                            break
 
             pygame.display.flip()
             clock.tick(60)
@@ -148,6 +112,57 @@ class Game:
                 self.game_time_since_last_time_tick -= self.ms_per_in_game_week
         else:
             self.game_time_since_last_time_tick = 0
+
+    def _act_on_esc_press(self):
+        order_of_menues = [
+            "escape_menu",
+            "cb_menu",
+            "small_planet_menu"
+        ]
+
+        for menu_id in order_of_menues:
+            if self.menu_handler.menues[menu_id].active:
+                self.menu_handler.menues[menu_id].deactivate()
+                if menu_id == "small_planet_menu":
+                    self.current_star_system.selected_cb_id = None
+                return
+
+        self.menu_handler.menues["escape_menu"].activate()
+
+    def _handle_event(self, event, hitboxes):
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            return
+
+        elif (event.type == pygame.KEYDOWN 
+                and event.key == pygame.K_ESCAPE
+                and self.view == "system"):
+            self._act_on_esc_press()
+
+        elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
+              and self.view == "system"):
+            self.invoke_command("change_time")
+
+        elif event.type == pygame.MOUSEWHEEL:
+            SENSITIVITY = 0.1
+            zoom = self.current_star_system.zoom
+            change = zoom * event.y * SENSITIVITY
+
+            if change > 0 and self.current_star_system.allow_zoom_in:
+                self.current_star_system.adjust_camera_pos_by_zoom(
+                    pygame.mouse.get_pos(), zoom + change, 
+                    zoom, self.frame_size)
+                self.current_star_system.zoom += change
+
+            elif change < 0 and self.current_star_system.allow_zoom_out:
+                self.current_star_system.zoom += change
+
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            for id, hitbox in hitboxes:
+                if hitbox.is_pos_inside(*pygame.mouse.get_pos()):
+                    self._open_small_planet_menu(id)
+                    self.current_star_system.selected_cb_id = id
+                    break
 
     def _perform_visual_orbit_progress_calculations(self, fps):
         time_speed_in_s = self.ms_per_in_game_week / 1000  # in seconds
@@ -344,7 +359,7 @@ class Game:
                     .change_property("text", str(state_index))
 
         elif command == "deselect_cb":
-            self._deselect_cb()
+            self.current_star_system.selected_cb_id = None
 
         elif command == "open_cb_menu_from_small_planet_menu":
             self.invoke_command("open_cb_menu "
@@ -454,10 +469,6 @@ class Game:
         self.menu_handler.menues["small_planet_menu"].activate()
         initialize_menues.small_planet_menu(self.menu_handler, id, 
                                             self.current_star_system)
-        
-    def _deselect_cb(self):
-        self.current_star_system.selected_cb_id = None
-        self.menu_handler.menues["small_planet_menu"].deactivate()
 
 if __name__ == "__main__":
     game = Game()
