@@ -314,13 +314,13 @@ class Game:
         elif command == "change_time":
             time_button = self.menu_handler.menues["time_menu"].objects["time_button"]
             if self.game_time_is_active:
-                time_button.change_property("image", self.images["buttons/pause_icon.png"])
-                time_button.change_property("hover_image", self.images["buttons/pause_icon_hover.png"])
-                time_button.change_property("click_image", self.images["buttons/pause_icon_hover.png"])
-            else:
                 time_button.change_property("image", self.images["buttons/play_icon.png"])
                 time_button.change_property("hover_image", self.images["buttons/play_icon_hover.png"])
                 time_button.change_property("click_image", self.images["buttons/play_icon_hover.png"])
+            else:
+                time_button.change_property("image", self.images["buttons/pause_icon.png"])
+                time_button.change_property("hover_image", self.images["buttons/pause_icon_hover.png"])
+                time_button.change_property("click_image", self.images["buttons/pause_icon_hover.png"])
 
             self.game_time_is_active = not self.game_time_is_active
 

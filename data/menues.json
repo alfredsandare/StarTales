@@ -359,9 +359,9 @@
             "time_button": {
                 "type": "button",
                 "pos": [135, 40],
-                "image": "buttons/pause_icon.png",
-                "hover_image": "buttons/pause_icon_hover.png",
-                "click_image": "buttons/pause_icon_hover.png",
+                "image": "buttons/play_icon.png",
+                "hover_image": "buttons/play_icon_hover.png",
+                "click_image": "buttons/play_icon_hover.png",
                 "anchor": "c",
                 "command": "change_time"
             },
