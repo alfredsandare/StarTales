@@ -9,6 +9,39 @@
             "star_class": "G2V"
         },
         "planetary_bodies": {
+            "mercury": {
+                "type": "terrestrial_world",
+                "visual_style": "GRAY",
+                "size": 6.1,
+                "name": "Mercury",
+                "id": "mercury",
+                "orbital_host": "sun",
+                "is_tidally_locked": false,
+                "orbital_velocity": 1022,
+                "day_length": 15206400,
+                "gravity": 3.7,
+                "sma": 0.387098,
+                "districts": [
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT"
+                ],
+                "atmosphere": {}
+            },
+
             "earth": {
                 "type": "terrestrial_world",
                 "visual_style": "EARTHLY2",
@@ -59,28 +92,24 @@
                 "gravity": 1.622,
                 "sma": 0.00257,
                 "districts": [
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST",
-                    "RAINFOREST"
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT",
+                    "COLD_DESERT"
                 ],
-                "atmosphere": {
-                    "oxygen": 5398,
-                    "nitrogen": 20049,
-                    "water_vapor": 257
-                }
+                "atmosphere": {}
             },
 
             "jupiter": {

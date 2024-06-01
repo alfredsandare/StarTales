@@ -26,6 +26,8 @@
 
         2.2.2 Small planet menu [2]
 
+    2.3 Add all cbs
+
 3 Research & Technology
 
 4 Society
