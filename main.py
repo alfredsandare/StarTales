@@ -3,7 +3,7 @@ import os
 from PhoenixGUI import *
 import pygame
 from PhoenixGUI.util import update_pos_by_anchor
-from data.consts import CELESTIAL_BODY_TYPES_NAMES, MS_PER_IN_GAME_WEEK_STATES
+from data.consts import MS_PER_IN_GAME_WEEK_STATES
 import graphics.star_visual_style as star_visual_style
 from graphics.celestial_body_visual import CelestialBodyVisual
 import graphics.terrestrial_body_style as terrestrial_body_style
@@ -17,7 +17,6 @@ from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
 from util import convert_weeks_to_years, is_valid_image
 from graphics import gas_giant_visual_style
-from PhoenixGUI.hitbox import Hitbox
 
 PATH = __file__[:-7]
 
@@ -37,9 +36,6 @@ class Game:
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
         self.game_settings = self.load_game_settings()
-
-        self.system_view_zoom = 200  # unit is pixels/AU
-        self.system_view_pos = [0, 0]  # unit is AU
 
         self.view = "main"
 
@@ -68,12 +64,10 @@ class Game:
             hitboxes = {}
 
             if self.view == "system":
-                new_pos = self.current_star_system.get_camera_pos()
-                self.system_view_pos = new_pos if new_pos else self.system_view_pos
+                self.current_star_system.set_camera_pos()
 
                 hitboxes = self.current_star_system.render_and_draw(
                     self.screen,
-                    self.system_view_pos,
                     self.get_values("default_font bold skip_quotes"),
                     self.images["other/planet_nameplate.png"]
                 )
@@ -110,8 +104,9 @@ class Game:
                     change = zoom * event.y * SENSITIVITY
 
                     if change > 0 and self.current_star_system.allow_zoom_in:
-                        self._adjust_system_position(pygame.mouse.get_pos(),
-                                                     zoom + change, zoom)
+                        self.current_star_system.adjust_camera_pos_by_zoom(
+                            pygame.mouse.get_pos(), zoom + change, 
+                            zoom, self.frame_size)
                         self.current_star_system.zoom += change
 
                     elif change < 0 and self.current_star_system.allow_zoom_out:
@@ -170,27 +165,6 @@ class Game:
 
                 if pb.visual_orbit_progress > pb.orbit_progress:
                     pb.orbit_progress = pb.visual_orbit_progress
-
-    def _adjust_system_position(self, mouse_pos, zoom, prev_zoom):
-        # this functions makes adjusts the system_view_pos so that the cursor
-        # has the same relative position as it had before zooming.
-
-        # scale between -1 and 1
-        mouse_pos = [2*mouse_pos[0]/self.frame_size[0]-1, 
-                     2*mouse_pos[1]/self.frame_size[1]-1]
-        
-        # the length and height of the part of the system that is displayed on the screen
-        old_window_size = [self.frame_size[0] / prev_zoom, 
-                           self.frame_size[1] / prev_zoom]
-        
-        new_window_size = [self.frame_size[0] / zoom, 
-                           self.frame_size[1] / zoom]
-            
-        camera_diff = [(old_window_size[0] - new_window_size[0])/2 * mouse_pos[0], 
-                       (old_window_size[1] - new_window_size[1])/2 * mouse_pos[1]]
-        
-        self.system_view_pos[0] += camera_diff[0]
-        self.system_view_pos[1] += camera_diff[1]
 
     def load_game_settings(self):
         with open(PATH + "data/game_settings.json") as file:
@@ -260,13 +234,13 @@ class Game:
         MOVEMENT_SPEED = 5  # pixels per frame
         movement = MOVEMENT_SPEED / self.current_star_system.zoom
         if key_state[pygame.K_d]:
-            self.system_view_pos[0] += movement
+            self.current_star_system.camera_pos[0] += movement
         if key_state[pygame.K_a]:
-            self.system_view_pos[0] -= movement
+            self.current_star_system.camera_pos[0] -= movement
         if key_state[pygame.K_s]:
-            self.system_view_pos[1] += movement
+            self.current_star_system.camera_pos[1] += movement
         if key_state[pygame.K_w]:
-            self.system_view_pos[1] -= movement
+            self.current_star_system.camera_pos[1] -= movement
 
     def _switch_menues(self, to_activate, to_deactivate):
         if type(to_activate) in (tuple, list):

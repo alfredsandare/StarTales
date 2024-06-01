@@ -21,11 +21,12 @@ class StarSystem:
         self.planetary_bodies = planetary_bodies
         self.star = star
         self.zoom = 200  # unit is pixels/AU
+        self.camera_pos = [0, 0] # unit is AU
         self.allow_zoom_in = True
         self.allow_zoom_out = True
         self.selected_cb_id = None
 
-    def render_and_draw(self, screen: pygame.Surface, camera_pos,
+    def render_and_draw(self, screen: pygame.Surface,
                         font_name, nameplate_image) -> list[tuple[str, Hitbox]]:
 
         self.allow_zoom_in = True
@@ -41,7 +42,7 @@ class StarSystem:
             self.allow_zoom_in = False
 
         for cb in self.get_all_cbs():
-            pos = self._get_cb_pos(cb, positions, screen.get_size(), camera_pos)
+            pos = self._get_cb_pos(cb, positions, screen.get_size())
             positions[cb.id] = pos
 
             size = cb_pixel_sizes[cb.id]
@@ -79,7 +80,7 @@ class StarSystem:
                    *sum_two_vectors(pos, (size/2, size/2)))
         return Hitbox(*borders)
 
-    def _get_cb_pos(self, cb, positions, screen_size, camera_pos):
+    def _get_cb_pos(self, cb, positions, screen_size):
         if cb.type != "star":
             sma_in_pixels = cb.sma * self.zoom
 
@@ -89,7 +90,7 @@ class StarSystem:
 
             return sum_two_vectors(positions[cb.orbital_host], planet_pos)
 
-        return self._get_base_pos(screen_size, camera_pos)
+        return self._get_base_pos(screen_size)
 
     def _is_planet_on_screen(self, pos, size, screen_size):
         return check_rect_overlap(*pos, size, size, 0, 0, *screen_size)
@@ -191,8 +192,8 @@ class StarSystem:
 
         return smallest_diff
     
-    def _get_base_pos(self, screen_size, camera_pos):
-        pos = multiply_vector(camera_pos, -1)
+    def _get_base_pos(self, screen_size):
+        pos = multiply_vector(self.camera_pos, -1)
         pos = multiply_vector(pos, self.zoom)
         return sum_two_vectors(pos, multiply_vector(screen_size, 0.5))
     
@@ -230,7 +231,7 @@ class StarSystem:
 
         return pbs
 
-    def get_camera_pos(self):
+    def set_camera_pos(self):
         if self.selected_cb_id is None:
             return
 
@@ -253,4 +254,24 @@ class StarSystem:
         host_pos = [host.sma * math.cos(2 * math.pi * vop),
                     -1 * host.sma * math.sin(2 * math.pi * vop)]
 
-        return sum_two_vectors(pos, host_pos)
+        self.camera_pos = sum_two_vectors(pos, host_pos)
+
+    def adjust_camera_pos_by_zoom(self, mouse_pos, zoom, prev_zoom, frame_size):
+        # this functions adjusts the self.camera_pos so that the cursor
+        # has the same relative position as it had before zooming.
+
+        # scale between -1 and 1
+        mouse_pos = [2*mouse_pos[0]/frame_size[0]-1, 
+                     2*mouse_pos[1]/frame_size[1]-1]
+
+        # the length and height of the part of the system that is displayed on the screen
+        old_window_size = [frame_size[0] / prev_zoom, 
+                           frame_size[1] / prev_zoom]
+
+        new_window_size = [frame_size[0] / zoom, 
+                           frame_size[1] / zoom]
+
+        camera_diff = [(old_window_size[0] - new_window_size[0])/2 * mouse_pos[0], 
+                       (old_window_size[1] - new_window_size[1])/2 * mouse_pos[1]]
+
+        self.camera_pos = sum_two_vectors(self.camera_pos, camera_diff)
