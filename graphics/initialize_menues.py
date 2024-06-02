@@ -130,17 +130,11 @@ def cb_menu(menu_handler: MenuHandler,
     
     properties = [["Size", round_to_significant_figures(cb.size, 3)]]
 
-    if isinstance(cb, TerrestrialBody):
-
+    if isinstance(cb, PlanetaryBody):
         properties.extend([
             ["Orbital host", host_cb.name],
-            ["Day length", round_seconds(cb.day_length)],
-            ["Gravity", f"{cb.gravity} N"],
             ["SMA", f"{round_to_significant_figures(cb.sma, 3)} AU"]
         ])
-        # Day length is not interesting if tidally locked.
-        if not cb.is_tidally_locked:
-            properties.append(["Tidally locked", YES_NO[cb.is_tidally_locked]])
 
         if settings["cb_menu"]["show_orbital_velocity"]:
             orbital_velocity_text = \
@@ -154,6 +148,16 @@ def cb_menu(menu_handler: MenuHandler,
             period = orbital_vel_to_orbital_period(cb.orbital_velocity, cb.sma)
             properties.append(["Orbital Period Length", round_seconds(period)])
 
+    if isinstance(cb, TerrestrialBody):
+
+        properties.extend([
+            ["Day length", round_seconds(cb.day_length)],
+            ["Gravity", f"{cb.gravity} N"],
+        ])
+
+        # Day length is not interesting if tidally locked.
+        if not cb.is_tidally_locked:
+            properties.append(["Tidally locked", YES_NO[cb.is_tidally_locked]])
 
     ROW_HEIGHT = 40
     for i, (name, property) in enumerate(properties):
