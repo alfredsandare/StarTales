@@ -308,7 +308,8 @@ class Game:
                                       list(cbs.values()),
                                       self.get_values("default_font bold skip_quotes"),
                                       self.climate_images,
-                                      self.invoke_command)
+                                      self.invoke_command,
+                                      self.game_settings)
             self.menu_handler.menues["cb_menu"].activate()
 
         elif command == "change_time":

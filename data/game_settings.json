@@ -1,3 +1,7 @@
 {
-    "show_moons_in_outliner": true
+    "show_moons_in_outliner": true,
+    "cb_menu": {
+        "show_orbital_velocity": true,
+        "show_orbital_period": true
+    }
 }

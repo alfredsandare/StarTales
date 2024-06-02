@@ -1,6 +1,8 @@
 import math
 from PIL import Image
 
+from data.consts import METERS_PER_AU
+
 
 def multiply_vector(vector, factor):
     return [factor*vector[0], factor*vector[1]]
@@ -60,11 +62,11 @@ def round_seconds(seconds: float) -> str:
     if days < 28:
         return f"{round(days)} d"
     
-    weeks = days / 7
+    weeks = days / 7.02403846
     if weeks < 52:
         return f"{round(weeks)} weeks"
     
-    years = weeks / 7.02403846
+    years = weeks / 52
     return f"{round(years, 1)} years"
 
 def convert_erv_to_day_length(erv, radius):
@@ -132,6 +134,13 @@ def check_rect_overlap(x1, y1, w1, h1, x2, y2, w2, h2):
     # This function works by checking if one rectangle is to the left, right, above, or below the other. 
     # If none of these conditions are true, then the rectangles must overlap.
     return not (x1 + w1 < x2 or x2 + w2 < x1 or y1 + h1 < y2 or y2 + h2 < y1)
+
+def orbital_vel_to_orbital_period(orbital_vel: float, sma: float) -> float:
+    ''' orbital vel in m/s, sma in AU '''
+    sma_in_m = sma * METERS_PER_AU
+    orbit_length = 2 * math.pi * sma_in_m
+    time_in_s = orbit_length / orbital_vel
+    return time_in_s
 
 if __name__ == "__main__":
     # run_convert_erv_to_day_length_program()

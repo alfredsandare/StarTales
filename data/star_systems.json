@@ -17,7 +17,7 @@
                 "id": "mercury",
                 "orbital_host": "sun",
                 "is_tidally_locked": false,
-                "orbital_velocity": 1022,
+                "orbital_velocity": 47360,
                 "day_length": 15206400,
                 "gravity": 3.7,
                 "sma": 0.387098,

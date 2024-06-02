@@ -13,7 +13,7 @@ from physics.planetary_body import PlanetaryBody
 from physics.star import Star
 from physics.star_system import StarSystem
 from physics.terrestrial_body import TerrestrialBody
-from util import round_seconds, round_to_significant_figures
+from util import orbital_vel_to_orbital_period, round_seconds, round_to_significant_figures
 
 YES_NO = {
     True: "Yes",
@@ -82,7 +82,8 @@ def cb_menu(menu_handler: MenuHandler,
             cbs: list[CelestialBody],
             font: str,
             climate_images: dict[str, pygame.Surface],
-            invoke_command):
+            invoke_command,
+            settings):
 
     object_ids = [
         "atmosphere_bg",
@@ -130,21 +131,29 @@ def cb_menu(menu_handler: MenuHandler,
     properties = [["Size", round_to_significant_figures(cb.size, 3)]]
 
     if isinstance(cb, TerrestrialBody):
-        orbital_velocity = round_to_significant_figures(cb.orbital_velocity/1000,
-                                                        3, make_int=True)
 
         properties.extend([
             ["Orbital host", host_cb.name],
-            ["Tidally locked", YES_NO[cb.is_tidally_locked]],
-            ["Orbital Velocity", f"{orbital_velocity} km/s"],
             ["Day length", round_seconds(cb.day_length)],
             ["Gravity", f"{cb.gravity} N"],
-            ["SMA", cb.sma]
+            ["SMA", round_to_significant_figures(cb.sma, 3)]
         ])
+        # Day length is not interesting if tidally locked.
+        if not cb.is_tidally_locked:
+            properties.append(["Tidally locked", YES_NO[cb.is_tidally_locked]])
 
-        # Remove day length if tidally locked, because it is not interesting.
-        if cb.is_tidally_locked:
-            del properties[4]
+        if settings["cb_menu"]["show_orbital_velocity"]:
+            orbital_velocity_text = \
+                round_to_significant_figures(cb.orbital_velocity/1000, 
+                                             3, make_int=True)
+
+            properties.append(["Orbital Velocity", 
+                               f"{orbital_velocity_text} km/s"])
+
+        if settings["cb_menu"]["show_orbital_period"]:
+            period = orbital_vel_to_orbital_period(cb.orbital_velocity, cb.sma)
+            properties.append(["Orbital Period Length", round_seconds(period)])
+
 
     ROW_HEIGHT = 40
     for i, (name, property) in enumerate(properties):
