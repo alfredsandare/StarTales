@@ -136,7 +136,7 @@ def cb_menu(menu_handler: MenuHandler,
             ["Orbital host", host_cb.name],
             ["Day length", round_seconds(cb.day_length)],
             ["Gravity", f"{cb.gravity} N"],
-            ["SMA", round_to_significant_figures(cb.sma, 3)]
+            ["SMA", f"{round_to_significant_figures(cb.sma, 3)} AU"]
         ])
         # Day length is not interesting if tidally locked.
         if not cb.is_tidally_locked:
