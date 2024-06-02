@@ -42,6 +42,42 @@
                 "atmosphere": {}
             },
 
+            "venus": {
+                "type": "terrestrial_world",
+                "visual_style": "SAND",
+                "size": 15.1,
+                "name": "Venus",
+                "id": "venus",
+                "orbital_host": "sun",
+                "is_tidally_locked": false,
+                "orbital_velocity": 35020,
+                "day_length": 20995200,
+                "gravity": 8.87,
+                "sma": 0.723,
+                "districts": [
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC"
+                ],
+                "atmosphere": {
+                    "carbondioxide": 2054400,
+                    "nitrogen": 71900
+                }
+            },
+
             "earth": {
                 "type": "terrestrial_world",
                 "visual_style": "EARTHLY2",
@@ -110,6 +146,42 @@
                     "COLD_DESERT"
                 ],
                 "atmosphere": {}
+            },
+
+            "mars": {
+                "type": "terrestrial_world",
+                "visual_style": "MESA",
+                "size": 8.47,
+                "name": "Mars",
+                "id": "mars",
+                "orbital_host": "sun",
+                "is_tidally_locked": false,
+                "orbital_velocity": 24070,
+                "day_length": 88620,
+                "gravity": 3.72,
+                "sma": 1.523,
+                "districts": [
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC"
+                ],
+                "atmosphere": {
+                    "carbondioxide": 43.9,
+                    "nitrogen": 0.87
+                }
             },
 
             "jupiter": {
