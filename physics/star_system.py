@@ -13,6 +13,7 @@ NAMEPLATE_Y_OFFSET = 10  # amount of pixels between cb and nameplate
 NAMEPLATE_SIZE = (120, 20)
 SPACE_BETWEEN_NAMEPLATES = 5
 REQUIRED_SIZE_FOR_RENDERING = 10
+DISALLOW_ZOOM_OUT_SMA_THRESHOLD = 100 # how large [pixels] the largest sma can be for zoom out to be disallowed
 
 class StarSystem:
     def __init__(self, name: str, star: Star,
@@ -30,17 +31,13 @@ class StarSystem:
     def render_and_draw(self, screen: pygame.Surface,
                         font_name, nameplate_image) -> list[tuple[str, Hitbox]]:
 
-        self.allow_zoom_in = True
-        self.allow_zoom_out = True
-
         positions = {}
         nameplate_positions = {}
         hitboxes = []
         skipped_ids = []
 
         cb_pixel_sizes = self._get_cb_pixel_sizes()
-        if min(cb_pixel_sizes.values()) >= MAX_CB_SIZE_HARD_LIMIT:
-            self.allow_zoom_in = False
+        self._calculate_zoom_permissions(cb_pixel_sizes)
 
         for cb in self.get_all_cbs():
             pos = self._get_cb_pos(cb, positions, screen.get_size())
@@ -53,7 +50,7 @@ class StarSystem:
                 skipped_ids.append(cb.id)
                 continue
 
-            self._draw_object(screen, cb, pos, size, positions)
+            self._draw_cb(screen, cb, pos, size, positions)
 
             nameplate_offset = (0, size/2 + NAMEPLATE_Y_OFFSET)
             nameplate_positions[cb.id] = sum_two_vectors(pos, nameplate_offset)
@@ -71,9 +68,6 @@ class StarSystem:
                           for cb in self.get_all_cbs()}
 
         cb_pixel_sizes = self._adjust_sizes(cb_pixel_sizes)
-
-        if max(cb_pixel_sizes.values()) < 10:
-            self.allow_zoom_out = False
 
         return cb_pixel_sizes
 
@@ -129,7 +123,7 @@ class StarSystem:
 
         return hitboxes
     
-    def _draw_object(self, screen, cb, pos, size, positions):
+    def _draw_cb(self, screen, cb, pos, size, positions):
         if cb.type != "star":
             pygame.draw.circle(screen, (100, 100, 100), 
                                positions[cb.orbital_host],
@@ -296,3 +290,14 @@ class StarSystem:
             self.camera_pos[1] += movement
         if key_state[pygame.K_w]:
             self.camera_pos[1] -= movement
+
+    def _calculate_zoom_permissions(self, cb_pixel_sizes):
+        self.allow_zoom_in = True
+        self.allow_zoom_out = True
+
+        if min(cb_pixel_sizes.values()) >= MAX_CB_SIZE_HARD_LIMIT:
+            self.allow_zoom_in = False
+
+        largest_sma = max([pb.sma for pb in self.get_pbs_list()])
+        if largest_sma * self.zoom < DISALLOW_ZOOM_OUT_SMA_THRESHOLD:
+            self.allow_zoom_out = False
