@@ -26,9 +26,10 @@ class TerrestrialBody(PlanetaryBody):
                          orbital_host,
                          is_tidally_locked,
                          orbital_velocity,
-                         day_length,
-                         gravity,
                          sma),
+
+        self.day_length = day_length
+        self.gravity = gravity
 
         self.type = "terrestrial_body"
 

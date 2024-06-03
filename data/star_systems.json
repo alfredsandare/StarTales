@@ -193,9 +193,19 @@
                 "orbital_host": "sun",
                 "is_tidally_locked": false,
                 "orbital_velocity": 13000,
-                "day_length": 1,
-                "gravity": 1,
                 "sma": 5.2
+            },
+
+            "saturn": {
+                "type": "gas_giant",
+                "visual_style": "JUPITER",
+                "size": 146,
+                "name": "Saturn",
+                "id": "saturn",
+                "orbital_host": "sun",
+                "is_tidally_locked": false,
+                "orbital_velocity": 9680,
+                "sma": 9.58
             }
         }
     }
