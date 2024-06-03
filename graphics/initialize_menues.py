@@ -151,13 +151,13 @@ def cb_menu(menu_handler: MenuHandler,
     if isinstance(cb, TerrestrialBody):
 
         properties.extend([
-            ["Day length", round_seconds(cb.day_length)],
+            ["Tidally locked", YES_NO[cb.is_tidally_locked]],
             ["Gravity", f"{cb.gravity} N"],
         ])
 
-        # Day length is not interesting if tidally locked.
+        # Day length is only interesting if not tidally locked.
         if not cb.is_tidally_locked:
-            properties.append(["Tidally locked", YES_NO[cb.is_tidally_locked]])
+            properties.append(["Day length", round_seconds(cb.day_length)])
 
     ROW_HEIGHT = 40
     for i, (name, property) in enumerate(properties):
