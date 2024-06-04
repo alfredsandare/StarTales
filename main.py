@@ -53,6 +53,10 @@ class Game:
         self.game_time_since_last_time_tick = 0
         self.game_time_is_active = False
 
+        self.menu_settings = {
+            "atmosphere_menu_mode": "units"  # "percentage" or "units"
+        }
+
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
         clock = pygame.time.Clock()
@@ -309,7 +313,8 @@ class Game:
                                       self.get_values("default_font bold skip_quotes"),
                                       self.climate_images,
                                       self.invoke_command,
-                                      self.game_settings)
+                                      self.game_settings,
+                                      self.menu_settings["atmosphere_menu_mode"])
             self.menu_handler.menues["cb_menu"].activate()
 
         elif command == "change_time":

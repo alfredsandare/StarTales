@@ -7,6 +7,7 @@ from PhoenixGUI.util import sum_two_vectors
 from PhoenixGUI import *
 import pygame
 from data.consts import CELESTIAL_BODY_TYPES_NAMES
+from physics.atmosphere import GASES_NAMES
 from physics.celestial_body import CelestialBody
 from physics.gas_giant import GasGiant
 from physics.planetary_body import PlanetaryBody
@@ -83,7 +84,8 @@ def cb_menu(menu_handler: MenuHandler,
             font: str,
             climate_images: dict[str, pygame.Surface],
             invoke_command,
-            settings):
+            settings,
+            atmosphere_menu_mode):
 
     object_ids = [
         "atmosphere_bg",
@@ -171,7 +173,7 @@ def cb_menu(menu_handler: MenuHandler,
 
     if isinstance(cb, TerrestrialBody):
         _init_districts(menu_handler, cb, font, climate_images)
-        _init_atmosphere(menu_handler, cb, font)
+        _init_atmosphere(menu_handler, cb, font, atmosphere_menu_mode)
 
     _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
@@ -280,7 +282,9 @@ def _init_moons(menu_handler: MenuHandler,
             
             added_cbs += 1
 
-def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, font):
+def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, 
+                     font, menu_mode: str):
+
     BASE_POS = (350, 300)
     SIZE = (200, 250)
 
@@ -297,33 +301,42 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, font):
     menu_handler.add_object("cb_menu", "atmosphere_title", menu_text)
 
     menu_text = Text(sum_two_vectors(BASE_POS, (10, 40)), 
-                     "Thickness:", font, 18, anchor="w")
+                     "Thickness:", font, 16, anchor="w")
     menu_handler.add_object("cb_menu", "thickness_text", menu_text)
 
-    text = str(round(tb.atmosphere.get_thickness(tb.size)))
+    text = str(round(tb.atmosphere.get_thickness(tb.size))) + " kPa"
     menu_text = Text(sum_two_vectors(BASE_POS, (SIZE[0]-10, 40)), 
-                     text, font, 18, anchor="e")
+                     text, font, 16, anchor="e")
     menu_handler.add_object("cb_menu", "thickness_text_2", menu_text)
+
+    texts = []
+    if menu_mode == "percentage":
+        shares = tb.atmosphere.get_composition_shares()
+        texts = [f"{round(100*share, 2)} %" for share in shares.values()]
+
+    else:
+        texts = [str(value) + " u" for value in tb.atmosphere.composition.values()]
 
     Y_COMPONENT_OFFSET = 70
     Y_SHARE_OFFSET = 30
-    shares = tb.atmosphere.get_composition_shares()
-    for i, (name, share) in enumerate(shares.items()):
+    names = [GASES_NAMES[gas] for gas in tb.atmosphere.composition.keys()]
+
+    for i, (name, text) in enumerate(zip(names, texts)):
         pos = sum_two_vectors(BASE_POS, 
                               (10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET))
-        
-        menu_text = Text(pos, name, font, 18, anchor="w")
+
+        # menu_text = Text(pos, name, font, 18, anchor="w")
         menu_handler.add_object("cb_menu",
                                 f"atmosphere_name_text_{i}",
-                                menu_text)
+                                Text(pos, name, font, 16, anchor="w"))
         
         pos = sum_two_vectors(BASE_POS, 
                               (SIZE[0]-10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET))
         
-        menu_text = Text(pos, f"{round(100*share, 2)} %", font, 18, anchor="e")
+        # menu_text = Text(pos, f"{round(100*share, 2)} %", font, 18, anchor="e")
         menu_handler.add_object("cb_menu", 
                                 f"atmosphere_share_text_{i}", 
-                                menu_text)
+                                Text(pos, text, font, 16, anchor="e"))
 
 def small_planet_menu(menu_handler: MenuHandler, 
                       id: str, star_system: StarSystem):
