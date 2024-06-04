@@ -28,6 +28,7 @@ class Game:
         self.frame_size = (1280, 720)
         self.screen = pygame.display.set_mode(self.frame_size)
         self.menu_handler = MenuHandler()
+        self.menu_handler.set_scroll_strength_multiplier(8)
         
         self.images = self._get_images_in_directory(PATH+"graphics\\", PATH+"graphics\\")
 
@@ -149,7 +150,8 @@ class Game:
               and self.view == "system"):
             self.invoke_command("change_time")
 
-        elif event.type == pygame.MOUSEWHEEL:
+        elif event.type == pygame.MOUSEWHEEL and \
+            not self.menu_handler.is_mouse_inside_menu():
             SENSITIVITY = 0.1
             zoom = self.current_star_system.zoom
             change = zoom * event.y * SENSITIVITY
@@ -277,10 +279,12 @@ class Game:
             self._switch_menues(args[0], args[1])
 
         elif command == "deactivate_menu":
-            self.menu_handler.menues[args[0]].deactivate()
+            for arg in args:
+                self.menu_handler.menues[arg].deactivate()
             
         elif command == "activate_menu":
-            self.menu_handler.menues[args[0]].activate()
+            for arg in args:
+                self.menu_handler.menues[arg].activate()
             
         elif command == "enter_system_view":
             self.view = "system"
@@ -304,6 +308,7 @@ class Game:
         elif command == "open_cb_menu":
             self._init_cb_menu_wrapper(args[0])
             self.menu_handler.menues["cb_menu"].activate()
+            self.menu_handler.menues["cb_submenu_moons"].activate()
 
         elif command == "change_time":
             time_button = self.menu_handler.menues["time_menu"].objects["time_button"]

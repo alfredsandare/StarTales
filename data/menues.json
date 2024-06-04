@@ -336,7 +336,27 @@
                 "image": "buttons/24x24_cross.png",
                 "hover_image": "buttons/24x24_cross_hover.png",
                 "click_image": "buttons/24x24_cross_click.png",
-                "command": "deactivate_menu cb_menu"
+                "command": "deactivate_menu cb_menu cb_submenu_moons"
+            }
+        }
+    },
+
+    "cb_submenu_moons": {
+        "size": [200, 220],
+        "pos": "@get frame_size c -100 -230@",
+        "enable_scroll": true,
+        "scroll_slidebar": "scroll_slidebar",
+        "max_scroll_offset": 10,
+        "layer": 10,
+
+        "objects": {
+            "scroll_slidebar": {
+                "type": "slidebar",
+                "pos": [200, 0],
+                "length": 220,
+                "circle_size": 10,
+                "orientation": "vertical",
+                "anchor": "ne"
             }
         }
     },
