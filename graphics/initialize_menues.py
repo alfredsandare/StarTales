@@ -85,7 +85,9 @@ def cb_menu(menu_handler: MenuHandler,
             climate_images: dict[str, pygame.Surface],
             invoke_command,
             settings,
-            atmosphere_menu_mode):
+            atmosphere_menu_mode,
+            images: dict[str, pygame.Surface],
+            switch_atm_mode_command):
 
     object_ids = [
         "atmosphere_bg",
@@ -95,7 +97,8 @@ def cb_menu(menu_handler: MenuHandler,
         "moons_bg",
         "moons_title",
         "districts_bg",
-        "districts_title"
+        "districts_title",
+        "switch_atm_mode_button"
     ]
 
     object_ids_startswith = [
@@ -173,7 +176,8 @@ def cb_menu(menu_handler: MenuHandler,
 
     if isinstance(cb, TerrestrialBody):
         _init_districts(menu_handler, cb, font, climate_images)
-        _init_atmosphere(menu_handler, cb, font, atmosphere_menu_mode)
+        _init_atmosphere(menu_handler, cb, font, atmosphere_menu_mode, 
+                         images, switch_atm_mode_command)
 
     _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
@@ -283,7 +287,8 @@ def _init_moons(menu_handler: MenuHandler,
             added_cbs += 1
 
 def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody, 
-                     font, menu_mode: str):
+                     font, menu_mode: str, images: dict[str, pygame.Surface],
+                     switch_atm_mode_command: callable):
 
     BASE_POS = (350, 300)
     SIZE = (200, 250)
@@ -300,14 +305,22 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody,
     menu_text = Text(pos, "Atmosphere", font, 20, anchor="c")
     menu_handler.add_object("cb_menu", "atmosphere_title", menu_text)
 
-    menu_text = Text(sum_two_vectors(BASE_POS, (10, 40)), 
+    menu_text = Text(sum_two_vectors(BASE_POS, (10, 50)),
                      "Thickness:", font, 16, anchor="w")
     menu_handler.add_object("cb_menu", "thickness_text", menu_text)
 
     text = str(round(tb.atmosphere.get_thickness(tb.size))) + " kPa"
-    menu_text = Text(sum_two_vectors(BASE_POS, (SIZE[0]-10, 40)), 
+    menu_text = Text(sum_two_vectors(BASE_POS, (SIZE[0]-10, 50)), 
                      text, font, 16, anchor="e")
     menu_handler.add_object("cb_menu", "thickness_text_2", menu_text)
+
+    switch_button = Button(sum_two_vectors(BASE_POS, (SIZE[0]-5, 5)), 
+                           anchor="ne",
+                           image=images["buttons/24x24_change.png"],
+                           hover_image=images["buttons/24x24_change_hover.png"],
+                           click_image=images["buttons/24x24_change_click.png"],
+                           command=switch_atm_mode_command)
+    menu_handler.add_object("cb_menu", "switch_atm_mode_button", switch_button)
 
     texts = []
     if menu_mode == "percentage":
@@ -317,7 +330,7 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody,
     else:
         texts = [str(value) + " u" for value in tb.atmosphere.composition.values()]
 
-    Y_COMPONENT_OFFSET = 70
+    Y_COMPONENT_OFFSET = 80
     Y_SHARE_OFFSET = 30
     names = [GASES_NAMES[gas] for gas in tb.atmosphere.composition.keys()]
 
@@ -325,7 +338,6 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody,
         pos = sum_two_vectors(BASE_POS, 
                               (10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET))
 
-        # menu_text = Text(pos, name, font, 18, anchor="w")
         menu_handler.add_object("cb_menu",
                                 f"atmosphere_name_text_{i}",
                                 Text(pos, name, font, 16, anchor="w"))
@@ -333,7 +345,6 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody,
         pos = sum_two_vectors(BASE_POS, 
                               (SIZE[0]-10, Y_SHARE_OFFSET*i+Y_COMPONENT_OFFSET))
         
-        # menu_text = Text(pos, f"{round(100*share, 2)} %", font, 18, anchor="e")
         menu_handler.add_object("cb_menu", 
                                 f"atmosphere_share_text_{i}", 
                                 Text(pos, text, font, 16, anchor="e"))

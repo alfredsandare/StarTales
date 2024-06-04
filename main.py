@@ -57,6 +57,8 @@ class Game:
             "atmosphere_menu_mode": "units"  # "percentage" or "units"
         }
 
+        self.cb_menu_cb_id = None
+
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
         clock = pygame.time.Clock()
@@ -300,21 +302,7 @@ class Game:
             self.menu_handler.menues["main_menu"].activate()
 
         elif command == "open_cb_menu":
-            cbs = self.current_star_system.get_all_cbs_dict()
-            cb = cbs[args[0]]
-            host_cb = None
-            if not isinstance(cb, Star):
-                host_cb = cbs[cb.orbital_host]
-
-            initialize_menues.cb_menu(self.menu_handler, 
-                                      cb, 
-                                      host_cb,
-                                      list(cbs.values()),
-                                      self.get_values("default_font bold skip_quotes"),
-                                      self.climate_images,
-                                      self.invoke_command,
-                                      self.game_settings,
-                                      self.menu_settings["atmosphere_menu_mode"])
+            self._init_cb_menu_wrapper(args[0])
             self.menu_handler.menues["cb_menu"].activate()
 
         elif command == "change_time":
@@ -464,6 +452,37 @@ class Game:
         self.menu_handler.menues["small_planet_menu"].activate()
         initialize_menues.small_planet_menu(self.menu_handler, id, 
                                             self.current_star_system)
+        
+    def _init_cb_menu_wrapper(self, id):
+        cbs = self.current_star_system.get_all_cbs_dict()
+        cb = cbs[id]
+        host_cb = None
+        if not isinstance(cb, Star):
+            host_cb = cbs[cb.orbital_host]
+
+        initialize_menues.cb_menu(self.menu_handler, 
+                                    cb, 
+                                    host_cb,
+                                    list(cbs.values()),
+                                    self.get_values("default_font bold skip_quotes"),
+                                    self.climate_images,
+                                    self.invoke_command,
+                                    self.game_settings,
+                                    self.menu_settings["atmosphere_menu_mode"],
+                                    self.images,
+                                    self.switch_atm_menu_mode)
+
+        self.cb_menu_cb_id = id
+
+    def switch_atm_menu_mode(self):
+        if self.menu_settings["atmosphere_menu_mode"] == "units":
+            self.menu_settings["atmosphere_menu_mode"] = "percentage"
+        else:
+            self.menu_settings["atmosphere_menu_mode"] = "units"
+
+        self._init_cb_menu_wrapper(self.cb_menu_cb_id)
+        
+
 
 if __name__ == "__main__":
     game = Game()
