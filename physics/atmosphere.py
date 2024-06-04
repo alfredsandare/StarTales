@@ -7,6 +7,10 @@ class Atmosphere:
     def __init__(self, composition: dict[str: int]):
         self.composition = composition
 
+        for gas in composition.keys():
+            if gas not in GASES:
+                raise ValueError(f"Gas {gas} not in composition.")
+
     def get_composition_sum(self):
         return sum(self.composition.values())
 
@@ -16,3 +20,19 @@ class Atmosphere:
     def get_composition_shares(self) -> dict[str, float]:
         return {key: value/self.get_composition_sum() 
                 for key, value in self.composition.items()}
+
+GASES = [
+    'nitrogen',
+    'oxygen',
+    'carbon-dioxide',
+    'methane',
+    "water_vapor"
+]
+
+GASES_NAMES = {
+    'nitrogen': 'Nitrogen',
+    'oxygen': 'Oxygen',
+    'carbon-dioxide': 'Carbon Dioxide',
+    'methane': 'Methane',
+    "water_vapor": "Water Vapor"
+}

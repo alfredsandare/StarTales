@@ -73,7 +73,7 @@
                     "TOXIC"
                 ],
                 "atmosphere": {
-                    "carbondioxide": 2054400,
+                    "carbon-dioxide": 2054400,
                     "nitrogen": 71900
                 }
             },
@@ -179,7 +179,7 @@
                     "TOXIC"
                 ],
                 "atmosphere": {
-                    "carbondioxide": 43.9,
+                    "carbon-dioxide": 43.9,
                     "nitrogen": 0.87
                 }
             },
