@@ -142,8 +142,8 @@ class Game:
             return
 
         elif (event.type == pygame.KEYDOWN 
-                and event.key == pygame.K_ESCAPE
-                and self.view == "system"):
+              and event.key == pygame.K_ESCAPE
+              and self.view == "system"):
             self._act_on_esc_press()
 
         elif (event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE
@@ -165,7 +165,8 @@ class Game:
             elif change < 0 and self.current_star_system.allow_zoom_out:
                 self.current_star_system.zoom += change
 
-        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1 \
+            and not self.menu_handler.is_mouse_inside_menu():
             for id, hitbox in hitboxes:
                 if hitbox.is_pos_inside(*pygame.mouse.get_pos()):
                     self._open_small_planet_menu(id)
