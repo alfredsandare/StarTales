@@ -291,6 +291,7 @@ class Game:
             self.view = "system"
             self.menu_handler.menues["play_menu"].deactivate()
             self.menu_handler.menues["outliner"].activate()
+            self.menu_handler.menues["outliner_scroll"].activate()
             self.menu_handler.menues["time_menu"].activate()
             initialize_menues.outliner(self.menu_handler,
                                        self.current_star_system.get_all_cbs(),

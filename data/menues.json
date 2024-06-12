@@ -199,6 +199,25 @@
         }
     },
 
+    "outliner_scroll": {
+        "size": [200, 360],
+        "pos": "@get frame_size e -200 -160@",
+        "enable_scroll": true,
+        "scroll_slidebar": "scroll_slidebar",
+        "max_scroll_offset": 10,
+        "layer": 10,
+        "objects": {
+            "scroll_slidebar": {
+                "type": "slidebar",
+                "pos": [200, 0],
+                "length": 360,
+                "circle_size": 10,
+                "orientation": "vertical",
+                "anchor": "ne"
+            }
+        }
+    },
+
     "escape_menu": {
         "size": [250, 340],
         "pos": "@get frame_size c -125 -170@",

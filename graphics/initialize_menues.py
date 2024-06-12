@@ -28,7 +28,13 @@ def outliner(menu_handler: MenuHandler,
              font, 
              invoke_command):
     
-    BASE_POS = (10, 40)
+    object_ids = []
+    object_ids_startswith = ["cb_button_", "cb_icon_", "cb_title_", "cb_type_"]
+    menu_handler.delete_multiple_objects("outliner_scroll", 
+                                         object_ids, 
+                                         object_ids_startswith)
+    
+    BASE_POS = (10, 0)
     BUTTON_SIZE = (180, 40)
     SPACE_BETWEEN = 10
 
@@ -50,20 +56,20 @@ def outliner(menu_handler: MenuHandler,
                         rect_outline_click_color=(140, 140, 140),
                         command=(invoke_command, [f"open_cb_menu {cb.id}"], {}))
         
-        menu_handler.add_object("outliner", 
+        menu_handler.add_object("outliner_scroll", 
                                 f"cb_button_{added_planets}", 
                                 button)
 
         cb_icon = cb.visual.get_surface(30)
         image = Image(sum_two_vectors(button.pos, (5, 5)), cb_icon)
-        menu_handler.add_object("outliner", 
+        menu_handler.add_object("outliner_scroll", 
                                 f"cb_icon_{added_planets}", 
                                 image)
 
         title_text = Text(sum_two_vectors(button.pos, (40, 5)), 
                           cb.name, font, 18, anchor="nw")
         
-        menu_handler.add_object("outliner", 
+        menu_handler.add_object("outliner_scroll", 
                                 f"cb_title_{added_planets}", 
                                 title_text)
 
@@ -71,7 +77,7 @@ def outliner(menu_handler: MenuHandler,
                             CELESTIAL_BODY_TYPES_NAMES[cb.type],
                             font, 14, anchor="sw")
         
-        menu_handler.add_object("outliner", 
+        menu_handler.add_object("outliner_scroll", 
                                 f"cb_type_{added_planets}", 
                                 cb_type_text)
 
