@@ -13,6 +13,7 @@ from physics.district import District
 from physics.gas_giant import GasGiant
 from physics.star import Star
 from physics.star_system import StarSystem
+from physics.terraformprojects import AtmosphereChange, PropertyChange
 from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
 from util import convert_weeks_to_years, is_valid_image
@@ -104,6 +105,9 @@ class Game:
                 if pb.orbit_progress >= 1:
                     pb.orbit_progress -= 1
                     pb.visual_orbit_progress -= 1
+
+            for cb in star_system.get_all_cbs():
+                cb.apply_terraform_projects()
 
         self._update_time_menu_text()
 
