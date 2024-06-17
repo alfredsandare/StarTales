@@ -96,14 +96,8 @@ def cb_menu(menu_handler: MenuHandler,
             switch_atm_mode_command):
 
     object_ids = [
-        "atmosphere_bg",
-        "atmosphere_title",
         "thickness_text",
         "thickness_text_2",
-        "moons_bg",
-        "moons_title",
-        "districts_bg",
-        "districts_title",
         "switch_atm_mode_button"
     ]
 
@@ -135,11 +129,22 @@ def cb_menu(menu_handler: MenuHandler,
     cb_menu.size = SIZE
     cb_menu.objects["top_bar"].size = [SIZE[0], 30]
 
-    cb_menu.objects["info_bg"].deactivate()
-    cb_menu.objects["info_bg_title"].deactivate()
+    to_deactivate = [
+        "info_bg",
+        "info_bg_title",
+        "moons_bg",
+        "moons_title",
+        "atmosphere_bg",
+        "atmosphere_title",
+        "districts_bg",
+        "districts_title"
+    ]
+
+    for object_id in to_deactivate:
+        cb_menu.objects[object_id].deactivate()
 
     if isinstance(cb, TerrestrialBody):
-        _init_districts(menu_handler, cb, font, climate_images)
+        _init_districts(menu_handler, cb, climate_images)
 
     if isinstance(cb, TerrestrialBody) and menu_settings["cb_menu_mode"] == "overview":
         _init_atmosphere(menu_handler, cb, font, menu_settings["atmosphere_menu_mode"], 
@@ -205,23 +210,22 @@ def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: Cele
         text = Text(pos, str(property), font, 18, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
 
-def _init_districts(menu_handler: MenuHandler, cb, font, climate_images):
+def _init_districts(menu_handler: MenuHandler, cb, climate_images):
+    cb_menu = menu_handler.menues["cb_menu"]
+
+    cb_menu.objects["districts_bg"].activate()
+    cb_menu.objects["districts_title"].activate()
+
     OFFSET = [10, 40]
     DISTANCE_BETWEEN = 10
     SIZE = list(climate_images.values())[0].get_size()[0]
 
     BG_SIZE = 4*SIZE + 5*DISTANCE_BETWEEN
-    menu_shape = Shape(OFFSET,
-                       (BG_SIZE, BG_SIZE+20),
-                       (30, 35, 140),
-                       "rect",
-                       outline_width=1,
-                       outline_color=(0, 0, 0))
-    menu_handler.add_object("cb_menu", "districts_bg", menu_shape)
+    cb_menu.objects["districts_bg"].change_property("pos", OFFSET)
+    cb_menu.objects["districts_bg"].change_property("size", (BG_SIZE, BG_SIZE+20))
 
     pos = (OFFSET[0]+BG_SIZE/2, OFFSET[1]+17)
-    text = Text(pos, "Districts", font, 20, anchor="c")
-    menu_handler.add_object("cb_menu", "districts_title", text)
+    cb_menu.objects["districts_title"].change_property("pos", pos)
 
     OFFSET = sum_two_vectors(OFFSET, (10, 30))
 
@@ -253,25 +257,25 @@ def _init_moons(menu_handler: MenuHandler,
 
     menu_handler.menues["cb_submenu_moons"].reset_scroll()
     menu_handler.menues["cb_submenu_moons"].activate()
+    
+    cb_menu = menu_handler.menues["cb_menu"]
+
+    cb_menu.objects["moons_bg"].activate()
+    cb_menu.objects["moons_title"].activate()
 
     BASE_POS = [350, 40]
     SIZE = [200, 250]
 
-    menu_shape = Shape(BASE_POS,
-                       SIZE,
-                       (30, 35, 140),
-                       "rect",
-                       outline_width=1,
-                       outline_color=(0, 0, 0))
-    menu_handler.add_object("cb_menu", "moons_bg", menu_shape)
+    cb_menu.objects["moons_bg"].change_property("pos", BASE_POS)
+    cb_menu.objects["moons_bg"].change_property("size", SIZE)
 
+    pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
     text = "Moons"
     if isinstance(this_cb, Star):
         text = "Planets"
 
-    pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
-    menu_text = Text(pos, text, font, 20, anchor="c")
-    menu_handler.add_object("cb_menu", "moons_title", menu_text)
+    cb_menu.objects["moons_title"].change_property("pos", pos)
+    cb_menu.objects["moons_title"].change_property("text", text)
 
     BUTTON_SIZE = (180, 40)
     SPACE_BETWEEN = 10
@@ -315,20 +319,19 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody,
                      font, menu_mode: str, images: dict[str, pygame.Surface],
                      switch_atm_mode_command: callable):
 
+    cb_menu = menu_handler.menues["cb_menu"]
+
+    cb_menu.objects["atmosphere_bg"].activate()
+    cb_menu.objects["atmosphere_title"].activate()
+
     BASE_POS = (350, 300)
     SIZE = (200, 250)
 
-    menu_shape = Shape(BASE_POS,
-                       SIZE,
-                       (30, 35, 140),
-                       "rect",
-                       outline_width=1,
-                       outline_color=(0, 0, 0))
-    menu_handler.add_object("cb_menu", "atmosphere_bg", menu_shape)
+    cb_menu.objects["atmosphere_bg"].change_property("pos", BASE_POS)
+    cb_menu.objects["atmosphere_bg"].change_property("size", SIZE)
 
     pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
-    menu_text = Text(pos, "Atmosphere", font, 20, anchor="c")
-    menu_handler.add_object("cb_menu", "atmosphere_title", menu_text)
+    cb_menu.objects["atmosphere_title"].change_property("pos", pos)
 
     menu_text = Text(sum_two_vectors(BASE_POS, (10, 50)),
                      "Thickness:", font, 16, anchor="w")
