@@ -137,7 +137,11 @@ def cb_menu(menu_handler: MenuHandler,
         "atmosphere_bg",
         "atmosphere_title",
         "districts_bg",
-        "districts_title"
+        "districts_title",
+        "active_terraforming_bg",
+        "active_terraforming_title",
+        "available_terraforming_bg",
+        "available_terraforming_title"
     ]
 
     for object_id in to_deactivate:
@@ -154,12 +158,39 @@ def cb_menu(menu_handler: MenuHandler,
         _init_properties(menu_handler, cb, host_cb, font, settings, SIZE)
         _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
+    elif menu_settings["cb_menu_mode"] == "terraforming":
+        _init_terraforming(menu_handler, cb, font, settings, images)
+
+def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, settings, images):
+    cb_menu = menu_handler.menues["cb_menu"]
+
+    cb_menu.objects["active_terraforming_bg"].activate()
+    cb_menu.objects["active_terraforming_title"].activate()
+    cb_menu.objects["available_terraforming_bg"].activate()
+    cb_menu.objects["available_terraforming_title"].activate()
+
+    ACTIVE_PROJECT_BASE_POS = (350, 40)
+    BG_SIZE = (250, 500)
+
+    cb_menu.objects["active_terraforming_bg"].change_property("pos", ACTIVE_PROJECT_BASE_POS)
+    cb_menu.objects["active_terraforming_bg"].change_property("size", BG_SIZE)
+
+    pos = (ACTIVE_PROJECT_BASE_POS[0]+BG_SIZE[0]/2, ACTIVE_PROJECT_BASE_POS[1]+17)
+    cb_menu.objects["active_terraforming_title"].change_property("pos", pos)
+
+    AVAILABE_PROJECTS_BASE_POS = (610, 40)
+    cb_menu.objects["available_terraforming_bg"].change_property("pos", AVAILABE_PROJECTS_BASE_POS)
+    cb_menu.objects["available_terraforming_bg"].change_property("size", BG_SIZE)
+
+    pos = (AVAILABE_PROJECTS_BASE_POS[0]+BG_SIZE[0]/2, AVAILABE_PROJECTS_BASE_POS[1]+17)
+    cb_menu.objects["available_terraforming_title"].change_property("pos", pos)
+
 
 def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: CelestialBody, font, settings, cb_menu_size):
     cb_menu = menu_handler.menues["cb_menu"]
 
-    cb_menu.objects["info_bg"].active = True
-    cb_menu.objects["info_bg_title"].active = True
+    cb_menu.objects["info_bg"].activate()
+    cb_menu.objects["info_bg_title"].activate()
 
     INFO_SIZE = [250, 500]
     cb_menu.objects["info_bg"].size = INFO_SIZE
