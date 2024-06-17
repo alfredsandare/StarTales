@@ -56,7 +56,8 @@ class Game:
         self.game_time_is_active = False
 
         self.menu_settings = {
-            "atmosphere_menu_mode": "units"  # "percentage" or "units"
+            "atmosphere_menu_mode": "units",  # "percentage" or "units"
+            "cb_menu_mode": "overview"  # "overview" or "terraforming"
         }
 
         self.cb_menu_cb_id = None
@@ -312,7 +313,8 @@ class Game:
             self.menu_handler.menues["main_menu"].activate()
 
         elif command == "open_cb_menu":
-            self._init_cb_menu_wrapper(args[0])
+            self.cb_menu_cb_id = args[0]
+            self._init_cb_menu_wrapper()
             self.menu_handler.menues["cb_menu"].activate()
             self.menu_handler.menues["cb_submenu_moons"].activate()
 
@@ -358,6 +360,10 @@ class Game:
         elif command == "open_cb_menu_from_small_planet_menu":
             self.invoke_command("open_cb_menu "
                                 + self.current_star_system.selected_cb_id)
+            
+        elif command == "set_cb_menu_mode":
+            self.menu_settings["cb_menu_mode"] = args[0]
+            self._init_cb_menu_wrapper()
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key
@@ -464,9 +470,9 @@ class Game:
         initialize_menues.small_planet_menu(self.menu_handler, id, 
                                             self.current_star_system)
         
-    def _init_cb_menu_wrapper(self, id):
+    def _init_cb_menu_wrapper(self):
         cbs = self.current_star_system.get_all_cbs_dict()
-        cb = cbs[id]
+        cb = cbs[self.cb_menu_cb_id]
         host_cb = None
         if not isinstance(cb, Star):
             host_cb = cbs[cb.orbital_host]
@@ -479,11 +485,9 @@ class Game:
                                     self.climate_images,
                                     self.invoke_command,
                                     self.game_settings,
-                                    self.menu_settings["atmosphere_menu_mode"],
+                                    self.menu_settings,
                                     self.images,
                                     self.switch_atm_menu_mode)
-
-        self.cb_menu_cb_id = id
 
     def switch_atm_menu_mode(self):
         if self.menu_settings["atmosphere_menu_mode"] == "units":
@@ -491,7 +495,7 @@ class Game:
         else:
             self.menu_settings["atmosphere_menu_mode"] = "units"
 
-        self._init_cb_menu_wrapper(self.cb_menu_cb_id)
+        self._init_cb_menu_wrapper()
         
 
 

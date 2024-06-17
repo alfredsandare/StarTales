@@ -91,7 +91,7 @@ def cb_menu(menu_handler: MenuHandler,
             climate_images: dict[str, pygame.Surface],
             invoke_command,
             settings,
-            atmosphere_menu_mode,
+            menu_settings,
             images: dict[str, pygame.Surface],
             switch_atm_mode_command):
 
@@ -123,6 +123,8 @@ def cb_menu(menu_handler: MenuHandler,
                                         [], ["cb_button_",
                                         "cb_icon_",
                                         "cb_title_"])
+    
+    menu_handler.menues["cb_submenu_moons"].deactivate()
 
     cb_menu = menu_handler.menues["cb_menu"]
 
@@ -133,10 +135,31 @@ def cb_menu(menu_handler: MenuHandler,
     cb_menu.size = SIZE
     cb_menu.objects["top_bar"].size = [SIZE[0], 30]
 
+    cb_menu.objects["info_bg"].deactivate()
+    cb_menu.objects["info_bg_title"].deactivate()
+
+    if isinstance(cb, TerrestrialBody):
+        _init_districts(menu_handler, cb, font, climate_images)
+
+    if isinstance(cb, TerrestrialBody) and menu_settings["cb_menu_mode"] == "overview":
+        _init_atmosphere(menu_handler, cb, font, menu_settings["atmosphere_menu_mode"], 
+                         images, switch_atm_mode_command)
+
+    if menu_settings["cb_menu_mode"] == "overview":
+        _init_properties(menu_handler, cb, host_cb, font, settings, SIZE)
+        _init_moons(menu_handler, font, cb, cbs, invoke_command)
+
+
+def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: CelestialBody, font, settings, cb_menu_size):
+    cb_menu = menu_handler.menues["cb_menu"]
+
+    cb_menu.objects["info_bg"].active = True
+    cb_menu.objects["info_bg_title"].active = True
+
     INFO_SIZE = [250, 500]
     cb_menu.objects["info_bg"].size = INFO_SIZE
 
-    INFO_POS = [SIZE[0]-10, 40]
+    INFO_POS = [cb_menu_size[0]-10, 40]
     cb_menu.objects["info_bg"].pos = INFO_POS
     cb_menu.objects["info_bg_title"].pos = \
         [INFO_POS[0]-INFO_SIZE[0]/2, INFO_POS[1]+10]
@@ -181,13 +204,6 @@ def cb_menu(menu_handler: MenuHandler,
         pos = [INFO_POS[0]-10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
         text = Text(pos, str(property), font, 18, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
-
-    if isinstance(cb, TerrestrialBody):
-        _init_districts(menu_handler, cb, font, climate_images)
-        _init_atmosphere(menu_handler, cb, font, atmosphere_menu_mode, 
-                         images, switch_atm_mode_command)
-
-    _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
 def _init_districts(menu_handler: MenuHandler, cb, font, climate_images):
     OFFSET = [10, 40]
@@ -236,6 +252,7 @@ def _init_moons(menu_handler: MenuHandler,
                 invoke_command):
 
     menu_handler.menues["cb_submenu_moons"].reset_scroll()
+    menu_handler.menues["cb_submenu_moons"].activate()
 
     BASE_POS = [350, 40]
     SIZE = [200, 250]

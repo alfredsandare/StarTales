@@ -356,6 +356,34 @@
                 "hover_image": "buttons/24x24_cross_hover.png",
                 "click_image": "buttons/24x24_cross_click.png",
                 "command": "deactivate_menu cb_menu cb_submenu_moons"
+            },
+
+            "terraforming_button": {
+                "type": "button",
+                "pos": [890, 590],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Terraforming",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "rect_length": 100,
+                "rect_height": 30,
+                "anchor": "se",
+                "command": "set_cb_menu_mode terraforming"
+            },
+
+            "overview_button": {
+                "type": "button",
+                "pos": [780, 590],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Overview",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "rect_length": 100,
+                "rect_height": 30,
+                "anchor": "se",
+                "command": "set_cb_menu_mode overview"
             }
         }
     },
