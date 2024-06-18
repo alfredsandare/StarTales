@@ -21,3 +21,38 @@ class PropertyChange(TerraformProject):
         if property not in VALID_PROPERTIES:
             raise ValueError(f"Invalid property: {property}")
         self.property = property
+
+
+# These projects are the ones displayed in available/active projects.
+# However, in the backend, only the above classes are used.
+
+PROJECTS = {
+    "add_gas": {
+        "name": "Add Gas",
+        "class": AtmosphereChange,
+        "window": "change_gas"
+    },
+    "remove_gas": {
+        "name": "Remove Gas",
+        "class": AtmosphereChange,
+        "window": "change_gas"
+    },
+    "change_day_length": {
+        "name": "Change Day Length",
+        "class": PropertyChange,
+        "property": "day_length",
+        "window": "change_property"
+    },
+    "change_orbital_velocity": {
+        "name": "Change Orbital Velocity",
+        "class": PropertyChange,
+        "property": "orbital_velocity",
+        "window": "change_property"
+    },
+    "change_sma": {
+        "name": "Change Semi-Major Axis",
+        "class": PropertyChange,
+        "property": "sma",
+        "window": "change_property"
+    }
+}

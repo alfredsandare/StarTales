@@ -3,7 +3,7 @@
 
 import copy
 import math
-from PhoenixGUI.util import sum_two_vectors
+from PhoenixGUI.util import sum_two_vectors, sum_multiple_vectors
 from PhoenixGUI import *
 import pygame
 from data.consts import CELESTIAL_BODY_TYPES_NAMES
@@ -13,6 +13,7 @@ from physics.gas_giant import GasGiant
 from physics.planetary_body import PlanetaryBody
 from physics.star import Star
 from physics.star_system import StarSystem
+from physics.terraformprojects import PROJECTS
 from physics.terrestrial_body import TerrestrialBody
 from util import orbital_vel_to_orbital_period, round_seconds, round_to_significant_figures
 
@@ -107,7 +108,9 @@ def cb_menu(menu_handler: MenuHandler,
         "atmosphere_name_text_",
         "atmosphere_share_text_",
         "district_picture_",
-        "district_button_"
+        "district_button_",
+        "project_icon_",
+        "project_text_",
     ]
 
     menu_handler.delete_multiple_objects("cb_menu", object_ids, 
@@ -119,6 +122,8 @@ def cb_menu(menu_handler: MenuHandler,
                                         "cb_title_"])
     
     menu_handler.menues["cb_submenu_moons"].deactivate()
+    menu_handler.menues["cb_submenu_active_terraforming"].deactivate()
+    menu_handler.menues["cb_submenu_available_terraforming"].deactivate()
 
     cb_menu = menu_handler.menues["cb_menu"]
 
@@ -162,15 +167,24 @@ def cb_menu(menu_handler: MenuHandler,
         _init_terraforming(menu_handler, cb, font, settings, images)
 
 def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, settings, images):
+    menu_handler.menues["cb_submenu_active_terraforming"].activate()
+    menu_handler.menues["cb_submenu_available_terraforming"].activate()
+
     cb_menu = menu_handler.menues["cb_menu"]
+    active_menu = menu_handler.menues["cb_submenu_active_terraforming"]
+    available_menu = menu_handler.menues["cb_submenu_available_terraforming"]
+
 
     cb_menu.objects["active_terraforming_bg"].activate()
     cb_menu.objects["active_terraforming_title"].activate()
     cb_menu.objects["available_terraforming_bg"].activate()
     cb_menu.objects["available_terraforming_title"].activate()
 
-    ACTIVE_PROJECT_BASE_POS = (350, 40)
+    ACTIVE_PROJECT_BASE_POS = (350, 40)  # relative to cb_menu's pos
     BG_SIZE = (250, 500)
+    TERRAFORMINGPROJECT_ITEM_SIZE = (230, 50)
+    SPACE_BETWEEN_ITEMS = 10
+    SUBMENU_SIZE = (BG_SIZE[0]-20, BG_SIZE[1]-50)
 
     cb_menu.objects["active_terraforming_bg"].change_property("pos", ACTIVE_PROJECT_BASE_POS)
     cb_menu.objects["active_terraforming_bg"].change_property("size", BG_SIZE)
@@ -178,13 +192,31 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
     pos = (ACTIVE_PROJECT_BASE_POS[0]+BG_SIZE[0]/2, ACTIVE_PROJECT_BASE_POS[1]+17)
     cb_menu.objects["active_terraforming_title"].change_property("pos", pos)
 
-    AVAILABE_PROJECTS_BASE_POS = (610, 40)
+    active_menu.pos = sum_multiple_vectors(cb_menu.pos, ACTIVE_PROJECT_BASE_POS, (10, 40))
+    active_menu.size = SUBMENU_SIZE
+    active_menu.objects["scroll_slidebar"].change_property("pos", (SUBMENU_SIZE[0], 0))
+    active_menu.objects["scroll_slidebar"].change_property("length", SUBMENU_SIZE[1])
+
+    AVAILABE_PROJECTS_BASE_POS = (610, 40)  # relative to cb_menu's pos
     cb_menu.objects["available_terraforming_bg"].change_property("pos", AVAILABE_PROJECTS_BASE_POS)
     cb_menu.objects["available_terraforming_bg"].change_property("size", BG_SIZE)
 
     pos = (AVAILABE_PROJECTS_BASE_POS[0]+BG_SIZE[0]/2, AVAILABE_PROJECTS_BASE_POS[1]+17)
     cb_menu.objects["available_terraforming_title"].change_property("pos", pos)
 
+    available_menu.pos = sum_multiple_vectors(cb_menu.pos, AVAILABE_PROJECTS_BASE_POS, (10, 40))
+    available_menu.size = (BG_SIZE[0]-20, BG_SIZE[1]-50)
+    available_menu.objects["scroll_slidebar"].change_property("pos", (SUBMENU_SIZE[0], 0))
+    available_menu.objects["scroll_slidebar"].change_property("length", SUBMENU_SIZE[1])
+
+    for i, (key, project) in enumerate(PROJECTS.items()):
+        base_pos = (0, i*(TERRAFORMINGPROJECT_ITEM_SIZE[1]+SPACE_BETWEEN_ITEMS))
+
+        icon = Shape(base_pos, (50, 50), (255, 0, 0), "rect")
+        menu_handler.add_object("cb_submenu_available_terraforming", f"project_icon_{i}", icon)
+
+        text = Text(sum_two_vectors(base_pos, (60, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2)), project["name"], font, 16, anchor="w")
+        menu_handler.add_object("cb_submenu_available_terraforming", f"project_text_{i}", text)
 
 def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: CelestialBody, font, settings, cb_menu_size):
     cb_menu = menu_handler.menues["cb_menu"]

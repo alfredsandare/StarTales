@@ -503,6 +503,46 @@
         }
     },
 
+    "cb_submenu_available_terraforming": {
+        "size": [0, 0],
+        "pos": [0, 0],
+        "enable_scroll": true,
+        "scroll_slidebar": "scroll_slidebar",
+        "max_scroll_offset": 10,
+        "layer": 10,
+
+        "objects": {
+            "scroll_slidebar": {
+                "type": "slidebar",
+                "pos": [0, 0],
+                "length": 0,
+                "circle_size": 10,
+                "orientation": "vertical",
+                "anchor": "ne"
+            }
+        }
+    },
+
+    "cb_submenu_active_terraforming": {
+        "size": [0, 0],
+        "pos": [0, 0],
+        "enable_scroll": true,
+        "scroll_slidebar": "scroll_slidebar",
+        "max_scroll_offset": 10,
+        "layer": 10,
+
+        "objects": {
+            "scroll_slidebar": {
+                "type": "slidebar",
+                "pos": [0, 0],
+                "length": 0,
+                "circle_size": 10,
+                "orientation": "vertical",
+                "anchor": "ne"
+            }
+        }
+    },
+
     "time_menu": {
         "size": [200, 100],
         "pos": "@get frame_size ne -200 0@",
