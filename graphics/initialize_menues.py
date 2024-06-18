@@ -396,6 +396,9 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody,
     pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
     cb_menu.objects["atmosphere_title"].change_property("pos", pos)
 
+    pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+SIZE[1]-10)
+    cb_menu.objects["atmosphere_calculator_button"].change_property("pos", pos)
+
     menu_text = Text(sum_two_vectors(BASE_POS, (10, 50)),
                      "Thickness:", font, 16, anchor="w")
     menu_handler.add_object("cb_menu", "thickness_text", menu_text)

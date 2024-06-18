@@ -386,6 +386,20 @@
                 "anchor": "c"
             },
 
+            "atmosphere_calculator_button": {
+                "type": "button",
+                "pos": [0, 0],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Atmosphere Calculator",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "rect_length": 180,
+                "rect_height": 30,
+                "anchor": "s",
+                "command": "activate_menu atmosphere_calculator"
+            },
+
             "districts_bg": {
                 "type": "shape",
                 "pos": [0, 0],
@@ -667,5 +681,62 @@
                 "command": "open_cb_menu_from_small_planet_menu"
             }
         }
-    } 
+    },
+
+    "atmosphere_calculator": {
+        "size": [200, 300],
+        "pos": "@get frame_size c -100 -150@",
+        "bg_color": [64, 74, 204],
+        "outline_color": [0, 0, 0],
+        "outline_width": 1,
+        "layer": 2,
+        "objects": {
+            "top_bar": {
+                "type": "shape",
+                "pos": [0, 0],
+                "size": [300, 30],
+                "color": [39, 48, 148],
+                "type_": "rect",
+                "outline_width": 1,
+                "outline_color": [0, 0, 0]
+            },
+
+            "title_text": {
+                "type": "text",
+                "pos": [10, 16],
+                "text": "Atmosphere Calculator",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "anchor": "w"
+            },
+            
+            "close_button": {
+                "type": "button",
+                "pos": [297, 15],
+                "anchor": "e",
+                "image": "buttons/24x24_cross.png",
+                "hover_image": "buttons/24x24_cross_hover.png",
+                "click_image": "buttons/24x24_cross_click.png",
+                "command": "deactivate_menu atmosphere_calculator"
+            },
+
+            "pressure_text": {
+                "type": "text",
+                "pos": [10, 40],
+                "text": "Pressure (atm):",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "anchor": "nw"
+            },
+
+            "pressure_input": {
+                "type": "text_input",
+                "pos": [10, 70],
+                "anchor": "nw",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "length": 180
+            }
+        }
+    }
 }
