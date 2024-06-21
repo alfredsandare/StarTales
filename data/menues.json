@@ -684,8 +684,8 @@
     },
 
     "atmosphere_calculator": {
-        "size": [200, 300],
-        "pos": "@get frame_size c -100 -150@",
+        "size": [300, 400],
+        "pos": "@get frame_size c -150 -200@",
         "bg_color": [64, 74, 204],
         "outline_color": [0, 0, 0],
         "outline_width": 1,
@@ -720,22 +720,34 @@
                 "command": "deactivate_menu atmosphere_calculator"
             },
 
-            "pressure_text": {
+            "thickness_text": {
                 "type": "text",
-                "pos": [10, 40],
-                "text": "Pressure (atm):",
+                "pos": [10, 50],
+                "text": "Desired thickness (kPa):",
                 "font": "@get default_font bold@",
                 "font_size": 18,
-                "anchor": "nw"
+                "anchor": "w"
             },
 
-            "pressure_input": {
+            "thickness_input_bg": {
+                "type": "shape",
+                "pos": [290, 50],
+                "size": [90, 25],
+                "color": [39, 48, 148],
+                "type_": "rect",
+                "outline_width": 1,
+                "outline_color": [0, 0, 0],
+                "anchor": "e"
+            },
+
+            "thickness_input": {
                 "type": "text_input",
-                "pos": [10, 70],
-                "anchor": "nw",
+                "pos": [285, 50],
+                "anchor": "e",
                 "font": "@get default_font bold@",
                 "font_size": 18,
-                "length": 180
+                "length": 80,
+                "validity_check": "ALL_NUMBERS_DOTS_COMMA"
             }
         }
     }

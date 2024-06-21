@@ -224,9 +224,15 @@ class Game:
                 if obj["type"] == "button" and "command" in obj.keys():
                     loaded_data[menu_key]["objects"][obj_key]["command"] = \
                         (self.invoke_command, [obj["command"]], {})
+                    
+                if obj["type"] == "text_input" and "validity_check" in obj.keys():
+                    validity_check = getattr(text_input.validity_check, 
+                                             obj["validity_check"])
+                    loaded_data[menu_key]["objects"][obj_key]["validity_check"] = \
+                        validity_check
 
         return loaded_data
-    
+
     def _get_button_color_theme(self, theme):
         if theme == "default":
             return {
