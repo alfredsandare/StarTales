@@ -64,6 +64,10 @@ class Game:
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
+
+        font = self.get_values("default_font bold skip_quotes")
+        initialize_menues.atmosphere_calculator(self.menu_handler, font)
+
         clock = pygame.time.Clock()
         while True:
             self.screen.fill((0, 0, 0))

@@ -7,9 +7,8 @@ from PhoenixGUI.util import sum_two_vectors, sum_multiple_vectors
 from PhoenixGUI import *
 import pygame
 from data.consts import CELESTIAL_BODY_TYPES_NAMES
-from physics.atmosphere import GASES_NAMES
+from physics.atmosphere import GASES, GASES_NAMES
 from physics.celestial_body import CelestialBody
-from physics.gas_giant import GasGiant
 from physics.planetary_body import PlanetaryBody
 from physics.star import Star
 from physics.star_system import StarSystem
@@ -469,3 +468,46 @@ def small_planet_menu(menu_handler: MenuHandler,
 
     menu_handler.menues["small_planet_menu"].objects["info_text"] \
         .change_property("text", text)
+
+def atmosphere_calculator(menu_handler: MenuHandler, font: str):
+    atm_menu = menu_handler.menues["atmosphere_calculator"]
+
+    COLUMN_1_BASE_POS = (10, 140)
+    COLUMN_2_BASE_POS = (150, 140)
+    COLUMN_3_BASE_POS = (290, 140)
+
+    INPUT_SIZE = (50, 25)
+    ROW_HEIGHT = 30
+
+    for i, gas in enumerate(GASES):
+        # COLUMN 1
+        gas_text = Text(sum_two_vectors(COLUMN_1_BASE_POS, (0, ROW_HEIGHT*i)),
+                        GASES_NAMES[gas], font, 16, anchor="w")
+        menu_handler.add_object("atmosphere_calculator", 
+                                f"gas_text_{gas}", gas_text)
+
+        # COLUMN 2
+        input_bg = Shape(sum_two_vectors(COLUMN_2_BASE_POS, (0, ROW_HEIGHT*i)), 
+                         INPUT_SIZE, (39, 48, 148), "rect", anchor="w",
+                         outline_width=1, outline_color=(0, 0, 0))
+        menu_handler.add_object("atmosphere_calculator", 
+                                f"input_bg_{gas}", 
+                                input_bg)
+
+        percentage_input = TextInput(sum_two_vectors(COLUMN_2_BASE_POS, (5, ROW_HEIGHT*i)), 
+                                     INPUT_SIZE[0]-10, font, 16, anchor="w")
+        menu_handler.add_object("atmosphere_calculator", 
+                                f"percentage_input_{gas}", 
+                                percentage_input)
+
+        percentage_text = Text(sum_two_vectors(COLUMN_2_BASE_POS, (60, ROW_HEIGHT*i)),
+                                 "%", font, 18, anchor="w")
+        menu_handler.add_object("atmosphere_calculator",
+                                f"percentage_text_{gas}",
+                                percentage_text)
+
+        # COLUMN 3
+        units_text = Text(sum_two_vectors(COLUMN_3_BASE_POS, (0, ROW_HEIGHT*i)),
+                          "2356 u", font, 16, anchor="w")
+        menu_handler.add_object("atmosphere_calculator",
+                                f"units_text_{gas}", units_text)
