@@ -469,8 +469,9 @@ def small_planet_menu(menu_handler: MenuHandler,
     menu_handler.menues["small_planet_menu"].objects["info_text"] \
         .change_property("text", text)
 
-def atmosphere_calculator(menu_handler: MenuHandler, font: str):
+def atmosphere_calculator(menu_handler: MenuHandler, font: str, command: callable, tb_size: float):
     atm_menu = menu_handler.menues["atmosphere_calculator"]
+    atm_menu.objects["thickness_input"].change_property("command", (command, [menu_handler, tb_size], {}))
 
     COLUMN_1_BASE_POS = (10, 140)
     COLUMN_2_BASE_POS = (150, 140)
@@ -495,7 +496,9 @@ def atmosphere_calculator(menu_handler: MenuHandler, font: str):
                                 input_bg)
 
         percentage_input = TextInput(sum_two_vectors(COLUMN_2_BASE_POS, (5, ROW_HEIGHT*i)), 
-                                     INPUT_SIZE[0]-10, font, 16, anchor="w")
+                                     INPUT_SIZE[0]-10, font, 16, anchor="w",
+                                     command=(command, [menu_handler, tb_size], {}),
+                                     validity_check=text_input.validity_check.ALL_NUMBERS_DOTS_COMMA)
         menu_handler.add_object("atmosphere_calculator", 
                                 f"percentage_input_{gas}", 
                                 percentage_input)

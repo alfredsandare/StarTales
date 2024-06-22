@@ -8,6 +8,7 @@ import graphics.star_visual_style as star_visual_style
 from graphics.celestial_body_visual import CelestialBodyVisual
 import graphics.terrestrial_body_style as terrestrial_body_style
 from physics.atmosphere import Atmosphere
+from physics.atmosphere_calculator import AtmosphereCalculator
 import physics.climates as climates
 from physics.district import District
 from physics.gas_giant import GasGiant
@@ -62,11 +63,10 @@ class Game:
 
         self.cb_menu_cb_id = None
 
+        self.atmosphere_calculator = AtmosphereCalculator()
+
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
-
-        font = self.get_values("default_font bold skip_quotes")
-        initialize_menues.atmosphere_calculator(self.menu_handler, font)
 
         clock = pygame.time.Clock()
         while True:
@@ -90,11 +90,10 @@ class Game:
             self._perform_visual_orbit_progress_calculations(clock.get_fps())
 
             events = pygame.event.get()
-            self.menu_handler.update(events, self.screen, clock.get_time())
-
             for event in events:
                 self._handle_event(event, hitboxes)
-                
+
+            self.menu_handler.update(events, self.screen, clock.get_time())
 
             pygame.display.flip()
             clock.tick(60)
@@ -225,7 +224,8 @@ class Game:
 
                     del loaded_data[menu_key]["objects"][obj_key]["color_theme"]
 
-                if obj["type"] == "button" and "command" in obj.keys():
+                if (obj["type"] == "button" and "command" in obj.keys()) \
+                    or (obj["type"] == "text_input" and "command" in obj.keys()):
                     loaded_data[menu_key]["objects"][obj_key]["command"] = \
                         (self.invoke_command, [obj["command"]], {})
                     
@@ -374,6 +374,14 @@ class Game:
         elif command == "set_cb_menu_mode":
             self.menu_settings["cb_menu_mode"] = args[0]
             self._init_cb_menu_wrapper()
+
+        elif command == "open_atmosphere_menu":
+            self.menu_handler.menues["atmosphere_calculator"].activate()
+            initialize_menues.atmosphere_calculator(
+                self.menu_handler,
+                self.get_values("default_font bold skip_quotes"),
+                self.atmosphere_calculator.update_menu,
+                self.current_star_system.get_all_cbs_dict()[self.cb_menu_cb_id].size)
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key

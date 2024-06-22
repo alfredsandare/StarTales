@@ -397,7 +397,7 @@
                 "rect_length": 180,
                 "rect_height": 30,
                 "anchor": "s",
-                "command": "activate_menu atmosphere_calculator"
+                "command": "open_atmosphere_menu"
             },
 
             "districts_bg": {
@@ -775,6 +775,16 @@
                 "font": "@get default_font bold@",
                 "font_size": 18,
                 "anchor": "nw"
+            },
+
+            "info_text": {
+                "type": "text",
+                "pos": [200, 350],
+                "text": "",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "color": [255, 0, 0],
+                "anchor": "c"
             }
         }
     }
