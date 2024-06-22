@@ -12,6 +12,7 @@ from physics.atmosphere_calculator import AtmosphereCalculator
 import physics.climates as climates
 from physics.district import District
 from physics.gas_giant import GasGiant
+from physics.planetary_body import PlanetaryBody
 from physics.star import Star
 from physics.star_system import StarSystem
 from physics.terraformprojects import AtmosphereChange, PropertyChange
@@ -377,11 +378,17 @@ class Game:
 
         elif command == "open_atmosphere_menu":
             self.menu_handler.menues["atmosphere_calculator"].activate()
+            pb: PlanetaryBody = self.current_star_system\
+                .get_all_cbs_dict()[self.cb_menu_cb_id]
+
             initialize_menues.atmosphere_calculator(
                 self.menu_handler,
                 self.get_values("default_font bold skip_quotes"),
-                self.atmosphere_calculator.update_menu,
-                self.current_star_system.get_all_cbs_dict()[self.cb_menu_cb_id].size)
+                self.atmosphere_calculator,
+                pb.size,
+                self.current_star_system_key,
+                self.cb_menu_cb_id,
+                pb.name)
 
     def _switch_system(self, new_system_key):
         self.current_star_system_key = new_system_key

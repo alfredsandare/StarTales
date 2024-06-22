@@ -8,6 +8,7 @@ from PhoenixGUI import *
 import pygame
 from data.consts import CELESTIAL_BODY_TYPES_NAMES
 from physics.atmosphere import GASES, GASES_NAMES
+from physics.atmosphere_calculator import AtmosphereCalculator
 from physics.celestial_body import CelestialBody
 from physics.planetary_body import PlanetaryBody
 from physics.star import Star
@@ -469,9 +470,17 @@ def small_planet_menu(menu_handler: MenuHandler,
     menu_handler.menues["small_planet_menu"].objects["info_text"] \
         .change_property("text", text)
 
-def atmosphere_calculator(menu_handler: MenuHandler, font: str, command: callable, tb_size: float):
+def atmosphere_calculator(menu_handler: MenuHandler, 
+                          font: str, 
+                          atmosphere_calculator: AtmosphereCalculator, 
+                          tb_size: float, 
+                          star_system_id: str, cb_id: str, cb_name: str):
+
     atm_menu = menu_handler.menues["atmosphere_calculator"]
-    atm_menu.objects["thickness_input"].change_property("command", (command, [menu_handler, tb_size], {}))
+    atm_menu.objects["title_text"].change_property("text", f"Atmosphere Calculator - {cb_name}")
+
+    command = (atmosphere_calculator.update_menu, [menu_handler, tb_size, star_system_id, cb_id], {})
+    atm_menu.objects["thickness_input"].change_property("command", command)
 
     COLUMN_1_BASE_POS = (10, 140)
     COLUMN_2_BASE_POS = (150, 140)
@@ -497,7 +506,7 @@ def atmosphere_calculator(menu_handler: MenuHandler, font: str, command: callabl
 
         percentage_input = TextInput(sum_two_vectors(COLUMN_2_BASE_POS, (5, ROW_HEIGHT*i)), 
                                      INPUT_SIZE[0]-10, font, 16, anchor="w",
-                                     command=(command, [menu_handler, tb_size], {}),
+                                     command=command,
                                      validity_check=text_input.validity_check.ALL_NUMBERS_DOTS_COMMA)
         menu_handler.add_object("atmosphere_calculator", 
                                 f"percentage_input_{gas}", 
@@ -511,6 +520,9 @@ def atmosphere_calculator(menu_handler: MenuHandler, font: str, command: callabl
 
         # COLUMN 3
         units_text = Text(sum_two_vectors(COLUMN_3_BASE_POS, (0, ROW_HEIGHT*i)),
-                          "2356 u", font, 16, anchor="w")
+                          "0 u", font, 16, anchor="w")
         menu_handler.add_object("atmosphere_calculator",
                                 f"units_text_{gas}", units_text)
+
+    atmosphere_calculator.load_data(star_system_id, cb_id, menu_handler)
+    atmosphere_calculator.update_menu(menu_handler, tb_size, star_system_id, cb_id)

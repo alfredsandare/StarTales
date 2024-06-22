@@ -7,8 +7,10 @@ class AtmosphereCalculator:
     def __init__(self):
         self.saved_data = {}
 
-    def update_menu(self, menu_handler: MenuHandler, tb_size) -> bool:
+    def update_menu(self, menu_handler: MenuHandler, tb_size, star_system_id, cb_id):
         menu = menu_handler.menues["atmosphere_calculator"]
+        self.save_data(star_system_id, cb_id, menu_handler)
+
         percentages = {}
         for gas in GASES:
             input_obj: TextInput = menu.objects[f"percentage_input_{gas}"]
@@ -53,5 +55,30 @@ class AtmosphereCalculator:
         menu.objects["info_text"].change_property("text", text)
 
     def save_data(self, star_system_id, cb_id, menu_handler: MenuHandler):
-        ...
-        # self.saved_data[(star_system_id, cb_id)] = data
+        menu = menu_handler.menues["atmosphere_calculator"]
+        data = (menu.objects["thickness_input"].get_text(), 
+                {gas: menu.objects[f"percentage_input_{gas}"].get_text() 
+                 for gas in GASES})
+
+        self.saved_data[(star_system_id, cb_id)] = data
+
+    def load_data(self, star_system_id, cb_id, menu_handler: MenuHandler):
+        if (star_system_id, cb_id) not in self.saved_data:
+            self.reset_fields(menu_handler)
+            return
+
+        menu = menu_handler.menues["atmosphere_calculator"]
+        thickness, percentages = self.saved_data[(star_system_id, cb_id)]
+
+        menu.objects["thickness_input"].set_text(thickness)
+        for gas, value in percentages.items():
+            menu.objects[f"percentage_input_{gas}"].set_text(value)
+
+    def reset_fields(self, menu_handler: MenuHandler):
+        menu = menu_handler.menues["atmosphere_calculator"]
+        menu.objects["thickness_input"].set_text("")
+        for gas in GASES:
+            menu.objects[f"percentage_input_{gas}"].set_text("")
+            menu.objects[f"units_text_{gas}"].change_property("text", "0 u")
+
+        self.update_info_text(menu, "")
