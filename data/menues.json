@@ -747,7 +747,7 @@
                 "font": "@get default_font bold@",
                 "font_size": 18,
                 "length": 80,
-                "validity_check": "ALL_NUMBERS_DOTS_COMMA"
+                "validity_check": "POSITIVE_NUMBERS_DOTS_COMMAS"
             },
 
             "gases_title": {

@@ -17,27 +17,21 @@ class AtmosphereCalculator:
             if input_obj.get_validity() and input_obj.get_text() != "":
                 percentages[gas] = float(input_obj.get_text())
 
-        thickness_text = menu.objects["thickness_input"].get_text()
-        if thickness_text == "":
-            self.update_info_text(menu, "Thickness not given.")
+        thickness_input: TextInput = menu.objects["thickness_input"]
+
+        error = self._validate_inputs(thickness_input, percentages)
+        if error:
+            self.update_info_text(menu, error)
             return
 
-        if not percentages:  # No given percentages
-            self.update_info_text(menu, "No percentages given.")
-            return
+        self.update_info_text(menu, "")
 
-        if sum(percentages.values()) != 100:
-            self.update_info_text(menu, f"Percentages must sum up to 100, not {sum(percentages.values())}.")
-            return
-
-        thickness = float(thickness_text.replace(",", "."))
+        thickness = float(thickness_input.get_text().replace(",", "."))
         composition = self.calculate_composition(thickness, tb_size, percentages)
 
         for gas, value in composition.items():
             rounded = round_to_significant_figures(value, 3, make_int=True)
             menu.objects[f"units_text_{gas}"].change_property("text", f"{rounded} u")
-
-        self.update_info_text(menu, "")
 
     def calculate_composition(self, thickness, tb_size, percentages):
         composition_sum = tb_size**2 * thickness
@@ -82,3 +76,19 @@ class AtmosphereCalculator:
             menu.objects[f"units_text_{gas}"].change_property("text", "0 u")
 
         self.update_info_text(menu, "")
+
+    def _validate_inputs(self, thickness_input: TextInput, percentages) -> str:
+        thickness_text = thickness_input.get_text()
+        if thickness_text == "":
+            return "Thickness not given."
+
+        if not thickness_input.get_validity():
+            return "Invalid thickness."
+
+        if not percentages:  # No given percentages
+            return "No percentages given."
+
+        if sum(percentages.values()) != 100:
+            return f"Percentages must sum up to 100, not {sum(percentages.values())}."
+
+        return ""

@@ -507,7 +507,7 @@ def atmosphere_calculator(menu_handler: MenuHandler,
         percentage_input = TextInput(sum_two_vectors(COLUMN_2_BASE_POS, (5, ROW_HEIGHT*i)), 
                                      INPUT_SIZE[0]-10, font, 16, anchor="w",
                                      command=command,
-                                     validity_check=text_input.validity_check.ALL_NUMBERS_DOTS_COMMA)
+                                     validity_check=text_input.validity_check.POSITIVE_NUMBERS_DOTS_COMMAS)
         menu_handler.add_object("atmosphere_calculator", 
                                 f"percentage_input_{gas}", 
                                 percentage_input)
