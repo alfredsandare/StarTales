@@ -30,29 +30,34 @@ PROJECTS = {
     "add_gas": {
         "name": "Add Gas",
         "class": AtmosphereChange,
-        "window": "change_gas"
+        "window": "change_gas",
+        "icon": "add_gas.jpeg"
     },
     "remove_gas": {
         "name": "Remove Gas",
         "class": AtmosphereChange,
-        "window": "change_gas"
+        "window": "change_gas",
+        "icon": "remove_gas.jpeg"
     },
     "change_day_length": {
         "name": "Change Day Length",
         "class": PropertyChange,
         "property": "day_length",
-        "window": "change_property"
+        "window": "change_property",
+        "icon": "change_day_length.jpeg"
     },
     "change_orbital_velocity": {
         "name": "Change Orbital Velocity",
         "class": PropertyChange,
         "property": "orbital_velocity",
-        "window": "change_property"
+        "window": "change_property",
+        "icon": "change_day_length.jpeg"
     },
     "change_sma": {
         "name": "Change Semi-Major Axis",
         "class": PropertyChange,
         "property": "sma",
-        "window": "change_property"
+        "window": "change_property",
+        "icon": "change_day_length.jpeg"
     }
 }

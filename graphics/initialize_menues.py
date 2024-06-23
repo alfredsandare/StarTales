@@ -174,7 +174,6 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
     active_menu = menu_handler.menues["cb_submenu_active_terraforming"]
     available_menu = menu_handler.menues["cb_submenu_available_terraforming"]
 
-
     cb_menu.objects["active_terraforming_bg"].activate()
     cb_menu.objects["active_terraforming_title"].activate()
     cb_menu.objects["available_terraforming_bg"].activate()
@@ -212,7 +211,9 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
     for i, (key, project) in enumerate(PROJECTS.items()):
         base_pos = (0, i*(TERRAFORMINGPROJECT_ITEM_SIZE[1]+SPACE_BETWEEN_ITEMS))
 
-        icon = Shape(base_pos, (50, 50), (255, 0, 0), "rect")
+        icon_image = images[f"terraform_project_icons/{project['icon']}"]
+        icon_image = pygame.transform.scale(icon_image, (50, 50))
+        icon = Image(base_pos, icon_image, anchor="nw")
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_icon_{i}", icon)
 
         text = Text(sum_two_vectors(base_pos, (60, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2)), project["name"], font, 16, anchor="w")
