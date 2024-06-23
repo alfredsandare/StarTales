@@ -523,7 +523,7 @@
         "enable_scroll": true,
         "scroll_slidebar": "scroll_slidebar",
         "max_scroll_offset": 10,
-        "layer": 10,
+        "layer": 12,
 
         "objects": {
             "scroll_slidebar": {
@@ -543,7 +543,7 @@
         "enable_scroll": true,
         "scroll_slidebar": "scroll_slidebar",
         "max_scroll_offset": 10,
-        "layer": 10,
+        "layer": 12,
 
         "objects": {
             "scroll_slidebar": {

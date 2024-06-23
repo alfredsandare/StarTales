@@ -193,6 +193,7 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
 
     active_menu.pos = sum_multiple_vectors(cb_menu.pos, ACTIVE_PROJECT_BASE_POS, (10, 40))
     active_menu.size = SUBMENU_SIZE
+    active_menu.calculate_hitbox()
     active_menu.objects["scroll_slidebar"].change_property("pos", (SUBMENU_SIZE[0], 0))
     active_menu.objects["scroll_slidebar"].change_property("length", SUBMENU_SIZE[1])
 
@@ -205,11 +206,21 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
 
     available_menu.pos = sum_multiple_vectors(cb_menu.pos, AVAILABE_PROJECTS_BASE_POS, (10, 40))
     available_menu.size = (BG_SIZE[0]-20, BG_SIZE[1]-50)
+    available_menu.calculate_hitbox()
     available_menu.objects["scroll_slidebar"].change_property("pos", (SUBMENU_SIZE[0], 0))
     available_menu.objects["scroll_slidebar"].change_property("length", SUBMENU_SIZE[1])
 
     for i, (key, project) in enumerate(PROJECTS.items()):
         base_pos = (0, i*(TERRAFORMINGPROJECT_ITEM_SIZE[1]+SPACE_BETWEEN_ITEMS))
+
+        button = Button(base_pos, 
+                        enable_rect=True, 
+                        rect_length=TERRAFORMINGPROJECT_ITEM_SIZE[0], 
+                        rect_height=TERRAFORMINGPROJECT_ITEM_SIZE[1], 
+                        rect_color=(0, 0, 0, 120),
+                        rect_hover_color=(255, 255, 255, 60),
+                        rect_click_color=(0, 0, 0, 60))
+        menu_handler.add_object("cb_submenu_available_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project['icon']}"]
         icon_image = pygame.transform.scale(icon_image, (50, 50))
