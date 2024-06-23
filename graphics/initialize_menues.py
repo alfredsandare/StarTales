@@ -219,7 +219,8 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
                         rect_height=TERRAFORMINGPROJECT_ITEM_SIZE[1], 
                         rect_color=(0, 0, 0, 120),
                         rect_hover_color=(255, 255, 255, 60),
-                        rect_click_color=(0, 0, 0, 60))
+                        rect_click_color=(0, 0, 0, 60),
+                        command=(add_terraformproject, [menu_handler, project], {}))
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project['icon']}"]
@@ -538,3 +539,8 @@ def atmosphere_calculator(menu_handler: MenuHandler,
 
     atmosphere_calculator.load_data(star_system_id, cb_id, menu_handler)
     atmosphere_calculator.update_menu(menu_handler, tb_size, star_system_id, cb_id)
+
+def add_terraformproject(menu_handler: MenuHandler, 
+                         project: dict):
+    menu = menu_handler.menues["add_terraformproject"]
+    menu.activate()
