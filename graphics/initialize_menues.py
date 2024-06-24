@@ -220,7 +220,7 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
                         rect_color=(0, 0, 0, 120),
                         rect_hover_color=(255, 255, 255, 60),
                         rect_click_color=(0, 0, 0, 60),
-                        command=(add_terraformproject, [menu_handler, project], {}))
+                        command=(add_terraformproject, [menu_handler, project, font], {}))
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project['icon']}"]
@@ -541,6 +541,61 @@ def atmosphere_calculator(menu_handler: MenuHandler,
     atmosphere_calculator.update_menu(menu_handler, tb_size, star_system_id, cb_id)
 
 def add_terraformproject(menu_handler: MenuHandler, 
-                         project: dict):
+                         project: dict, font: str):
     menu = menu_handler.menues["add_terraformproject"]
     menu.activate()
+    menu.objects["amount_input"].change_property("command", (add_terraformproject, [menu_handler, project, font], {}))
+    menu.objects["amount_input"].set_text("")
+
+    object_ids = ["gas_text", "gas_dropdown", "info_text"]
+    menu_handler.delete_multiple_objects("add_terraformproject", object_ids, [])
+
+    pos = [10, 100]
+
+    if project["window"] == "change_gas":
+        gas_text = Text(pos[:], "Gas:", font, 18, anchor="w")
+        menu_handler.add_object("add_terraformproject", "gas_text", gas_text)
+
+        gas_dropdown = Dropdown((pos[0]+70, pos[1]-15), (200, 30), font, 16, 
+                                list(GASES_NAMES.values()), 
+                                list(GASES_NAMES.values())[0],
+                                anchor="nw",
+                                box_bg_color=(39, 48, 148),
+                                box_bg_hover_color=(64, 74, 204),
+                                box_bg_click_color=(30, 35, 140),
+                                box_outline_color=(255, 255, 255),
+                                box_outline_hover_color=(255, 255, 255),
+                                box_outline_click_color=(255, 255, 255))
+        menu_handler.add_object("add_terraformproject", "gas_dropdown", gas_dropdown)
+
+        pos[1] += 50
+
+    unit_text = ""
+    if project["window"] == "change_gas":
+        unit_text = "units"
+    elif project["window"] == "change_property" and project["property"] == "day_length":
+        unit_text = "hours"
+    elif project["window"] == "change_property" and project["property"] == "orbital_velocity":
+        unit_text = "km/s"
+    elif project["window"] == "change_property" and project["property"] == "sma":
+        unit_text = "AU"
+    
+    menu.objects["unit_text"].change_property("text", unit_text)
+
+    amount_input_text: str = menu.objects["amount_input"].get_text()
+    if amount_input_text == "":
+        return
+
+    weekly_amount = 1
+    total_amount = float(amount_input_text.replace(",", "."))
+    total_time = total_amount / weekly_amount
+
+    info_texts = []
+
+    info_texts.append(f"Total amount: {total_amount} {unit_text}")
+    info_texts.append(f"Amount per week: {weekly_amount} {unit_text}/week")
+    info_texts.append(f"Total time: {total_time} weeks")
+    text_sum = "\n".join(info_texts)
+
+    info_text = Text(pos, text_sum, font, 16, anchor="nw")
+    menu_handler.add_object("add_terraformproject", "info_text", info_text)

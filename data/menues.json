@@ -824,6 +824,45 @@
                 "hover_image": "buttons/24x24_cross_hover.png",
                 "click_image": "buttons/24x24_cross_click.png",
                 "command": "deactivate_menu add_terraformproject"
+            },
+
+            "amount_text": {
+                "type": "text",
+                "pos": [10, 50],
+                "text": "Amount:",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "anchor": "w"
+            },
+
+            "amount_input_bg": {
+                "type": "shape",
+                "pos": [80, 50],
+                "size": [90, 25],
+                "color": [39, 48, 148],
+                "type_": "rect",
+                "outline_width": 1,
+                "outline_color": [0, 0, 0],
+                "anchor": "w"
+            },
+
+            "amount_input": {
+                "type": "text_input",
+                "pos": [85, 50],
+                "anchor": "w",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "length": 80,
+                "validity_check": "ALL_NUMBERS_DOTS_COMMAS"
+            },
+
+            "unit_text": {
+                "type": "text",
+                "pos": [180, 50],
+                "text": "units",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "anchor": "w"
             }
         }
     }
