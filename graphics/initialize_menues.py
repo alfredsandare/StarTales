@@ -220,7 +220,7 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
                         rect_color=(0, 0, 0, 120),
                         rect_hover_color=(255, 255, 255, 60),
                         rect_click_color=(0, 0, 0, 60),
-                        command=(add_terraformproject, [menu_handler, project, font], {}))
+                        command=(add_terraformproject, [menu_handler, project, font, cb], {}))
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project['icon']}"]
@@ -541,11 +541,11 @@ def atmosphere_calculator(menu_handler: MenuHandler,
     atmosphere_calculator.update_menu(menu_handler, tb_size, star_system_id, cb_id)
 
 def add_terraformproject(menu_handler: MenuHandler, 
-                         project: dict, font: str):
+                         project: dict, font: str, cb: CelestialBody):
     menu = menu_handler.menues["add_terraformproject"]
     menu.activate()
-    menu.objects["amount_input"].change_property("command", (add_terraformproject, [menu_handler, project, font], {}))
-    menu.objects["amount_input"].set_text("")
+    menu.objects["amount_input"].change_property("command", (add_terraformproject, [menu_handler, project, font, cb], {}))
+    menu.objects["title_text"].change_property("text", f"{project['name']} - {cb.name}")
 
     object_ids = ["gas_text", "gas_dropdown", "info_text"]
     menu_handler.delete_multiple_objects("add_terraformproject", object_ids, [])
@@ -582,8 +582,10 @@ def add_terraformproject(menu_handler: MenuHandler,
     
     menu.objects["unit_text"].change_property("text", unit_text)
 
-    amount_input_text: str = menu.objects["amount_input"].get_text()
-    if amount_input_text == "":
+    amount_input: TextInput = menu.objects["amount_input"]
+    amount_input_text = amount_input.get_text()
+    if amount_input_text == "" or not amount_input.get_validity():
+        menu.objects["add_button"].change_property("command", None)
         return
 
     weekly_amount = 1
@@ -599,3 +601,10 @@ def add_terraformproject(menu_handler: MenuHandler,
 
     info_text = Text(pos, text_sum, font, 16, anchor="nw")
     menu_handler.add_object("add_terraformproject", "info_text", info_text)
+
+    if project["window"] == "change_gas":
+        reverse_dict = {value: key for key, value in GASES_NAMES.items()}
+        gas = reverse_dict[gas_dropdown.get_selected_option()]
+        menu.objects["add_button"].change_property("command", (cb.add_terraformproject, [menu, project, weekly_amount, total_time, gas], {}))
+    else:
+        menu.objects["add_button"].change_property("command", (cb.add_terraformproject, [menu, project, weekly_amount, total_time], {}))

@@ -2,6 +2,7 @@ import pygame
 
 from graphics.celestial_body_visual import CelestialBodyVisual
 from physics.terraformprojects import AtmosphereChange, PropertyChange, TerraformProject
+from PhoenixGUI import Menu
 
 class CelestialBody:
     def __init__(self, visual: CelestialBodyVisual, size: float, name: str, id: str):
@@ -48,3 +49,14 @@ class CelestialBody:
         if terraform_project.progress >= terraform_project.total_time:
             return True
         return False
+
+    def add_terraformproject(self, menu: Menu, project: dict, weekly_amount: float, total_time: int, gas: str = None):
+        if project["window"] == "change_gas":
+            terraform_project = AtmosphereChange(
+                project["name"], weekly_amount, total_time, gas)
+        elif project["window"] == "change_property":
+            terraform_project = PropertyChange(
+                project["name"], weekly_amount, total_time, project["property"])
+
+        self.terraform_projects.append(terraform_project)
+        menu.deactivate()
