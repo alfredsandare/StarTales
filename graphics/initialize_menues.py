@@ -27,7 +27,7 @@ def outliner(menu_handler: MenuHandler,
              star_id: str, 
              show_moons_in_outliner: bool, 
              font, 
-             invoke_command):
+             open_cb_menu_command):
     
     object_ids = []
     object_ids_startswith = ["cb_button_", "cb_icon_", "cb_title_", "cb_type_"]
@@ -55,7 +55,7 @@ def outliner(menu_handler: MenuHandler,
                         rect_outline_color=(0, 0, 0, 0),
                         rect_outline_hover_color=(255, 255, 255),
                         rect_outline_click_color=(140, 140, 140),
-                        command=(invoke_command, [f"open_cb_menu {cb.id}"], {}))
+                        command=lambda arg=f"open_cb_menu {cb.id}": open_cb_menu_command(arg))
         
         menu_handler.add_object("outliner_scroll", 
                                 f"cb_button_{added_planets}", 
@@ -213,6 +213,9 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
     for i, (key, project) in enumerate(PROJECTS.items()):
         base_pos = (0, i*(TERRAFORMINGPROJECT_ITEM_SIZE[1]+SPACE_BETWEEN_ITEMS))
 
+        command_lambda = lambda menu_handler=menu_handler, project=project, font=font, cb=cb, images=images: \
+            add_terraformproject(menu_handler, project, font, cb, images)
+
         button = Button(base_pos, 
                         enable_rect=True, 
                         rect_length=TERRAFORMINGPROJECT_ITEM_SIZE[0], 
@@ -220,7 +223,7 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
                         rect_color=(0, 0, 0, 120),
                         rect_hover_color=(255, 255, 255, 60),
                         rect_click_color=(0, 0, 0, 60),
-                        command=(add_terraformproject, [menu_handler, project, font, cb, images], {}))
+                        command=command_lambda)
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project['icon']}"]
@@ -241,7 +244,7 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
                         rect_color=(0, 0, 0, 120),
                         rect_hover_color=(255, 255, 255, 60),
                         rect_click_color=(0, 0, 0, 60),
-                        command=(cb.delete_terraformproject, [i], {}))
+                        command=lambda index=i: cb.delete_terraformproject(index))
         menu_handler.add_object("cb_submenu_active_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project.icon}"]
@@ -391,7 +394,7 @@ def _init_moons(menu_handler: MenuHandler,
                             rect_outline_color=(0, 0, 0, 0),
                             rect_outline_hover_color=(255, 255, 255),
                             rect_outline_click_color=(140, 140, 140),
-                            command=(invoke_command, [f"open_cb_menu {cb.id}"], {}))
+                            command=lambda arg=f"open_cb_menu {cb.id}": invoke_command(arg))
             
             menu_handler.add_object("cb_submenu_moons", 
                                     f"cb_button_{added_cbs}", 
@@ -513,7 +516,7 @@ def atmosphere_calculator(menu_handler: MenuHandler,
     atm_menu = menu_handler.menues["atmosphere_calculator"]
     atm_menu.objects["title_text"].change_property("text", f"Atmosphere Calculator - {cb_name}")
 
-    command = (atmosphere_calculator.update_menu, [menu_handler, tb_size, star_system_id, cb_id], {})
+    command = lambda: atmosphere_calculator.update_menu(menu_handler, tb_size, star_system_id, cb_id)
     atm_menu.objects["thickness_input"].change_property("command", command)
 
     COLUMN_1_BASE_POS = (10, 140)
@@ -565,7 +568,8 @@ def add_terraformproject(menu_handler: MenuHandler,
                          project: dict, font: str, cb: CelestialBody, images):
     menu = menu_handler.menues["add_terraformproject"]
     menu.activate()
-    menu.objects["amount_input"].change_property("command", (add_terraformproject, [menu_handler, project, font, cb, images], {}))
+    command = lambda: add_terraformproject(menu_handler, project, font, cb, images)
+    menu.objects["amount_input"].change_property("command", command)
     menu.objects["title_text"].change_property("text", f"{project['name']} - {cb.name}")
 
     object_ids = ["gas_text", "gas_dropdown", "info_text"]
