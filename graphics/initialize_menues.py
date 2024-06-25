@@ -167,6 +167,20 @@ def cb_menu(menu_handler: MenuHandler,
         _init_terraforming(menu_handler, cb, font, images)
 
 def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, images):
+    object_ids_startswith = [
+        "project_button_",
+        "project_icon_",
+        "project_text_"
+    ]
+    menu_handler.delete_multiple_objects("cb_submenu_available_terraforming", [], object_ids_startswith)
+
+    object_ids_startswith = [
+        "project_button_",
+        "project_icon_",
+        "project_text_"
+    ]
+    menu_handler.delete_multiple_objects("cb_submenu_active_terraforming", [], object_ids_startswith)
+
     menu_handler.menues["cb_submenu_active_terraforming"].activate()
     menu_handler.menues["cb_submenu_available_terraforming"].activate()
 
@@ -237,6 +251,9 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
     for i, project in enumerate(cb.terraform_projects):
         base_pos = (0, i*(TERRAFORMINGPROJECT_ITEM_SIZE[1]+SPACE_BETWEEN_ITEMS))
 
+        _init_terraforming_lambda = lambda menu_handler=menu_handler, cb=cb, font=font, images=images: \
+            _init_terraforming(menu_handler, cb, font, images)
+
         button = Button(base_pos, 
                         enable_rect=True, 
                         rect_length=TERRAFORMINGPROJECT_ITEM_SIZE[0], 
@@ -244,7 +261,7 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
                         rect_color=(0, 0, 0, 120),
                         rect_hover_color=(255, 255, 255, 60),
                         rect_click_color=(0, 0, 0, 60),
-                        command=lambda index=i: cb.delete_terraformproject(index))
+                        command=lambda index=i, func=_init_terraforming_lambda: cb.delete_terraformproject(index, func))
         menu_handler.add_object("cb_submenu_active_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project.icon}"]

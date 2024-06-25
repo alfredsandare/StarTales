@@ -71,5 +71,6 @@ class CelestialBody:
         menu.deactivate()
         update_terraform_menu()
 
-    def delete_terraformproject(self, index: int):
+    def delete_terraformproject(self, index: int, update_terraform_menu: callable):
         del self.terraform_projects[index]
+        update_terraform_menu()
