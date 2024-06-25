@@ -1,22 +1,23 @@
 class TerraformProject:
-    def __init__(self, name, weekly_amount, total_time) -> None:
+    def __init__(self, name, weekly_amount, total_time, icon) -> None:
         self.name = name
         self.weekly_amount = weekly_amount
         self.total_time = total_time
         self.progress = 0
+        self.icon = icon
 
 
 class AtmosphereChange(TerraformProject):
-    def __init__(self, name, weekly_amount, total_time, gas) -> None:
-        super().__init__(name, weekly_amount, total_time)
+    def __init__(self, name, weekly_amount, total_time, icon, gas) -> None:
+        super().__init__(name, weekly_amount, total_time, icon)
         self.gas = gas
 
 
 VALID_PROPERTIES = ["sma", "orbital_velocity", "day_length"]
 
 class PropertyChange(TerraformProject):
-    def __init__(self, name, weekly_amount, total_time, property) -> None:
-        super().__init__(name, weekly_amount, total_time)
+    def __init__(self, name, weekly_amount, total_time, icon, property) -> None:
+        super().__init__(name, weekly_amount, total_time, icon)
 
         if property not in VALID_PROPERTIES:
             raise ValueError(f"Invalid property: {property}")

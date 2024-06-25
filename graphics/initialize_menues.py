@@ -164,9 +164,9 @@ def cb_menu(menu_handler: MenuHandler,
         _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
     elif menu_settings["cb_menu_mode"] == "terraforming":
-        _init_terraforming(menu_handler, cb, font, settings, images)
+        _init_terraforming(menu_handler, cb, font, images)
 
-def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, settings, images):
+def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, images):
     menu_handler.menues["cb_submenu_active_terraforming"].activate()
     menu_handler.menues["cb_submenu_available_terraforming"].activate()
 
@@ -220,7 +220,7 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
                         rect_color=(0, 0, 0, 120),
                         rect_hover_color=(255, 255, 255, 60),
                         rect_click_color=(0, 0, 0, 60),
-                        command=(add_terraformproject, [menu_handler, project, font, cb], {}))
+                        command=(add_terraformproject, [menu_handler, project, font, cb, images], {}))
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project['icon']}"]
@@ -230,6 +230,27 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, setti
 
         text = Text(sum_two_vectors(base_pos, (60, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2)), project["name"], font, 16, anchor="w")
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_text_{i}", text)
+
+    for i, project in enumerate(cb.terraform_projects):
+        base_pos = (0, i*(TERRAFORMINGPROJECT_ITEM_SIZE[1]+SPACE_BETWEEN_ITEMS))
+
+        button = Button(base_pos, 
+                        enable_rect=True, 
+                        rect_length=TERRAFORMINGPROJECT_ITEM_SIZE[0], 
+                        rect_height=TERRAFORMINGPROJECT_ITEM_SIZE[1], 
+                        rect_color=(0, 0, 0, 120),
+                        rect_hover_color=(255, 255, 255, 60),
+                        rect_click_color=(0, 0, 0, 60),
+                        command=(cb.delete_terraformproject, [i], {}))
+        menu_handler.add_object("cb_submenu_active_terraforming", f"project_button_{i}", button)
+
+        icon_image = images[f"terraform_project_icons/{project.icon}"]
+        icon_image = pygame.transform.scale(icon_image, (50, 50))
+        icon = Image(base_pos, icon_image, anchor="nw")
+        menu_handler.add_object("cb_submenu_active_terraforming", f"project_icon_{i}", icon)
+
+        text = Text(sum_two_vectors(base_pos, (60, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2)), project.name, font, 16, anchor="w")
+        menu_handler.add_object("cb_submenu_active_terraforming", f"project_text_{i}", text)
 
 def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: CelestialBody, font, settings, cb_menu_size):
     cb_menu = menu_handler.menues["cb_menu"]
@@ -541,10 +562,10 @@ def atmosphere_calculator(menu_handler: MenuHandler,
     atmosphere_calculator.update_menu(menu_handler, tb_size, star_system_id, cb_id)
 
 def add_terraformproject(menu_handler: MenuHandler, 
-                         project: dict, font: str, cb: CelestialBody):
+                         project: dict, font: str, cb: CelestialBody, images):
     menu = menu_handler.menues["add_terraformproject"]
     menu.activate()
-    menu.objects["amount_input"].change_property("command", (add_terraformproject, [menu_handler, project, font, cb], {}))
+    menu.objects["amount_input"].change_property("command", (add_terraformproject, [menu_handler, project, font, cb, images], {}))
     menu.objects["title_text"].change_property("text", f"{project['name']} - {cb.name}")
 
     object_ids = ["gas_text", "gas_dropdown", "info_text"]
@@ -601,10 +622,20 @@ def add_terraformproject(menu_handler: MenuHandler,
 
     info_text = Text(pos, text_sum, font, 16, anchor="nw")
     menu_handler.add_object("add_terraformproject", "info_text", info_text)
+    
+    _init_terraforming_lambda = lambda menu_handler=menu_handler, cb=cb, font=font, images=images: \
+        _init_terraforming(menu_handler, cb, font, images)
 
-    if project["window"] == "change_gas":
+    add_terraformproject_lambda = lambda menu_handler=menu_handler, project=project, \
+        weekly_amount=weekly_amount, total_time=total_time, _init_terraforming_lambda=_init_terraforming_lambda: \
+        cb.add_terraformproject(menu_handler, project, weekly_amount, total_time, _init_terraforming_lambda)
+
+    if project["window"] == "change_gas":  # override add_terraformproject_lambda
         reverse_dict = {value: key for key, value in GASES_NAMES.items()}
         gas = reverse_dict[gas_dropdown.get_selected_option()]
-        menu.objects["add_button"].change_property("command", (cb.add_terraformproject, [menu, project, weekly_amount, total_time, gas], {}))
-    else:
-        menu.objects["add_button"].change_property("command", (cb.add_terraformproject, [menu, project, weekly_amount, total_time], {}))
+        
+        add_terraformproject_lambda = lambda menu_handler=menu_handler, project=project, \
+            weekly_amount=weekly_amount, total_time=total_time, _init_terraforming_lambda=_init_terraforming_lambda, gas=gas: \
+            cb.add_terraformproject(menu_handler, project, weekly_amount, total_time, _init_terraforming_lambda, gas)
+
+    menu.objects["add_button"].change_property("command", add_terraformproject_lambda)

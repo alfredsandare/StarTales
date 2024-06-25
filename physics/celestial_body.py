@@ -1,8 +1,9 @@
 import pygame
 
 from graphics.celestial_body_visual import CelestialBodyVisual
+from physics.atmosphere import GASES_NAMES
 from physics.terraformprojects import AtmosphereChange, PropertyChange, TerraformProject
-from PhoenixGUI import Menu
+from PhoenixGUI import Menu, MenuHandler
 
 class CelestialBody:
     def __init__(self, visual: CelestialBodyVisual, size: float, name: str, id: str):
@@ -50,13 +51,25 @@ class CelestialBody:
             return True
         return False
 
-    def add_terraformproject(self, menu: Menu, project: dict, weekly_amount: float, total_time: int, gas: str = None):
+    def add_terraformproject(self, menu_handler: MenuHandler, project: dict, 
+                             weekly_amount: float, total_time: int, 
+                             update_terraform_menu: callable, gas: str = None):
+
+        menu: Menu = menu_handler.menues["add_terraformproject"]
         if project["window"] == "change_gas":
+            name = ("Add " if weekly_amount > 0 else "Remove ") \
+                + GASES_NAMES[gas]
             terraform_project = AtmosphereChange(
-                project["name"], weekly_amount, total_time, gas)
+                name, weekly_amount, total_time, project["icon"], gas)
+
         elif project["window"] == "change_property":
             terraform_project = PropertyChange(
-                project["name"], weekly_amount, total_time, project["property"])
+                project["name"], weekly_amount, total_time, 
+                project["icon"], project["property"])
 
         self.terraform_projects.append(terraform_project)
         menu.deactivate()
+        update_terraform_menu()
+
+    def delete_terraformproject(self, index: int):
+        del self.terraform_projects[index]
