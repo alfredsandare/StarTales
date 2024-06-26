@@ -127,7 +127,8 @@ class Game:
             self.game_time_since_last_time_tick = 0
 
     def _update_menues_from_time_tick(self):
-        self._init_cb_menu_wrapper()
+        if self.menu_handler.menues["cb_menu"].active:
+            self._init_cb_menu_wrapper()
 
     def _act_on_esc_press(self):
         order_of_menues = [
@@ -139,7 +140,9 @@ class Game:
         for menu_id in order_of_menues:
             if self.menu_handler.menues[menu_id].active:
                 self.menu_handler.menues[menu_id].deactivate()
-                if menu_id == "small_planet_menu":
+                if menu_id == "cb_menu":
+                    self.invoke_command("close_cb_menu")
+                elif menu_id == "small_planet_menu":
                     self.current_star_system.selected_cb_id = None
                 return
 
@@ -318,6 +321,15 @@ class Game:
             self._init_cb_menu_wrapper()
             self.menu_handler.menues["cb_menu"].activate()
             self.menu_handler.menues["cb_submenu_moons"].activate()
+
+        elif command == "close_cb_menu":
+            to_deactivate = [
+                "cb_menu",
+                "cb_submenu_moons",
+                "cb_submenu_available_terraforming",
+                "cb_submenu_active_terraforming"
+            ]
+            self._switch_menues([], to_deactivate)
 
         elif command == "change_time":
             time_button = self.menu_handler.menues["time_menu"].objects["time_button"]
