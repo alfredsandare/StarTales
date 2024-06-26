@@ -464,7 +464,7 @@
                 "image": "buttons/24x24_cross.png",
                 "hover_image": "buttons/24x24_cross_hover.png",
                 "click_image": "buttons/24x24_cross_click.png",
-                "command": "deactivate_menu cb_menu cb_submenu_moons"
+                "command": "deactivate_menu cb_menu cb_submenu_moons cb_submenu_active_terraforming cb_submenu_available_terraforming"
             },
 
             "terraforming_button": {
