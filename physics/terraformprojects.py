@@ -13,7 +13,7 @@ class TerraformProject:
     def get_info_text(self) -> str:
         progress = round_to_significant_figures(100*self.progress/self.total_time,
                                                 3, make_int=True, make_zero=True)
-        weeks_left = self.total_time - self.progress
+        weeks_left = int(self.total_time - self.progress)
         return f"{self.name}\n{progress}% completed, {weeks_left} weeks left"
 
 

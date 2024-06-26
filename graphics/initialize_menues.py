@@ -141,6 +141,7 @@ def cb_menu(menu_handler: MenuHandler,
         "moons_title",
         "atmosphere_bg",
         "atmosphere_title",
+        "atmosphere_calculator_button",
         "districts_bg",
         "districts_title",
         "active_terraforming_bg",
@@ -152,14 +153,12 @@ def cb_menu(menu_handler: MenuHandler,
     for object_id in to_deactivate:
         cb_menu.objects[object_id].deactivate()
 
-    if isinstance(cb, TerrestrialBody):
-        _init_districts(menu_handler, cb, climate_images)
-
     if isinstance(cb, TerrestrialBody) and menu_settings["cb_menu_mode"] == "overview":
         _init_atmosphere(menu_handler, cb, font, menu_settings["atmosphere_menu_mode"], 
                          images, switch_atm_mode_command)
 
     if menu_settings["cb_menu_mode"] == "overview":
+        _init_districts(menu_handler, cb, climate_images)
         _init_properties(menu_handler, cb, host_cb, font, settings, SIZE)
         _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
@@ -173,12 +172,6 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
         "project_text_"
     ]
     menu_handler.delete_multiple_objects("cb_submenu_available_terraforming", [], object_ids_startswith)
-
-    object_ids_startswith = [
-        "project_button_",
-        "project_icon_",
-        "project_text_"
-    ]
     menu_handler.delete_multiple_objects("cb_submenu_active_terraforming", [], object_ids_startswith)
 
     menu_handler.menues["cb_submenu_active_terraforming"].activate()
@@ -193,12 +186,12 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
     cb_menu.objects["available_terraforming_bg"].activate()
     cb_menu.objects["available_terraforming_title"].activate()
 
-    ACTIVE_PROJECT_BASE_POS = (350, 40)  # relative to cb_menu's pos
-    BG_SIZE = (250, 500)
-    TERRAFORMINGPROJECT_ITEM_SIZE = (230, 60)
+    ACTIVE_PROJECT_BASE_POS = (10, 40)  # relative to cb_menu's pos
+    BG_SIZE = (400, 500)
+    TERRAFORMINGPROJECT_ITEM_SIZE = (380, 80)
     SPACE_BETWEEN_ITEMS = 10
     SUBMENU_SIZE = (BG_SIZE[0]-20, BG_SIZE[1]-50)
-    ICON_SIZE = (50, 50)
+    ICON_SIZE = 2 * (TERRAFORMINGPROJECT_ITEM_SIZE[1]-10,)
     ICON_X_OFFSET = 5
 
     cb_menu.objects["active_terraforming_bg"].change_property("pos", ACTIVE_PROJECT_BASE_POS)
@@ -213,7 +206,7 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
     active_menu.objects["scroll_slidebar"].change_property("pos", (SUBMENU_SIZE[0], 0))
     active_menu.objects["scroll_slidebar"].change_property("length", SUBMENU_SIZE[1])
 
-    AVAILABE_PROJECTS_BASE_POS = (610, 40)  # relative to cb_menu's pos
+    AVAILABE_PROJECTS_BASE_POS = (420, 40)  # relative to cb_menu's pos
     cb_menu.objects["available_terraforming_bg"].change_property("pos", AVAILABE_PROJECTS_BASE_POS)
     cb_menu.objects["available_terraforming_bg"].change_property("size", BG_SIZE)
 
@@ -248,7 +241,8 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
         icon = Image(pos, icon_image, anchor="w")
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_icon_{i}", icon)
 
-        text = Text(sum_two_vectors(base_pos, (60, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2)), project["name"], font, 16, anchor="w")
+        pos = sum_two_vectors(base_pos, (ICON_SIZE[0] + 3*ICON_X_OFFSET, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2))
+        text = Text(pos, project["name"], font, 18, anchor="w")
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_text_{i}", text)
 
     for i, project in enumerate(cb.terraform_projects):
@@ -273,7 +267,8 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
         icon = Image(pos, icon_image, anchor="w")
         menu_handler.add_object("cb_submenu_active_terraforming", f"project_icon_{i}", icon)
 
-        text = Text(sum_two_vectors(base_pos, (60, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2)), project.get_info_text(), font, 14, anchor="w")
+        pos = sum_two_vectors(base_pos, (ICON_SIZE[0] + 3*ICON_X_OFFSET, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2))
+        text = Text(pos, project.get_info_text(), font, 16, anchor="w")
         menu_handler.add_object("cb_submenu_active_terraforming", f"project_text_{i}", text)
 
 def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: CelestialBody, font, settings, cb_menu_size):
