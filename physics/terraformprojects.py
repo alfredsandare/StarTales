@@ -1,3 +1,7 @@
+from physics.atmosphere import GASES_NAMES
+from util import round_to_significant_figures
+
+
 class TerraformProject:
     def __init__(self, name, weekly_amount, total_time, icon) -> None:
         self.name = name
@@ -6,14 +10,30 @@ class TerraformProject:
         self.progress = 0
         self.icon = icon
 
+    def get_info_text(self) -> str:
+        progress = round_to_significant_figures(100*self.progress/self.total_time,
+                                                3, make_int=True, make_zero=True)
+        weeks_left = self.total_time - self.progress
+        return f"{self.name}\n{progress}% completed, {weeks_left} weeks left"
+
 
 class AtmosphereChange(TerraformProject):
     def __init__(self, name, weekly_amount, total_time, icon, gas) -> None:
         super().__init__(name, weekly_amount, total_time, icon)
         self.gas = gas
 
+    def get_info_text(self) -> str:
+        return super().get_info_text() \
+            + f"\n{self.weekly_amount} units of {GASES_NAMES[self.gas]} per week"
+
 
 VALID_PROPERTIES = ["sma", "orbital_velocity", "day_length"]
+PROPERTY_UNITS = {
+    "sma": "AU",
+    "orbital_velocity": "m/s",
+    "day_length": "hours"
+}
+
 
 class PropertyChange(TerraformProject):
     def __init__(self, name, weekly_amount, total_time, icon, property) -> None:
@@ -22,6 +42,10 @@ class PropertyChange(TerraformProject):
         if property not in VALID_PROPERTIES:
             raise ValueError(f"Invalid property: {property}")
         self.property = property
+
+    def get_info_text(self) -> str:
+        base = super().get_info_text()
+        return f"{base}\n{self.weekly_amount} {PROPERTY_UNITS[self.property]} per week"
 
 
 # These projects are the ones displayed in available/active projects.

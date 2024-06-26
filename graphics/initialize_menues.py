@@ -195,9 +195,11 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
 
     ACTIVE_PROJECT_BASE_POS = (350, 40)  # relative to cb_menu's pos
     BG_SIZE = (250, 500)
-    TERRAFORMINGPROJECT_ITEM_SIZE = (230, 50)
+    TERRAFORMINGPROJECT_ITEM_SIZE = (230, 60)
     SPACE_BETWEEN_ITEMS = 10
     SUBMENU_SIZE = (BG_SIZE[0]-20, BG_SIZE[1]-50)
+    ICON_SIZE = (50, 50)
+    ICON_X_OFFSET = 5
 
     cb_menu.objects["active_terraforming_bg"].change_property("pos", ACTIVE_PROJECT_BASE_POS)
     cb_menu.objects["active_terraforming_bg"].change_property("size", BG_SIZE)
@@ -241,8 +243,9 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project['icon']}"]
-        icon_image = pygame.transform.scale(icon_image, (50, 50))
-        icon = Image(base_pos, icon_image, anchor="nw")
+        icon_image = pygame.transform.scale(icon_image, ICON_SIZE)
+        pos = sum_two_vectors(base_pos, (ICON_X_OFFSET, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2))
+        icon = Image(pos, icon_image, anchor="w")
         menu_handler.add_object("cb_submenu_available_terraforming", f"project_icon_{i}", icon)
 
         text = Text(sum_two_vectors(base_pos, (60, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2)), project["name"], font, 16, anchor="w")
@@ -265,11 +268,12 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
         menu_handler.add_object("cb_submenu_active_terraforming", f"project_button_{i}", button)
 
         icon_image = images[f"terraform_project_icons/{project.icon}"]
-        icon_image = pygame.transform.scale(icon_image, (50, 50))
-        icon = Image(base_pos, icon_image, anchor="nw")
+        icon_image = pygame.transform.scale(icon_image, ICON_SIZE)
+        pos = sum_two_vectors(base_pos, (ICON_X_OFFSET, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2))
+        icon = Image(pos, icon_image, anchor="w")
         menu_handler.add_object("cb_submenu_active_terraforming", f"project_icon_{i}", icon)
 
-        text = Text(sum_two_vectors(base_pos, (60, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2)), project.name, font, 16, anchor="w")
+        text = Text(sum_two_vectors(base_pos, (60, TERRAFORMINGPROJECT_ITEM_SIZE[1]/2)), project.get_info_text(), font, 14, anchor="w")
         menu_handler.add_object("cb_submenu_active_terraforming", f"project_text_{i}", text)
 
 def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: CelestialBody, font, settings, cb_menu_size):
