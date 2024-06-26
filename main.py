@@ -105,11 +105,7 @@ class Game:
 
         for star_system in self.star_systems.values():
             for pb in star_system.get_pbs_list():
-                pb.orbit_progress += pb.get_progress_per_week()
-
-                if pb.orbit_progress >= 1:
-                    pb.orbit_progress -= 1
-                    pb.visual_orbit_progress -= 1
+                pb.update_orbit_progress()
 
             for cb in star_system.get_all_cbs():
                 cb.apply_terraform_projects()
@@ -187,17 +183,7 @@ class Game:
         time_ticks_per_s = 1 / time_speed_in_s
 
         for pb in self.current_star_system.get_pbs_list():
-            if pb.visual_orbit_progress < pb.orbit_progress:
-
-                progress = pb.get_progress_per_week()
-
-                progress_per_s = progress * time_ticks_per_s
-                progress_per_frame = progress_per_s / fps
-
-                pb.visual_orbit_progress += progress_per_frame
-
-                if pb.visual_orbit_progress > pb.orbit_progress:
-                    pb.orbit_progress = pb.visual_orbit_progress
+            pb.perform_visual_orbit_progress_calculations(fps, time_ticks_per_s)
 
     def load_game_settings(self):
         with open(PATH + "data/game_settings.json") as file:
