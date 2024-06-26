@@ -111,6 +111,7 @@ class Game:
                 cb.apply_terraform_projects()
 
         self._update_time_menu_text()
+        self._update_menues_from_time_tick()
 
     def _update_time_menu_text(self):
         self.menu_handler.menues["time_menu"].objects["time_text"] \
@@ -124,6 +125,9 @@ class Game:
                 self.game_time_since_last_time_tick -= self.ms_per_in_game_week
         else:
             self.game_time_since_last_time_tick = 0
+
+    def _update_menues_from_time_tick(self):
+        self._init_cb_menu_wrapper()
 
     def _act_on_esc_press(self):
         order_of_menues = [
