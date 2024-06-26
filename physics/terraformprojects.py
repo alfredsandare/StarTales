@@ -28,9 +28,11 @@ class AtmosphereChange(TerraformProject):
 
 
 VALID_PROPERTIES = ["sma", "orbital_velocity", "day_length"]
+
+# these are frontend units
 PROPERTY_UNITS = {
     "sma": "AU",
-    "orbital_velocity": "m/s",
+    "orbital_velocity": "km/s",
     "day_length": "hours"
 }
 
@@ -45,7 +47,9 @@ class PropertyChange(TerraformProject):
 
     def get_info_text(self) -> str:
         base = super().get_info_text()
-        return f"{base}\n{self.weekly_amount} {PROPERTY_UNITS[self.property]} per week"
+        amount = self.weekly_amount/get_amount_modifier(self.property)
+        amount_text = round_to_significant_figures(amount, 3, make_int=True)
+        return f"{base}\n{amount_text} {PROPERTY_UNITS[self.property]} per week"
 
 
 # These projects are the ones displayed in available/active projects.
@@ -86,3 +90,12 @@ PROJECTS = {
         "icon": "change_day_length.jpeg"
     }
 }
+
+def get_amount_modifier(property):
+    # Used for converting frontend input to backend values.
+    if property == "day_length":
+        return 3600  # Convert hours to seconds
+    elif property == "orbital_velocity":
+        return 1000  # Convert km/s to m/s
+    elif property == "sma":
+        return 1  # Already in AU

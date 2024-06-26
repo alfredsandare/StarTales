@@ -13,7 +13,7 @@ from physics.celestial_body import CelestialBody
 from physics.planetary_body import PlanetaryBody
 from physics.star import Star
 from physics.star_system import StarSystem
-from physics.terraformprojects import PROJECTS
+from physics.terraformprojects import PROJECTS, PROPERTY_UNITS
 from physics.terrestrial_body import TerrestrialBody
 from util import orbital_vel_to_orbital_period, round_seconds, round_to_significant_figures
 
@@ -614,12 +614,8 @@ def add_terraformproject(menu_handler: MenuHandler,
     unit_text = ""
     if project["window"] == "change_gas":
         unit_text = "units"
-    elif project["window"] == "change_property" and project["property"] == "day_length":
-        unit_text = "hours"
-    elif project["window"] == "change_property" and project["property"] == "orbital_velocity":
-        unit_text = "km/s"
-    elif project["window"] == "change_property" and project["property"] == "sma":
-        unit_text = "AU"
+    elif project["window"] == "change_property":
+        unit_text = PROPERTY_UNITS[project["property"]]
     
     menu.objects["unit_text"].change_property("text", unit_text)
 

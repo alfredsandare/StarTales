@@ -2,7 +2,7 @@ import pygame
 
 from graphics.celestial_body_visual import CelestialBodyVisual
 from physics.atmosphere import GASES_NAMES
-from physics.terraformprojects import AtmosphereChange, PropertyChange, TerraformProject
+from physics.terraformprojects import AtmosphereChange, PropertyChange, TerraformProject, get_amount_modifier
 from PhoenixGUI import Menu, MenuHandler
 
 class CelestialBody:
@@ -63,8 +63,9 @@ class CelestialBody:
                 name, weekly_amount, total_time, project["icon"], gas)
 
         elif project["window"] == "change_property":
+            amount = weekly_amount * get_amount_modifier(project["property"])
             terraform_project = PropertyChange(
-                project["name"], weekly_amount, total_time, 
+                project["name"], amount, total_time, 
                 project["icon"], project["property"])
 
         self.terraform_projects.append(terraform_project)
