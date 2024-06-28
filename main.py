@@ -18,6 +18,7 @@ from physics.star_system import StarSystem
 from physics.terraformprojects import AtmosphereChange, PropertyChange
 from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
+from society.species import Species
 from util import convert_weeks_to_years, is_valid_image
 from graphics import gas_giant_visual_style
 
@@ -40,6 +41,7 @@ class Game:
         self.menu_handler.add_font_path(PATH + "data\\fonts\\")
 
         self.game_settings = self.load_game_settings()
+        self.species = self.load_species_data()
 
         self.view = "main"
 
@@ -230,6 +232,20 @@ class Game:
                         validity_check
 
         return loaded_data
+    
+    def load_species_data(self):
+        with open(PATH + "data/species.json") as file:
+            species_data = json.load(file)
+
+            species = {}
+            for species_id, species in species_data.items():
+                image = self.images[f"species/{species['portrait']}.png"]
+                species[species_id] = Species(species["name"],
+                                              species["characteristics"],
+                                              image,
+                                              species["environment"])
+
+            return species
 
     def _get_button_color_theme(self, theme):
         if theme == "default":
