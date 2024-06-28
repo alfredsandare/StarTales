@@ -1,0 +1,45 @@
+{
+    "human": {
+        "name": "Human",
+        "characteristics": {
+            "intelligence": 5,
+            "physical_strength": 3,
+            "unruliness": 4
+        },
+        "portrait": "mammal_4",
+        "environment": "land"
+    },
+
+    "phalor": {
+        "name": "Phalor",
+        "characteristics": {
+            "intelligence": 3,
+            "physical_strength": 6,
+            "unruliness": 5
+        },
+        "portrait": "mammal_1",
+        "environment": "land"
+    },
+
+    "zenlar": {
+        "name": "Zenlar",
+        "characteristics": {
+            "intelligence": 7,
+            "physical_strength": 2,
+            "unruliness": 3
+        },
+        "portrait": "avian_1",
+        "environment": "air"
+    },
+
+    "tzarnath": {
+        "name": "Tzarnath",
+        "characteristics": {
+            "intelligence": 4,
+            "physical_strength": 6,
+            "unruliness": 6
+        },
+        "portrait": "insectoid_1",
+        "environment": "land"
+    }
+}
