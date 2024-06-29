@@ -1,5 +1,19 @@
 import pygame
 
+CHARACTERISTICS = ['intelligence', 'physical_strength', 'unruliness']
+CHARACTERISTICS_NAMES = {
+    'intelligence': 'Intelligence',
+    'physical_strength': 'Physical Strength',
+    'unruliness': 'Unruliness'
+}
+
+ENVIRONMENTS = ['land', 'sea', 'air']
+ENVIRONMENTS_NAMES = {
+    'land': 'Land',
+    'sea': 'Sea',
+    'air': 'Air'
+}
+
 
 class Species:
     def __init__(self, 

@@ -70,6 +70,8 @@ class Game:
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
+        self.menu_handler.menues["view_species_menu"].activate()
+        initialize_menues.view_species_menu(self.menu_handler, self.species["zenlar"], self.get_values("default_font bold skip_quotes"))
 
         clock = pygame.time.Clock()
         while True:
@@ -238,12 +240,12 @@ class Game:
             species_data = json.load(file)
 
             species = {}
-            for species_id, species in species_data.items():
-                image = self.images[f"species/{species['portrait']}.png"]
-                species[species_id] = Species(species["name"],
-                                              species["characteristics"],
+            for species_id, species_value in species_data.items():
+                image = self.images[f"species/{species_value['portrait']}.png"]
+                species[species_id] = Species(species_value["name"],
+                                              species_value["characteristics"],
                                               image,
-                                              species["environment"])
+                                              species_value["environment"])
 
             return species
 

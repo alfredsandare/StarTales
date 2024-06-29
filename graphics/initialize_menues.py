@@ -15,6 +15,7 @@ from physics.star import Star
 from physics.star_system import StarSystem
 from physics.terraformprojects import PROJECTS, PROPERTY_UNITS
 from physics.terrestrial_body import TerrestrialBody
+from society.species import CHARACTERISTICS, CHARACTERISTICS_NAMES, ENVIRONMENTS_NAMES, Species
 from util import orbital_vel_to_orbital_period, round_seconds, round_to_significant_figures
 
 YES_NO = {
@@ -655,3 +656,28 @@ def add_terraformproject(menu_handler: MenuHandler,
             cb.add_terraformproject(menu_handler, project, weekly_amount, total_time, _init_terraforming_lambda, gas)
 
     menu.objects["add_button"].change_property("command", add_terraformproject_lambda)
+
+def view_species_menu(menu_handler: MenuHandler, species: Species, font: str):
+    menu = menu_handler.menues["view_species_menu"]
+    menu.objects["title_text"].change_property("text", f"Species - {species.name}")
+
+    species_image = pygame.transform.scale(species.portrait, (128, 128))
+    species_menu_image = Image((10, 40), species_image)
+    menu_handler.add_object("view_species_menu", "species_image", species_menu_image)
+
+    ROW_HEIGHT = 30
+    COLUMN_1_BASE_POS = (150, 40)
+    COLUMN_2_BASE_POS = (300, 40)
+
+    column_1_texts = ["Name", "Environment", *CHARACTERISTICS_NAMES.values()]
+    column_2_texts = [species.name, ENVIRONMENTS_NAMES[species.environment], 
+                      *[str(c) for c in species.characteristics.values()]]
+
+    for i, (text1, text2) in enumerate(zip(column_1_texts, column_2_texts)):
+        pos = sum_two_vectors(COLUMN_1_BASE_POS, (0, ROW_HEIGHT*i))
+        text = Text(pos, f"{text1}:", font, 18, anchor="nw")
+        menu_handler.add_object("view_species_menu", f"row1_text_{i}", text)
+
+        pos = sum_two_vectors(COLUMN_2_BASE_POS, (0, ROW_HEIGHT*i))
+        text = Text(pos, text2, font, 18, anchor="nw")
+        menu_handler.add_object("view_species_menu", f"row_2_text_{i}", text)
