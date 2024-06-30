@@ -7,18 +7,34 @@
     },
 
     "total_energy_consumption": {
-        "name": "Energy Consumption",
+        "name": "Total Energy Consumption",
         "base_value": 0,
         "affects": [["kardashev_rating", 0.1, false]],
         "type": "global"
     },
     
-    "energy_consumption": {
+    "energy_consumption_1": {
         "name": "Energy Consumption",
-        "base_value": 0,
+        "base_value": 130,
         "affects": [["total_energy_consumption", 1, false]],
         "type": "local",
         "place_type": "cb",
         "place": "earth"
+    },
+
+    "energy_consumption_2": {
+        "name": "Energy Consumption",
+        "base_value": 100,
+        "affects": [["total_energy_consumption", 1, false]],
+        "type": "local",
+        "place_type": "cb",
+        "place": "mars"
+    },
+
+    "kardashev_multiplier": {
+        "name": "Kardashev Multiplier",
+        "base_value": 1,
+        "affects": [["kardashev_rating", 0.1, true]],
+        "type": "global"
     }
 }

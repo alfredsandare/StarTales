@@ -14,11 +14,22 @@ class Modifier:
         self.affects = affects
         self.affected_by = affected_by if affected_by is not None else []
 
+        self.added_value = 0
+        self.added_percentage = 0  # this is a fraction, not an actual percentage
+        self.value = 0
+
     def __str__(self):
-        return f"{self.name}: {self.base_value}"
+        return f"{self.name}: {self.value}"
     
     def __repr__(self):
-        return f"{self.name}: {self.base_value}"
+        return f"{self.name}: {self.value}"
+
+    def calculate_value(self):
+        self.value = (self.base_value + self.added_value) * (1 + self.added_percentage)
+
+        # Reset the added values for the next calculation
+        self.added_value = 0
+        self.added_percentage = 0
 
 
 # LocalModifier is a modifier that is local to a specific cb or species

@@ -21,10 +21,8 @@ class ModifiersHandler:
             self.modifiers[modifier_name] = class_(**modifier_data)
 
         self._add_affected_by()
-        self.sort_modifiers()
-        print()
-        print(self.modifiers)
-        print()
+        self._sort_modifiers()
+        self.calculate_modifiers()
 
     def _add_affected_by(self):
         for key, modifier in self.modifiers.items():
@@ -33,7 +31,7 @@ class ModifiersHandler:
                 # if affected[0] not in affected_modifier.affected_by:
                 affected_modifier.affected_by.append(key)
 
-    def sort_modifiers(self):
+    def _sort_modifiers(self):
         graph = {key: [] for key in self.modifiers.keys()}
         in_degree = {key: 0 for key in self.modifiers.keys()}
 
@@ -64,4 +62,18 @@ class ModifiersHandler:
         return self.modifiers[modifier_name]
     
     def calculate_modifiers(self):
-        pass
+        for modifier in self.modifiers.values():
+            modifier.calculate_value()
+
+            for affected in modifier.affects:
+                affected_id, multiplier, is_percentage = affected
+                affected_modifier = self.modifiers[affected_id]
+
+                if is_percentage:
+                    affected_modifier.added_percentage += modifier.value * multiplier
+                else:
+                    affected_modifier.added_value += modifier.value * multiplier
+
+    def print_modifiers(self):
+        for modifier in self.modifiers.values():
+            print(modifier)
