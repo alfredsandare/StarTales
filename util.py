@@ -142,6 +142,9 @@ def orbital_vel_to_orbital_period(orbital_vel: float, sma: float) -> float:
     time_in_s = orbit_length / orbital_vel
     return time_in_s
 
+def get_path_from_file_name(file_name: str) -> str:
+    return file_name[:file_name.find("StarTales") + 10]
+
 if __name__ == "__main__":
     # run_convert_erv_to_day_length_program()
     run_calculate_total_atmosphere_units_program()

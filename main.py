@@ -18,12 +18,12 @@ from physics.star_system import StarSystem
 from physics.terraformprojects import AtmosphereChange, PropertyChange
 from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
+from society.civ import Civ
 from society.species import Species
-from util import convert_weeks_to_years, is_valid_image
+from util import convert_weeks_to_years, get_path_from_file_name, is_valid_image
 from graphics import gas_giant_visual_style
 
-PATH = __file__[:-7]
-
+PATH = get_path_from_file_name(__file__)
 pygame.init()
 
 
@@ -67,6 +67,9 @@ class Game:
         self.cb_menu_cb_id = None
 
         self.atmosphere_calculator = AtmosphereCalculator()
+
+        self.civs = {}
+        self.civs["humanity"] = Civ("Humanity")
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()

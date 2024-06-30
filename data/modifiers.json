@@ -1,0 +1,24 @@
+{
+    "kardashev_rating": {
+        "name": "Kardashev Rating",
+        "base_value": 0,
+        "affects": [],
+        "type": "global"
+    },
+
+    "total_energy_consumption": {
+        "name": "Energy Consumption",
+        "base_value": 0,
+        "affects": [["kardashev_rating", 0.1, false]],
+        "type": "global"
+    },
+    
+    "energy_consumption": {
+        "name": "Energy Consumption",
+        "base_value": 0,
+        "affects": [["total_energy_consumption", 1, false]],
+        "type": "local",
+        "place_type": "cb",
+        "place": "earth"
+    }
+}
