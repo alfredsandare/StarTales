@@ -1,28 +1,39 @@
 from collections import deque
 import json
+from physics.star_system import StarSystem
 from society.modifier import LocalModifier, Modifier
+from society.species import Species
 from util import get_path_from_file_name
 
 PATH = get_path_from_file_name(__file__)
 
 
 class ModifiersHandler:
-    def __init__(self):
-        self.modifiers: dict[str, Modifier] = {}
-        self._load_data()
+    def __init__(self, star_systems: dict[str, StarSystem], 
+                 species: dict[str, Species], 
+                 owned_cb_ids: list[list[str, str]] = None):
 
-    def _load_data(self):
+        self.modifiers: dict[str, Modifier] = {}
+        self._load_data(star_systems, species, owned_cb_ids)
+        self._sort_modifiers()
+        self.calculate_modifiers()
+        self.print_modifiers()
+
+    def _load_data(self, star_systems: dict[str, StarSystem], 
+                   species: dict[str, Species], 
+                   owned_cb_ids: list[list[str, str]] = None):
+
         with open(f"{PATH}/data/modifiers.json", "r") as file:
             data = dict(json.load(file))
 
         for modifier_name, modifier_data in data.items():
             class_ = Modifier if modifier_data["type"] == "global" else LocalModifier
             del modifier_data["type"]
-            self.modifiers[modifier_name] = class_(**modifier_data)
+            self.modifiers[modifier_name] = class_(**modifier_data, id=modifier_name)
 
+        self._add_local_cb_modifiers(star_systems, owned_cb_ids)
+        self._add_local_species_modifiers(species)
         self._add_affected_by()
-        self._sort_modifiers()
-        self.calculate_modifiers()
 
     def _add_affected_by(self):
         for key, modifier in self.modifiers.items():
@@ -77,3 +88,22 @@ class ModifiersHandler:
     def print_modifiers(self):
         for modifier in self.modifiers.values():
             print(modifier)
+
+    def _add_local_cb_modifiers(self, star_systems: dict[str, StarSystem],
+                                owned_cb_ids: list[list[str, str]]):
+
+        '''
+        Local tb modifiers are:
+        - population
+        '''
+
+        for star_system_id, star_system in star_systems.items():
+            for tb in star_system.get_all_tbs():
+                if [star_system_id, tb.id] in owned_cb_ids:
+                    id = f"{star_system_id}_{tb.id}_population"
+                    self.modifiers[id] = \
+                        LocalModifier("Population", tb.get_total_population(), "cb", 
+                                      tb.id, affects=[["civ_population", 1, False]], id=id)
+
+    def _add_local_species_modifiers(self, species: dict[str, Species]):
+        pass

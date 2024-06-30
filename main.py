@@ -69,7 +69,7 @@ class Game:
         self.atmosphere_calculator = AtmosphereCalculator()
 
         self.civs = {}
-        self.civs["humanity"] = Civ("Humanity")
+        self.civs["humanity"] = Civ("Humanity", self.star_systems, self.species, [["sol", "earth"]])
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()

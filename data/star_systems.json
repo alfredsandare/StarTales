@@ -112,7 +112,8 @@
                     "oxygen": 5398,
                     "nitrogen": 20049,
                     "water_vapor": 257
-                }
+                },
+                "population": 8000000000
             },
 
             "moon": {

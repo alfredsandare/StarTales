@@ -3,6 +3,7 @@ import pygame
 from physics.celestial_body import CelestialBody
 from physics.planetary_body import PlanetaryBody
 from physics.star import Star
+from physics.terrestrial_body import TerrestrialBody
 from util import check_rect_overlap, multiply_vector, set_value_in_boundaries
 from PhoenixGUI.util import sum_two_vectors, get_font
 import data.consts as consts
@@ -226,6 +227,10 @@ class StarSystem:
         pbs.sort(key=lambda pb: pb.sma)
 
         return pbs
+
+    def get_all_tbs(self) -> list[TerrestrialBody]:
+        return [tb for tb in self.planetary_bodies.values()
+                if isinstance(tb, TerrestrialBody)]
 
     def update_camera_pos_by_cb_movement(self):
         if self.selected_cb_id is None:
