@@ -24,7 +24,7 @@
     "zenlar": {
         "name": "Zenlar",
         "characteristics": {
-            "intelligence": 7,
+            "intelligence": 8,
             "physical_strength": 2,
             "unruliness": 3
         },
@@ -40,6 +40,28 @@
             "unruliness": 6
         },
         "portrait": "insectoid_1",
+        "environment": "land"
+    },
+
+    "ranidad": {
+        "name": "Ranidad",
+        "characteristics": {
+            "intelligence": 4,
+            "physical_strength": 9,
+            "unruliness": 10
+        },
+        "portrait": "reptilian_1",
+        "environment": "land"
+    },
+
+    "virke": {
+        "name": "Virke",
+        "characteristics": {
+            "intelligence": 7,
+            "physical_strength": 3,
+            "unruliness": 1
+        },
+        "portrait": "plantoid_1",
         "environment": "land"
     }
 }

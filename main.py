@@ -74,7 +74,7 @@ class Game:
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
         self.menu_handler.menues["view_species_menu"].activate()
-        initialize_menues.view_species_menu(self.menu_handler, self.species["zenlar"], self.get_values("default_font bold skip_quotes"))
+        initialize_menues.view_species_menu(self.menu_handler, self.species["virke"], self.get_values("default_font bold skip_quotes"))
 
         clock = pygame.time.Clock()
         while True:
