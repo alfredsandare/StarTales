@@ -17,7 +17,9 @@ class TerrestrialBody(PlanetaryBody):
                  gravity: float,
                  sma: float,  # sma = semi-major axis [AU]
                  districts: list[District],
-                 atmosphere: Atmosphere):
+                 atmosphere: Atmosphere,
+                 population: int = 0,
+                 owner: str = None):
         
         super().__init__(visual, 
                          size, 
@@ -26,7 +28,8 @@ class TerrestrialBody(PlanetaryBody):
                          orbital_host,
                          is_tidally_locked,
                          orbital_velocity,
-                         sma),
+                         sma,
+                         owner),
 
         self.day_length = day_length
         self.gravity = gravity
@@ -35,3 +38,7 @@ class TerrestrialBody(PlanetaryBody):
 
         self.districts = districts
         self.atmosphere = atmosphere
+        self.population = population
+
+    def get_total_population(self):
+        return self.population

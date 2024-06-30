@@ -11,7 +11,8 @@ class GasGiant(PlanetaryBody):
                  orbital_host: str,
                  is_tidally_locked: bool,
                  orbital_velocity: float,  # m/s
-                 sma: float):
+                 sma: float,
+                 owner: str = None):
         
         super().__init__(visual,
                          size,
@@ -20,6 +21,7 @@ class GasGiant(PlanetaryBody):
                          orbital_host,
                          is_tidally_locked,
                          orbital_velocity,
-                         sma)
+                         sma,
+                         owner)
 
         self.type = "gas_giant"

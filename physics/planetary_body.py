@@ -13,9 +13,10 @@ class PlanetaryBody(CelestialBody):
                  orbital_host: str,
                  is_tidally_locked: bool,
                  orbital_velocity: float,  # m/s
-                 sma: float):
+                 sma: float,
+                 owner: str):
         
-        super().__init__(visual, size, name, id)
+        super().__init__(visual, size, name, id, owner)
         self.orbital_host = orbital_host
         self.is_tidally_locked = is_tidally_locked
         self.orbital_velocity = orbital_velocity
