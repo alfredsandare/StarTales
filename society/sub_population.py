@@ -19,7 +19,9 @@ class SubPopulation:
         self.habitabilites = None
 
     def __repr__(self):
-        return f"SubPopulation: {self.species_population}, District Climate: {self.district.climate}, Habitabilites: {self.habitabilites}"
+        habitabilites_text = ", ".join([f"[{species_id}: {round(100*habitability)}%]" 
+                                        for species_id, habitability in self.habitabilites.items()])
+        return f"SubPopulation: {self.species_population}, District Climate: {self.district.climate}, Habitabilites: {habitabilites_text}"
 
     def get_total_population(self) -> float:
         return sum(self.species_population.values())
@@ -42,5 +44,8 @@ class SubPopulation:
                                             .habitat_preferences["temperature"])
             index_ = TEMPERATURES.index(temperature)
             habitability -= 0.2 * abs(pref_index - index_)
+
+            if habitability < 0:
+                habitability = 0
 
             self.habitabilites[species_id] = habitability

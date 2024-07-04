@@ -37,7 +37,7 @@ class Atmosphere:
         thickness_and_preference = [self.get_thickness(), \
             species.habitat_preferences['atmospheric_pressure']]
 
-        penalty += max(thickness_and_preference) / min(thickness_and_preference)
+        penalty += 0.4 * (max(thickness_and_preference) / min(thickness_and_preference) - 1)
 
         composition_shares = self.get_composition_shares(use_all_gases=True)
         atm_preferences: dict[str, float] = \
