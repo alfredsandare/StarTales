@@ -15,7 +15,7 @@ from physics.star import Star
 from physics.star_system import StarSystem
 from physics.terraformprojects import PROJECTS, PROPERTY_UNITS
 from physics.terrestrial_body import TerrestrialBody
-from society.species import CHARACTERISTICS, CHARACTERISTICS_NAMES, ENVIRONMENTS_NAMES, Species
+from society.species import CHARACTERISTICS, CHARACTERISTICS_NAMES, ENVIRONMENTS_NAMES, HABITAT_PREFERENCES_NAMES, Species
 from util import orbital_vel_to_orbital_period, round_seconds, round_to_significant_figures
 
 YES_NO = {
@@ -669,9 +669,30 @@ def view_species_menu(menu_handler: MenuHandler, species: Species, font: str):
     COLUMN_1_BASE_POS = (150, 40)
     COLUMN_2_BASE_POS = (300, 40)
 
-    column_1_texts = ["Name", "Environment", *CHARACTERISTICS_NAMES.values()]
-    column_2_texts = [species.name, ENVIRONMENTS_NAMES[species.environment], 
-                      *[str(c) for c in species.characteristics.values()]]
+    HABITAT_PREFERENCES_TEXTS = [
+        species.habitat_preferences["main_fluid"].capitalize(),
+        species.habitat_preferences["temperature"].capitalize(),
+        f"{round(species.habitat_preferences['atmospheric_pressure'])} kPa"
+    ]
+
+    GASES_REQUIREMENTS_TEXTS_1 = []
+    GASES_REQUIREMENTS_TEXTS_2 = []
+    for gas, amount in species.habitat_preferences["atmospheric_composition"].items():
+        min_or_max, gas = gas.split("_")
+        GASES_REQUIREMENTS_TEXTS_1.append(f"{min_or_max.capitalize()} {GASES_NAMES[gas]}")
+        GASES_REQUIREMENTS_TEXTS_2.append(f"{round_to_significant_figures(100 * amount, 3, make_int=True)} %")
+
+    column_1_texts = ["Name", 
+                      "Environment", 
+                      *CHARACTERISTICS_NAMES.values(), 
+                      *HABITAT_PREFERENCES_NAMES.values(),
+                      *GASES_REQUIREMENTS_TEXTS_1]
+
+    column_2_texts = [species.name, 
+                      ENVIRONMENTS_NAMES[species.environment], 
+                      *[str(c) for c in species.characteristics.values()],
+                      *HABITAT_PREFERENCES_TEXTS,
+                      *GASES_REQUIREMENTS_TEXTS_2]
 
     for i, (text1, text2) in enumerate(zip(column_1_texts, column_2_texts)):
         pos = sum_two_vectors(COLUMN_1_BASE_POS, (0, ROW_HEIGHT*i))

@@ -7,6 +7,13 @@ CHARACTERISTICS_NAMES = {
     'unruliness': 'Unruliness'
 }
 
+HABITAT_PREFERENCES = ["main_fluid", "temperature", "atmospheric_pressure"]
+HABITAT_PREFERENCES_NAMES = {
+    "main_fluid": "Main Fluid",
+    "temperature": "Temperature",
+    "atmospheric_pressure": "Atm. Pressure"
+}
+
 ENVIRONMENTS = ['land', 'sea', 'air']
 ENVIRONMENTS_NAMES = {
     'land': 'Land',
