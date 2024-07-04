@@ -18,3 +18,6 @@ CELESTIAL_BODY_TYPES_NAMES = {
     "terrestrial_body": "Terrestrial World", 
     "gas_giant": "Gas Giant"
 }
+
+TEMPERATURES = ["extremely cold", "very cold", "cold", 
+                "moderate", "hot", "very hot", "extremely hot"]

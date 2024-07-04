@@ -19,6 +19,7 @@ from physics.terraformprojects import AtmosphereChange, PropertyChange
 from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
 from society.civ import Civ
+from society.population import Population
 from society.species import Species
 from util import convert_weeks_to_years, get_path_from_file_name, is_valid_image
 from graphics import gas_giant_visual_style
@@ -75,6 +76,9 @@ class Game:
         self.menu_handler.menues["main_menu"].activate()
         self.menu_handler.menues["view_species_menu"].activate()
         initialize_menues.view_species_menu(self.menu_handler, self.species["virke"], self.get_values("default_font bold skip_quotes"))
+
+        for sub_population in self.star_systems["sol"].get_all_cbs_dict()["earth"].population.sub_populations:
+            print(sub_population)
 
         clock = pygame.time.Clock()
         while True:
@@ -248,7 +252,8 @@ class Game:
                 species[species_id] = Species(species_value["name"],
                                               species_value["characteristics"],
                                               image,
-                                              species_value["environment"])
+                                              species_value["environment"],
+                                              species_value["habitat_preferences"])
 
             return species
 
@@ -487,18 +492,29 @@ class Game:
             
             visual = CelestialBodyVisual("terrestrial", style)
 
-            blacklist = ["visual_style", "type", "districts", "atmosphere"]
+            blacklist = ["visual_style", "type", "districts", 
+                         "atmosphere", "population"]
             kwargs = {key: value for key, value in pb_data.items() 
                       if key not in blacklist}
 
             districts = [District(getattr(climates, district_type))
                          for district_type in pb_data["districts"]]
 
-            atmosphere = Atmosphere(pb_data["atmosphere"])
+            atmosphere = Atmosphere(pb_data["atmosphere"], pb_data["size"])
+
+            # empty population
+            population = Population([{} for _ in districts], 
+                                    districts, atmosphere)
+            if "population" in pb_data:
+                population = Population(pb_data["population"], 
+                                        districts, atmosphere)
+                population.calculate_habitabilites(self.species, 
+                                                   pb_data["temperature"])
 
             return TerrestrialBody(visual, **kwargs, 
                                    districts=districts, 
-                                   atmosphere=atmosphere)
+                                   atmosphere=atmosphere,
+                                   population=population)
 
         elif pb_data["type"] == "gas_giant":
             style = getattr(gas_giant_visual_style, pb_data["visual_style"])

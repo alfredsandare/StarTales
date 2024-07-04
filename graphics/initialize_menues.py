@@ -457,7 +457,7 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody,
                      "Thickness:", font, 16, anchor="w")
     menu_handler.add_object("cb_menu", "thickness_text", menu_text)
 
-    text = str(round(tb.atmosphere.get_thickness(tb.size))) + " kPa"
+    text = str(round(tb.atmosphere.get_thickness())) + " kPa"
     menu_text = Text(sum_two_vectors(BASE_POS, (SIZE[0]-10, 50)), 
                      text, font, 16, anchor="e")
     menu_handler.add_object("cb_menu", "thickness_text_2", menu_text)

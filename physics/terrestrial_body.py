@@ -2,6 +2,7 @@ from graphics.celestial_body_visual import CelestialBodyVisual
 from physics.atmosphere import Atmosphere
 from physics.district import District
 from physics.planetary_body import PlanetaryBody
+from society.population import Population
 
 
 class TerrestrialBody(PlanetaryBody):
@@ -18,8 +19,9 @@ class TerrestrialBody(PlanetaryBody):
                  sma: float,  # sma = semi-major axis [AU]
                  districts: list[District],
                  atmosphere: Atmosphere,
-                 population: int = 0,
-                 owner: str = None):
+                 population: Population,
+                 owner: str = None,
+                 temperature="moderate"):
         
         super().__init__(visual, 
                          size, 
@@ -39,6 +41,9 @@ class TerrestrialBody(PlanetaryBody):
         self.districts = districts
         self.atmosphere = atmosphere
         self.population = population
+        self.temperature = temperature
+
+        self.atmosphere.tb_size = self.size
 
     def get_total_population(self):
-        return self.population
+        return self.population.get_total_population()

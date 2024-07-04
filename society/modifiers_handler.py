@@ -17,7 +17,6 @@ class ModifiersHandler:
         self._load_data(star_systems, species, owned_cb_ids)
         self._sort_modifiers()
         self.calculate_modifiers()
-        self.print_modifiers()
 
     def _load_data(self, star_systems: dict[str, StarSystem], 
                    species: dict[str, Species], 

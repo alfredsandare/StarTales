@@ -20,7 +20,9 @@ class Species:
                  name: str, 
                  characteristics: dict[str, int], 
                  portrait: pygame.Surface,
-                 environment: str):
+                 environment: str,
+                 habitat_preferences: dict[str, any]):
+
         self.name = name
 
         # characteristics are on a scale of 0-10
@@ -34,3 +36,7 @@ class Species:
 
         # 'land', 'sea', or 'air'
         self.environment = environment
+
+        # a dictionary of habitat preferences
+        #
+        self.habitat_preferences = habitat_preferences

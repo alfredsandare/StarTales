@@ -21,6 +21,7 @@
                 "day_length": 15206400,
                 "gravity": 3.7,
                 "sma": 0.387098,
+                "temperature": "moderate",
                 "districts": [
                     "COLD_DESERT",
                     "COLD_DESERT",
@@ -54,6 +55,7 @@
                 "day_length": 20995200,
                 "gravity": 8.87,
                 "sma": 0.723,
+                "temperature": "moderate",
                 "districts": [
                     "TOXIC",
                     "TOXIC",
@@ -90,6 +92,7 @@
                 "day_length": 86400,
                 "gravity": 9.81,
                 "sma": 1,
+                "temperature": "moderate",
                 "districts": [
                     "WATER_OCEAN",
                     "RAINFOREST",
@@ -113,7 +116,24 @@
                     "nitrogen": 20049,
                     "water_vapor": 257
                 },
-                "population": 8000000000
+                "population": [
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000},
+                    {"human": 500000000}
+                ]
             },
 
             "moon": {
@@ -128,6 +148,7 @@
                 "day_length": 86400,
                 "gravity": 1.622,
                 "sma": 0.00257,
+                "temperature": "moderate",
                 "districts": [
                     "COLD_DESERT",
                     "COLD_DESERT",
@@ -161,6 +182,7 @@
                 "day_length": 88620,
                 "gravity": 3.72,
                 "sma": 1.523,
+                "temperature": "moderate",
                 "districts": [
                     "TOXIC",
                     "TOXIC",
