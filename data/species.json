@@ -7,7 +7,16 @@
             "unruliness": 4
         },
         "portrait": "mammal_4",
-        "environment": "land"
+        "environment": "land",
+        "habitat_preferences": {
+            "main_fluid": "water",
+            "temperature": "moderate",
+            "atmospheric_pressure": 103,
+            "atmospheric_composition": {
+                "min_oxygen": 0.19,
+                "max_carbon-dioxide": 0.01
+            }
+        }
     },
 
     "phalor": {
@@ -18,7 +27,16 @@
             "unruliness": 5
         },
         "portrait": "mammal_1",
-        "environment": "land"
+        "environment": "land",
+        "habitat_preferences": {
+            "main_fluid": "water",
+            "temperature": "moderate",
+            "atmospheric_pressure": 103,
+            "atmospheric_composition": {
+                "min_oxygen": 0.19,
+                "max_carbon-dioxide": 0.01
+            }
+        }
     },
 
     "zenlar": {
@@ -29,7 +47,16 @@
             "unruliness": 3
         },
         "portrait": "avian_1",
-        "environment": "air"
+        "environment": "air",
+        "habitat_preferences": {
+            "main_fluid": "water",
+            "temperature": "moderate",
+            "atmospheric_pressure": 103,
+            "atmospheric_composition": {
+                "min_oxygen": 0.19,
+                "max_carbon-dioxide": 0.01
+            }
+        }
     },
 
     "tzarnath": {
@@ -40,7 +67,16 @@
             "unruliness": 6
         },
         "portrait": "insectoid_1",
-        "environment": "land"
+        "environment": "land",
+        "habitat_preferences": {
+            "main_fluid": "water",
+            "temperature": "moderate",
+            "atmospheric_pressure": 103,
+            "atmospheric_composition": {
+                "min_oxygen": 0.19,
+                "max_carbon-dioxide": 0.01
+            }
+        }
     },
 
     "ranidad": {
@@ -51,7 +87,16 @@
             "unruliness": 10
         },
         "portrait": "reptilian_1",
-        "environment": "land"
+        "environment": "land",
+        "habitat_preferences": {
+            "main_fluid": "water",
+            "temperature": "moderate",
+            "atmospheric_pressure": 103,
+            "atmospheric_composition": {
+                "min_oxygen": 0.19,
+                "max_carbon-dioxide": 0.01
+            }
+        }
     },
 
     "virke": {
@@ -62,6 +107,15 @@
             "unruliness": 1
         },
         "portrait": "plantoid_1",
-        "environment": "land"
+        "environment": "land",
+        "habitat_preferences": {
+            "main_fluid": "water",
+            "temperature": "moderate",
+            "atmospheric_pressure": 103,
+            "atmospheric_composition": {
+                "min_oxygen": 0.19,
+                "max_carbon-dioxide": 0.01
+            }
+        }
     }
 }
