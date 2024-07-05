@@ -25,6 +25,7 @@
             2.2.1.3 Moons [1]
             2.2.1.4 Terraforming
             2.2.1.5 Atmosphere calculator
+            2.2.1.6 Population
 
         2.2.2 Small planet menu [2]
 

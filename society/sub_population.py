@@ -55,3 +55,6 @@ class SubPopulation:
 
     def get_species_population(self, species_id: str) -> float:
         return self.species_population[species_id]
+    
+    def get_population_dict(self) -> dict[str, float]:
+        return self.species_population

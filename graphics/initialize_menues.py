@@ -16,7 +16,7 @@ from physics.star_system import StarSystem
 from physics.terraformprojects import PROJECTS, PROPERTY_UNITS
 from physics.terrestrial_body import TerrestrialBody
 from society.species import CHARACTERISTICS, CHARACTERISTICS_NAMES, ENVIRONMENTS_NAMES, HABITAT_PREFERENCES_NAMES, Species
-from util import orbital_vel_to_orbital_period, round_seconds, round_to_significant_figures
+from util import orbital_vel_to_orbital_period, round_and_add_suffix, round_seconds, round_to_significant_figures
 
 YES_NO = {
     True: "Yes",
@@ -165,6 +165,9 @@ def cb_menu(menu_handler: MenuHandler,
 
     elif menu_settings["cb_menu_mode"] == "terraforming":
         _init_terraforming(menu_handler, cb, font, images)
+
+    elif menu_settings["cb_menu_mode"] == "population":
+        _init_population(menu_handler, cb, font)
 
 def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, images):
     object_ids_startswith = [
@@ -702,3 +705,31 @@ def view_species_menu(menu_handler: MenuHandler, species: Species, font: str):
         pos = sum_two_vectors(COLUMN_2_BASE_POS, (0, ROW_HEIGHT*i))
         text = Text(pos, text2, font, 18, anchor="nw")
         menu_handler.add_object("view_species_menu", f"row_2_text_{i}", text)
+
+def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, district_id: int):
+    menu = menu_handler.menues["cb_menu"]
+    menu.objects["population_bg"].activate()
+    menu.objects["population_title"].activate()
+
+    BASE_POS = [350, 40]
+    SIZE = [200, 250]
+
+    menu.objects["population_bg"].change_property("pos", BASE_POS)
+    menu.objects["population_bg"].change_property("size", SIZE)
+
+    pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
+    menu.objects["population_title"].change_property("pos", pos)
+
+    sub_population = tb.population.get_sub_population(district_id)
+    population_dict = sub_population.get_population_dict()
+
+    ROW_HEIGHT = 30
+    COLUMN_1_BASE_POS = (10, 50)
+    COLUMN_2_BASE_POS = (150, 50)
+
+    column1_texts = ["Total:", *population_dict.keys()]
+    column2_texts = [round_and_add_suffix(sub_population.get_total_population()),
+                     round_and_add_suffix(p) for p in population_dict.values()]
+
+    for species, amount in population_dict.items():
+        text1 = Text(sum_two_vectors(BASE_POS, ), species.name, font, 16, anchor="w")

@@ -33,3 +33,6 @@ class Population:
         return list(set([species_id 
                          for sub_population in self.sub_populations 
                          for species_id in sub_population.get_species_ids()]))
+    
+    def get_sub_population(self, i: int) -> SubPopulation:
+        return self.sub_populations[i]
