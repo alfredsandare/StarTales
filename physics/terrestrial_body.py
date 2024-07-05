@@ -47,3 +47,6 @@ class TerrestrialBody(PlanetaryBody):
 
     def get_total_population(self):
         return self.population.get_total_population()
+
+    def is_settled(self) -> bool:
+        return self.get_total_population() > 0

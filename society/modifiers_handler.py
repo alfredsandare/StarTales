@@ -15,7 +15,6 @@ class ModifiersHandler:
 
         self.modifiers: dict[str, Modifier] = {}
         self._load_data(star_systems, species, owned_cb_ids)
-        self._sort_modifiers()
         self.calculate_modifiers()
 
     def _load_data(self, star_systems: dict[str, StarSystem], 
@@ -72,6 +71,7 @@ class ModifiersHandler:
         return self.modifiers[modifier_name]
     
     def calculate_modifiers(self):
+        self._sort_modifiers()
         for modifier in self.modifiers.values():
             modifier.calculate_value()
 
@@ -106,3 +106,6 @@ class ModifiersHandler:
 
     def _add_local_species_modifiers(self, species: dict[str, Species]):
         pass
+
+    def add_modifier(self, modifier: Modifier):
+        self.modifiers[modifier.id] = modifier
