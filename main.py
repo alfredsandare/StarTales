@@ -77,9 +77,6 @@ class Game:
         self.menu_handler.menues["view_species_menu"].activate()
         initialize_menues.view_species_menu(self.menu_handler, self.species["virke"], self.get_values("default_font bold skip_quotes"))
 
-        for sub_population in self.star_systems["sol"].get_all_cbs_dict()["earth"].population.sub_populations:
-            print(sub_population)
-
         clock = pygame.time.Clock()
         while True:
             self.screen.fill((0, 0, 0))
