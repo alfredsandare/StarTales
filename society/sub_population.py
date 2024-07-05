@@ -49,3 +49,9 @@ class SubPopulation:
                 habitability = 0
 
             self.habitabilites[species_id] = habitability
+
+    def get_species_ids(self) -> list[str]:
+        return list(self.species_population.keys())
+
+    def get_species_population(self, species_id: str) -> float:
+        return self.species_population[species_id]

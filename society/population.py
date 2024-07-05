@@ -28,3 +28,8 @@ class Population:
             sub_population.calculate_habitabilites(species,
                                                    self.atmosphere,
                                                    temperature)
+
+    def get_species_ids(self) -> list[str]:
+        return list(set([species_id 
+                         for sub_population in self.sub_populations 
+                         for species_id in sub_population.get_species_ids()]))
