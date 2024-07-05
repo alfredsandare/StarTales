@@ -145,6 +145,22 @@ def orbital_vel_to_orbital_period(orbital_vel: float, sma: float) -> float:
 def get_path_from_file_name(file_name: str) -> str:
     return file_name[:file_name.find("StarTales") + 10]
 
+def round_and_add_suffix(num, significant_figures, include_space=True, make_int=False):
+    prefixes = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc', 
+                'Ud', 'Dd', 'Td', 'Qad', 'Qid', 'Sxd', 'Spd', 'Ocd', 'Nod', 'Vg', 'Uvg']
+
+    if num == 0:
+        return '0'
+
+    for i in range(len(prefixes)):
+        divided = num/10**(3*i)
+        if -1000 <= divided < 1000 or i == len(prefixes)-1:
+            output = float(round_to_significant_figures(divided, significant_figures, make_int=make_int))
+            if round(output) == output: #so that 436.0 becomes 436
+                output = int(output)
+            return str(output) + (' ' if include_space else '') + prefixes[i]
+
 if __name__ == "__main__":
     # run_convert_erv_to_day_length_program()
-    run_calculate_total_atmosphere_units_program()
+    # run_calculate_total_atmosphere_units_program()
+    print(round_and_add_suffix(-123456789, 3))
