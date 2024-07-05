@@ -3,7 +3,8 @@
 # Modifier is a modifier global for a civilization
 class Modifier:
     def __init__(self, name, base_value, affects: list[list[str, float, bool]] = None, 
-                 affected_by: list[str] = None, id=None):
+                 affected_by: list[str] = None, id: str = None, 
+                 get_base_value_func: callable = None, is_base: bool = False):
 
         self.name = name
         self.base_value = base_value
@@ -14,6 +15,8 @@ class Modifier:
         self.affects = affects
         self.affected_by = affected_by if affected_by is not None else []
         self.id = id
+        self.get_base_value_func = get_base_value_func
+        self.is_base = is_base
 
         self.added_value = 0
         self.added_percentage = 0  # this is a fraction, not an actual percentage
@@ -26,6 +29,9 @@ class Modifier:
         return f"{self.name}: {self.value}"
 
     def calculate_value(self):
+        if self.get_base_value_func is not None:
+            self.base_value = self.get_base_value_func()
+
         self.value = (self.base_value + self.added_value) * (1 + self.added_percentage)
 
         # Reset the added values for the next calculation
@@ -37,9 +43,11 @@ class Modifier:
 class LocalModifier(Modifier):
     def __init__(self, name, base_value, place_type, place, 
                  affects: list[str] = None, affected_by: list[str] = None,
-                 id=None):
+                 id=None, get_base_value_func: callable = None, 
+                 is_base: bool = False):
 
-        super().__init__(name, base_value, affects, affected_by, id)
+        super().__init__(name, base_value, affects, affected_by, 
+                         id, get_base_value_func, is_base)
         self.place_type = place_type  # 'cb' or 'species'
         self.place = place  # species id or cb id
 
