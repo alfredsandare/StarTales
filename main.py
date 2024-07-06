@@ -548,7 +548,8 @@ class Game:
                                     self.game_settings,
                                     self.menu_settings,
                                     self.images,
-                                    self.switch_atm_menu_mode)
+                                    self.switch_atm_menu_mode,
+                                    self.species)
 
     def switch_atm_menu_mode(self):
         if self.menu_settings["atmosphere_menu_mode"] == "units":

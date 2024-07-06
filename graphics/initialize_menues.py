@@ -95,7 +95,8 @@ def cb_menu(menu_handler: MenuHandler,
             settings,
             menu_settings,
             images: dict[str, pygame.Surface],
-            switch_atm_mode_command):
+            switch_atm_mode_command,
+            species: dict[str, Species]):
 
     object_ids = [
         "thickness_text",
@@ -112,6 +113,8 @@ def cb_menu(menu_handler: MenuHandler,
         "district_button_",
         "project_icon_",
         "project_text_",
+        "population_text1_",
+        "population_text2_",
     ]
 
     menu_handler.delete_multiple_objects("cb_menu", object_ids, 
@@ -148,7 +151,9 @@ def cb_menu(menu_handler: MenuHandler,
         "active_terraforming_bg",
         "active_terraforming_title",
         "available_terraforming_bg",
-        "available_terraforming_title"
+        "available_terraforming_title",
+        "population_bg",
+        "population_title",
     ]
 
     for object_id in to_deactivate:
@@ -167,7 +172,7 @@ def cb_menu(menu_handler: MenuHandler,
         _init_terraforming(menu_handler, cb, font, images)
 
     elif menu_settings["cb_menu_mode"] == "population":
-        _init_population(menu_handler, cb, font)
+        _init_population(menu_handler, cb, font, species)
 
 def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, images):
     object_ids_startswith = [
@@ -706,7 +711,7 @@ def view_species_menu(menu_handler: MenuHandler, species: Species, font: str):
         text = Text(pos, text2, font, 18, anchor="nw")
         menu_handler.add_object("view_species_menu", f"row_2_text_{i}", text)
 
-def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, district_id: int):
+def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, species: dict[str, Species]):
     menu = menu_handler.menues["cb_menu"]
     menu.objects["population_bg"].activate()
     menu.objects["population_title"].activate()
@@ -720,16 +725,21 @@ def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, 
     pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
     menu.objects["population_title"].change_property("pos", pos)
 
-    sub_population = tb.population.get_sub_population(district_id)
-    population_dict = sub_population.get_population_dict()
+    population_dict = tb.population.get_total_population_dict()
 
     ROW_HEIGHT = 30
     COLUMN_1_BASE_POS = (10, 50)
-    COLUMN_2_BASE_POS = (150, 50)
+    COLUMN_2_BASE_POS = (190, 50)
 
-    column1_texts = ["Total:", *population_dict.keys()]
-    column2_texts = [round_and_add_suffix(sub_population.get_total_population()),
-                     round_and_add_suffix(p) for p in population_dict.values()]
+    column1_texts = ["Total:", *[f"{species[species_id].name}:" for species_id in population_dict.keys()]]
+    column2_texts = [round_and_add_suffix(tb.population.get_total_population(), 3),
+                     *[round_and_add_suffix(p, 3) for p in population_dict.values()]]
 
-    for species, amount in population_dict.items():
-        text1 = Text(sum_two_vectors(BASE_POS, ), species.name, font, 16, anchor="w")
+    for i, (text1, text2) in enumerate(zip(column1_texts, column2_texts)):
+        text_ = Text(sum_multiple_vectors(BASE_POS, COLUMN_1_BASE_POS, (0, i*ROW_HEIGHT)),
+                     text1, font, 16, anchor="w")
+        menu_handler.add_object("cb_menu", f"population_text1_{i}", text_)
+
+        text_ = Text(sum_multiple_vectors(BASE_POS, COLUMN_2_BASE_POS, (0, i*ROW_HEIGHT)),
+                     text2, font, 16, anchor="e")
+        menu_handler.add_object("cb_menu", f"population_text2_{i}", text_)

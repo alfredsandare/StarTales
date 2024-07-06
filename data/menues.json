@@ -512,6 +512,20 @@
                 "rect_height": 30,
                 "anchor": "se",
                 "command": "set_cb_menu_mode overview"
+            },
+
+            "population_button": {
+                "type": "button",
+                "pos": [670, 590],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Population",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "rect_length": 100,
+                "rect_height": 30,
+                "anchor": "se",
+                "command": "set_cb_menu_mode population"
             }
         }
     },
