@@ -36,3 +36,16 @@ class Population:
     
     def get_sub_population(self, i: int) -> SubPopulation:
         return self.sub_populations[i]
+
+    def get_total_population_dict(self) -> dict[str, float]:
+        population_dict = {}
+        for sub_population in self.sub_populations:
+            for species_id, population in \
+                sub_population.get_population_dict().items():
+
+                if species_id in population_dict:
+                    population_dict[species_id] += population
+                else:
+                    population_dict[species_id] = population
+
+        return population_dict
