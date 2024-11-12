@@ -25,6 +25,7 @@ class Civ:
                                                   self.species, 
                                                   self.owned_cb_ids)
         self.create_all_modifiers()
+        self.modifiers_handler.calculate_modifiers()
 
     def __str__(self):
         return f"Civilization: {self.name}"
@@ -44,13 +45,15 @@ class Civ:
         tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
 
         for species_id in tb.population.get_species_ids():
-
             for i, sub_population in enumerate(tb.population.sub_populations):
                 # Species District Habitability
                 id_ = f"species_district_habitability@{star_system_id}@{tb_id}@{i}@{species_id}"
-                func = lambda: sub_population.get_species_population(species_id)
+                func = lambda sp=sub_population: sp.get_species_habitability(species_id)
                 species_name = self.species[species_id].name
 
                 modifier = Modifier(f"District {i} {species_name} Habitability", 0,
                                     id=id_, get_base_value_func=func)
                 self.modifiers_handler.add_modifier(modifier)
+
+    def time_tick(self):
+        self.modifiers_handler.calculate_modifiers()

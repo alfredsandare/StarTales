@@ -12,7 +12,7 @@ class Modifier:
         # list of tuples of the form (affected_modifier, multiplier, is_percentage)
         # if is_percentage is True, the value will be multiplied by the multiplier
         # if is_percentage is False, the value will be multiplied by the multiplier before added to the affected modifer
-        self.affects = affects
+        self.affects = affects if affects is not None else []
         self.affected_by = affected_by if affected_by is not None else []
         self.id = id
         self.get_base_value_func = get_base_value_func

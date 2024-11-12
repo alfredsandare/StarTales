@@ -53,6 +53,9 @@ class SubPopulation:
     def get_species_ids(self) -> list[str]:
         return list(self.species_population.keys())
 
+    def get_species_habitability(self, species_id: str) -> float:
+        return self.habitabilites[species_id]
+
     def get_species_population(self, species_id: str) -> float:
         return self.species_population[species_id]
     

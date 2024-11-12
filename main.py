@@ -69,7 +69,7 @@ class Game:
 
         self.atmosphere_calculator = AtmosphereCalculator()
 
-        self.civs = {}
+        self.civs: dict[str, Civ] = {}
         self.civs["humanity"] = Civ("Humanity", self.star_systems, self.species, [["sol", "earth"]])
 
     def main(self):
@@ -117,6 +117,9 @@ class Game:
 
             for cb in star_system.get_all_cbs():
                 cb.apply_terraform_projects()
+
+        for civ in self.civs.values():
+            civ.time_tick()
 
         self._update_time_menu_text()
         self._update_menues_from_time_tick()
