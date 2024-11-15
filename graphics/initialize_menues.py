@@ -117,6 +117,8 @@ def cb_menu(menu_handler: MenuHandler,
         "project_text_",
         "population_text1_",
         "population_text2_",
+        "habitability_text1_",
+        "habitability_text2_",
     ]
 
     menu_handler.delete_multiple_objects("cb_menu", object_ids, 
@@ -156,6 +158,8 @@ def cb_menu(menu_handler: MenuHandler,
         "available_terraforming_title",
         "population_bg",
         "population_title",
+        "habitability_bg",
+        "habitability_title",
     ]
 
     for object_id in to_deactivate:
@@ -749,17 +753,17 @@ def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, 
 
 def _init_habitabilities(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, species: dict[str, Species], player_civ: Civ):
     menu = menu_handler.menues["cb_menu"]
-    menu.objects["habitabilities_bg"].activate()
-    menu.objects["habitabilities_title"].activate()
+    menu.objects["habitability_bg"].activate()
+    menu.objects["habitability_title"].activate()
 
     BASE_POS = [560, 40]
     SIZE = [200, 250]
 
-    menu.objects["habitabilities_bg"].change_property("pos", BASE_POS)
-    menu.objects["habitabilities_bg"].change_property("size", SIZE)
+    menu.objects["habitability_bg"].change_property("pos", BASE_POS)
+    menu.objects["habitability_bg"].change_property("size", SIZE)
 
     pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
-    menu.objects["habitabilities_title"].change_property("pos", pos)
+    menu.objects["habitability_title"].change_property("pos", pos)
     
     population_dict = tb.population.get_total_population_dict()
 
