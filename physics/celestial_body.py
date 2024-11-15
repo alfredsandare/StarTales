@@ -7,7 +7,7 @@ from PhoenixGUI import Menu, MenuHandler
 
 class CelestialBody:
     def __init__(self, visual: CelestialBodyVisual, size: float, name: str, 
-                 id: str, owner: str):
+                 id: str, star_system_id: str, owner: str):
 
         self.visual = visual
 
@@ -16,6 +16,7 @@ class CelestialBody:
         self.size = size
         self.name = name
         self.id = id
+        self.star_system_id = star_system_id  # id of the star system that contains this cb
         self.owner = owner  # id of the civilization that owns this cb
 
         # overridden in subclasses

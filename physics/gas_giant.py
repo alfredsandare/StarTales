@@ -8,6 +8,7 @@ class GasGiant(PlanetaryBody):
                  size: float,
                  name: str,
                  id: str,
+                 star_system_id: str,
                  orbital_host: str,
                  is_tidally_locked: bool,
                  orbital_velocity: float,  # m/s
@@ -18,6 +19,7 @@ class GasGiant(PlanetaryBody):
                          size,
                          name,
                          id,
+                         star_system_id,
                          orbital_host,
                          is_tidally_locked,
                          orbital_velocity,

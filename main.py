@@ -478,15 +478,15 @@ class Game:
 
                 kwargs = {key: value for key, value in star_system["star"].items()
                           if key != "visual_style"}
-                star = Star(visual, **kwargs)
+                star = Star(visual, **kwargs, star_system_id=id)
 
                 pbs = {}
                 for pb_data in star_system["planetary_bodies"].values():
-                    pbs[pb_data["id"]] = self._create_pb_from_data(pb_data)
+                    pbs[pb_data["id"]] = self._create_pb_from_data(pb_data, id)
 
                 self.star_systems[id] = StarSystem(star_system["name"], star, pbs)
 
-    def _create_pb_from_data(self, pb_data):
+    def _create_pb_from_data(self, pb_data, star_system_id):
         if pb_data["type"] == "terrestrial_world":
             style = getattr(terrestrial_body_style, pb_data["visual_style"])
             
@@ -514,7 +514,8 @@ class Game:
             return TerrestrialBody(visual, **kwargs, 
                                    districts=districts, 
                                    atmosphere=atmosphere,
-                                   population=population)
+                                   population=population,
+                                   star_system_id=star_system_id)
 
         elif pb_data["type"] == "gas_giant":
             style = getattr(gas_giant_visual_style, pb_data["visual_style"])
@@ -525,7 +526,7 @@ class Game:
             kwargs = {key: value for key, value in pb_data.items() 
                       if key not in blacklist}
 
-            return GasGiant(visual, **kwargs)
+            return GasGiant(visual, **kwargs, star_system_id=star_system_id)
 
         raise Exception(f"Invalid pb type: {pb_data['type']}")
     
