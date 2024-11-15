@@ -49,3 +49,6 @@ class Population:
                     population_dict[species_id] = population
 
         return population_dict
+
+    def get_species_population(self, species_id: str) -> float:
+        return self.get_total_population_dict()[species_id]
