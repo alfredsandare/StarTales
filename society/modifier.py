@@ -38,6 +38,9 @@ class Modifier:
         self.added_value = 0
         self.added_percentage = 0
 
+    def get_value(self):
+        return self.value
+
 
 # LocalModifier is a modifier that is local to a specific cb or species
 class LocalModifier(Modifier):
