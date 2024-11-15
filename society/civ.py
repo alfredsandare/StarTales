@@ -86,6 +86,10 @@ class Civ:
         # so a species with a larger population will have a larger impact on the average.
 
         tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
+
+        if tb.population.get_total_population() == 0:
+            return 0
+
         present_species_ids = tb.population.get_species_ids()
         averages = [self.get_average_species_tb_habitability(star_system_id,
                                                              tb_id, species_id)

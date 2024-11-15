@@ -165,12 +165,16 @@ def cb_menu(menu_handler: MenuHandler,
     for object_id in to_deactivate:
         cb_menu.objects[object_id].deactivate()
 
+    cb_menu.objects["population_button"].activate()
+    if not isinstance(cb, TerrestrialBody):
+        cb_menu.objects["population_button"].deactivate()
+
     if isinstance(cb, TerrestrialBody) and menu_settings["cb_menu_mode"] == "overview":
         _init_atmosphere(menu_handler, cb, font, menu_settings["atmosphere_menu_mode"], 
                          images, switch_atm_mode_command)
+        _init_districts(menu_handler, cb, climate_images)
 
     if menu_settings["cb_menu_mode"] == "overview":
-        _init_districts(menu_handler, cb, climate_images)
         _init_properties(menu_handler, cb, host_cb, font, settings, SIZE)
         _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
@@ -455,6 +459,7 @@ def _init_atmosphere(menu_handler: MenuHandler, tb: TerrestrialBody,
 
     cb_menu.objects["atmosphere_bg"].activate()
     cb_menu.objects["atmosphere_title"].activate()
+    cb_menu.objects["atmosphere_calculator_button"].activate()
 
     BASE_POS = (350, 300)
     SIZE = (200, 250)
