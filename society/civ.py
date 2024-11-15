@@ -87,8 +87,6 @@ class Civ:
 
         tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
         present_species_ids = tb.population.get_species_ids()
-        print(present_species_ids)
-        print(tb.population.get_species_population("human"))
         averages = [self.get_average_species_tb_habitability(star_system_id,
                                                              tb_id, species_id)
                     * tb.population.get_species_population(species_id)
