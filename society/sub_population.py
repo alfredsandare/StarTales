@@ -32,7 +32,7 @@ class SubPopulation:
 
         self.habitabilites = {}
 
-        for species_id in self.species_population:
+        for species_id in species.keys():
             habitability = 1
 
             habitability -= self.district.climate \
