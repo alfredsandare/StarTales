@@ -476,6 +476,25 @@
                 "anchor": "c"
             },
 
+            "habitabilities_bg": {
+                "type": "shape",
+                "pos": [0, 0],
+                "size": [0, 0],
+                "color": [30, 35, 140],
+                "type_": "rect",
+                "outline_width": 1,
+                "outline_color": [0, 0, 0]
+            },
+
+            "habitabilities_title": {
+                "type": "text",
+                "pos": [0, 0],
+                "text": "Average Habitabilities",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "anchor": "c"
+            },
+
             "close_button": {
                 "type": "button",
                 "pos": [897, 15],

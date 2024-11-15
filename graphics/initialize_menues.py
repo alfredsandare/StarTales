@@ -15,6 +15,7 @@ from physics.star import Star
 from physics.star_system import StarSystem
 from physics.terraformprojects import PROJECTS, PROPERTY_UNITS
 from physics.terrestrial_body import TerrestrialBody
+from society.civ import Civ
 from society.species import CHARACTERISTICS, CHARACTERISTICS_NAMES, ENVIRONMENTS_NAMES, HABITAT_PREFERENCES_NAMES, Species
 from util import orbital_vel_to_orbital_period, round_and_add_suffix, round_seconds, round_to_significant_figures
 
@@ -96,7 +97,8 @@ def cb_menu(menu_handler: MenuHandler,
             menu_settings,
             images: dict[str, pygame.Surface],
             switch_atm_mode_command,
-            species: dict[str, Species]):
+            species: dict[str, Species],
+            player_civ: Civ):
 
     object_ids = [
         "thickness_text",
@@ -173,6 +175,7 @@ def cb_menu(menu_handler: MenuHandler,
 
     elif menu_settings["cb_menu_mode"] == "population":
         _init_population(menu_handler, cb, font, species)
+        _init_habitabilities(menu_handler, cb, font, species, player_civ)
 
 def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, images):
     object_ids_startswith = [
@@ -743,3 +746,39 @@ def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, 
         text_ = Text(sum_multiple_vectors(BASE_POS, COLUMN_2_BASE_POS, (0, i*ROW_HEIGHT)),
                      text2, font, 16, anchor="e")
         menu_handler.add_object("cb_menu", f"population_text2_{i}", text_)
+
+def _init_habitabilities(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, species: dict[str, Species], player_civ: Civ):
+    menu = menu_handler.menues["cb_menu"]
+    menu.objects["habitabilities_bg"].activate()
+    menu.objects["habitabilities_title"].activate()
+
+    BASE_POS = [560, 40]
+    SIZE = [200, 250]
+
+    menu.objects["habitabilities_bg"].change_property("pos", BASE_POS)
+    menu.objects["habitabilities_bg"].change_property("size", SIZE)
+
+    pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
+    menu.objects["habitabilities_title"].change_property("pos", pos)
+    
+    population_dict = tb.population.get_total_population_dict()
+
+    average_habitabilities = [player_civ.get_average_species_tb_habitability(tb.star_system_id, tb.id, species_id) for species_id in population_dict.keys()]
+    total_average = player_civ.get_total_average_species_tb_habitability(tb.star_system_id, tb.id)
+
+    column1_texts = ["Total Average:", *[f"{species[species_id].name}:" for species_id in population_dict.keys()]]
+    column2_texts = [total_average, *[h for h in average_habitabilities]]
+    column2_texts = [str(round(100*h, 1))+"%" for h in column2_texts]
+
+    ROW_HEIGHT = 30
+    COLUMN_1_BASE_POS = (10, 50)
+    COLUMN_2_BASE_POS = (190, 50)
+
+    for i, (text1, text2) in enumerate(zip(column1_texts, column2_texts)):
+        text_ = Text(sum_multiple_vectors(BASE_POS, COLUMN_1_BASE_POS, (0, i*ROW_HEIGHT)),
+                     text1, font, 16, anchor="w")
+        menu_handler.add_object("cb_menu", f"habitability_text1_{i}", text_)
+
+        text_ = Text(sum_multiple_vectors(BASE_POS, COLUMN_2_BASE_POS, (0, i*ROW_HEIGHT)),
+                     text2, font, 16, anchor="e")
+        menu_handler.add_object("cb_menu", f"habitability_text2_{i}", text_)

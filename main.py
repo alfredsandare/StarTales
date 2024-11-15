@@ -71,6 +71,7 @@ class Game:
 
         self.civs: dict[str, Civ] = {}
         self.civs["humanity"] = Civ("Humanity", self.star_systems, self.species, [["sol", "earth"]])
+        self.player_civ_id = "humanity"
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
@@ -553,7 +554,8 @@ class Game:
                                     self.menu_settings,
                                     self.images,
                                     self.switch_atm_menu_mode,
-                                    self.species)
+                                    self.species,
+                                    self.civs[self.player_civ_id])
 
     def switch_atm_menu_mode(self):
         if self.menu_settings["atmosphere_menu_mode"] == "units":
