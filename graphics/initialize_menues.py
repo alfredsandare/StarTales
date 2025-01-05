@@ -791,3 +791,12 @@ def _init_habitabilities(menu_handler: MenuHandler, tb: TerrestrialBody, font: s
         text_ = Text(sum_multiple_vectors(BASE_POS, COLUMN_2_BASE_POS, (0, i*ROW_HEIGHT)),
                      text2, font, 16, anchor="e")
         menu_handler.add_object("cb_menu", f"habitability_text2_{i}", text_)
+
+def top_bar(menu_handler: MenuHandler, font: str, frame_width: int):
+    menu = menu_handler.menues["top_bar"]
+    HEIGHT = 30
+
+    menu.change_property("size", [frame_width-200, HEIGHT])
+
+    menu.objects["unity_text"].change_property("text", "Unity: 100%")
+    menu.objects["unity_text"].change_property("pos", [3, HEIGHT/2])

@@ -138,6 +138,9 @@ class Game:
             self.game_time_since_last_time_tick = 0
 
     def _update_menues_from_time_tick(self):
+        initialize_menues.top_bar(self.menu_handler, 
+                                  self.get_values("default_font bold skip_quotes"), 
+                                  self.frame_size[0])
         if self.menu_handler.menues["cb_menu"].active:
             self._init_cb_menu_wrapper()
 
@@ -328,12 +331,16 @@ class Game:
             self.menu_handler.menues["outliner"].activate()
             self.menu_handler.menues["outliner_scroll"].activate()
             self.menu_handler.menues["time_menu"].activate()
+            self.menu_handler.menues["top_bar"].activate()
             initialize_menues.outliner(self.menu_handler,
                                        self.current_star_system.get_all_cbs(),
                                        self.current_star_system.star.id,
                                        self.game_settings["show_moons_in_outliner"],
                                        self.get_values("default_font bold skip_quotes"),
                                        self.invoke_command)
+            initialize_menues.top_bar(self.menu_handler, 
+                                      self.get_values("default_font bold skip_quotes"), 
+                                      self.frame_size[0])
 
             self._update_time_menu_text()
 

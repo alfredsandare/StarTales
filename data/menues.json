@@ -969,5 +969,23 @@
                 "command": "deactivate_menu view_species_menu"
             }
         }
+    },
+
+    "top_bar": {
+        "size": [100, 100],
+        "pos": [0, 0],
+        "bg_color": [39, 48, 148],
+        "layer": 11,
+        "objects": {
+            "unity_text": {
+                "type": "text",
+                "pos": [0, 0],
+                "text": "",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "color": [255, 255, 255],
+                "anchor": "w"
+            }
+        }
     }
 }
