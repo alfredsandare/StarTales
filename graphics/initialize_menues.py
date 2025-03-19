@@ -98,7 +98,8 @@ def cb_menu(menu_handler: MenuHandler,
             images: dict[str, pygame.Surface],
             switch_atm_mode_command,
             species: dict[str, Species],
-            player_civ: Civ):
+            player_civ: Civ,
+            district_id: int):
 
     object_ids = [
         "thickness_text",
@@ -172,7 +173,7 @@ def cb_menu(menu_handler: MenuHandler,
     if isinstance(cb, TerrestrialBody) and menu_settings["cb_menu_mode"] == "overview":
         _init_atmosphere(menu_handler, cb, font, menu_settings["atmosphere_menu_mode"], 
                          images, switch_atm_mode_command)
-        _init_districts(menu_handler, cb, climate_images)
+        _init_districts(menu_handler, cb, climate_images, invoke_command)
 
     if menu_settings["cb_menu_mode"] == "overview":
         _init_properties(menu_handler, cb, host_cb, font, settings, SIZE)
@@ -184,6 +185,10 @@ def cb_menu(menu_handler: MenuHandler,
     elif menu_settings["cb_menu_mode"] == "population":
         _init_population(menu_handler, cb, font, species)
         _init_habitabilities(menu_handler, cb, font, species, player_civ)
+
+    elif menu_settings["cb_menu_mode"] == "district":
+        _init_population(menu_handler, cb, font, species, in_district=True, district_id=district_id)
+        _init_habitabilities(menu_handler, cb, font, species, player_civ, in_district=True, district_id=district_id)
 
 def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, images):
     object_ids_startswith = [
@@ -346,7 +351,7 @@ def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: Cele
         text = Text(pos, str(property), font, 18, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
 
-def _init_districts(menu_handler: MenuHandler, cb, climate_images):
+def _init_districts(menu_handler: MenuHandler, cb, climate_images, invoke_command):
     cb_menu = menu_handler.menues["cb_menu"]
 
     cb_menu.objects["districts_bg"].activate()
@@ -382,7 +387,8 @@ def _init_districts(menu_handler: MenuHandler, cb, climate_images):
                         rect_outline_color=(0, 0, 0),
                         rect_outline_hover_color=(255, 255, 255),
                         rect_outline_click_color=(140, 140, 140),
-                        rect_outline_width=2)
+                        rect_outline_width=2,
+                        command=lambda district_id=i: invoke_command(f"set_cb_menu_mode district {district_id}"))
         menu_handler.add_object("cb_menu", f"district_button_{i}", button)
 
 def _init_moons(menu_handler: MenuHandler, 
@@ -723,7 +729,7 @@ def view_species_menu(menu_handler: MenuHandler, species: Species, font: str):
         text = Text(pos, text2, font, 18, anchor="nw")
         menu_handler.add_object("view_species_menu", f"row_2_text_{i}", text)
 
-def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, species: dict[str, Species]):
+def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, species: dict[str, Species], in_district=False, district_id=0):
     menu = menu_handler.menues["cb_menu"]
     menu.objects["population_bg"].activate()
     menu.objects["population_title"].activate()
@@ -737,15 +743,21 @@ def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, 
     pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
     menu.objects["population_title"].change_property("pos", pos)
 
-    population_dict = tb.population.get_total_population_dict()
-
     ROW_HEIGHT = 30
     COLUMN_1_BASE_POS = (10, 50)
     COLUMN_2_BASE_POS = (190, 50)
 
-    column1_texts = ["Total:", *[f"{species[species_id].name}:" for species_id in population_dict.keys()]]
-    column2_texts = [round_and_add_suffix(tb.population.get_total_population(), 3),
-                     *[round_and_add_suffix(p, 3) for p in population_dict.values()]]
+    if not in_district:
+        population_dict = tb.population.get_total_population_dict()
+        column1_texts = ["Total:", *[f"{species[species_id].name}:" for species_id in population_dict.keys()]]
+        column2_texts = [round_and_add_suffix(tb.population.get_total_population(), 3),
+                        *[round_and_add_suffix(p, 3) for p in population_dict.values()]]
+
+    else:
+        population_dict = tb.population.sub_populations[district_id].get_population_dict()
+        column1_texts = ["Total:", *[f"{species[species_id].name}:" for species_id in population_dict.keys()]]
+        column2_texts = [round_and_add_suffix(tb.population.sub_populations[district_id].get_total_population(), 3),
+                        *[round_and_add_suffix(p, 3) for p in population_dict.values()]]
 
     for i, (text1, text2) in enumerate(zip(column1_texts, column2_texts)):
         text_ = Text(sum_multiple_vectors(BASE_POS, COLUMN_1_BASE_POS, (0, i*ROW_HEIGHT)),
@@ -756,7 +768,7 @@ def _init_population(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, 
                      text2, font, 16, anchor="e")
         menu_handler.add_object("cb_menu", f"population_text2_{i}", text_)
 
-def _init_habitabilities(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, species: dict[str, Species], player_civ: Civ):
+def _init_habitabilities(menu_handler: MenuHandler, tb: TerrestrialBody, font: str, species: dict[str, Species], player_civ: Civ, in_district=False, district_id=0):
     menu = menu_handler.menues["cb_menu"]
     menu.objects["habitability_bg"].activate()
     menu.objects["habitability_title"].activate()
@@ -769,14 +781,25 @@ def _init_habitabilities(menu_handler: MenuHandler, tb: TerrestrialBody, font: s
 
     pos = (BASE_POS[0]+SIZE[0]/2, BASE_POS[1]+17)
     menu.objects["habitability_title"].change_property("pos", pos)
-    
-    population_dict = tb.population.get_total_population_dict()
 
-    average_habitabilities = [player_civ.get_average_species_tb_habitability(tb.star_system_id, tb.id, species_id) for species_id in population_dict.keys()]
-    total_average = player_civ.get_total_average_species_tb_habitability(tb.star_system_id, tb.id)
+    if not in_district:
+        population_dict = tb.population.get_total_population_dict()
 
-    column1_texts = ["Total Average:", *[f"{species[species_id].name}:" for species_id in population_dict.keys()]]
-    column2_texts = [total_average, *[h for h in average_habitabilities]]
+        average_habitabilities = [player_civ.get_average_species_tb_habitability(tb.star_system_id, tb.id, species_id) for species_id in population_dict.keys()]
+        total_average = player_civ.get_total_average_species_tb_habitability(tb.star_system_id, tb.id)
+
+        column1_texts = ["Total Average:", *[f"{species[species_id].name}:" for species_id in population_dict.keys()]]
+        column2_texts = [total_average, *average_habitabilities]
+
+    else:
+        population_dict = tb.population.sub_populations[district_id].get_population_dict()
+
+        habitabilities = [player_civ.get_species_district_habitability(tb.star_system_id, tb.id, district_id, species_id) for species_id in population_dict.keys()]
+        average = player_civ.get_average_species_district_habitability(tb.star_system_id, tb.id, district_id)
+
+        column1_texts = ["Average:", *[f"{species[species_id].name}:" for species_id in population_dict.keys()]]
+        column2_texts = [average, *habitabilities]
+
     column2_texts = [str(round(100*h, 1))+"%" for h in column2_texts]
 
     ROW_HEIGHT = 30

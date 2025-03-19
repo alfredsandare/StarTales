@@ -409,7 +409,10 @@ class Game:
             
         elif command == "set_cb_menu_mode":
             self.menu_settings["cb_menu_mode"] = args[0]
-            self._init_cb_menu_wrapper()
+            district_id = 0
+            if len(args) > 1:
+                district_id = int(args[1])
+            self._init_cb_menu_wrapper(district_id=district_id)
 
         elif command == "open_atmosphere_menu":
             self.menu_handler.menues["atmosphere_calculator"].activate()
@@ -542,7 +545,7 @@ class Game:
         initialize_menues.small_planet_menu(self.menu_handler, id, 
                                             self.current_star_system)
         
-    def _init_cb_menu_wrapper(self):
+    def _init_cb_menu_wrapper(self, district_id=0):
         cbs = self.current_star_system.get_all_cbs_dict()
         cb = cbs[self.cb_menu_cb_id]
         host_cb = None
@@ -561,7 +564,8 @@ class Game:
                                     self.images,
                                     self.switch_atm_menu_mode,
                                     self.species,
-                                    self.civs[self.player_civ_id])
+                                    self.civs[self.player_civ_id],
+                                    district_id)
 
     def switch_atm_menu_mode(self):
         if self.menu_settings["atmosphere_menu_mode"] == "units":

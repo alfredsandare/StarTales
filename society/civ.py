@@ -5,6 +5,7 @@ from physics.terrestrial_body import TerrestrialBody
 from society.modifier import Modifier
 from society.modifiers_handler import ModifiersHandler
 from society.species import Species
+from society.sub_population import SubPopulation
 
 
 class Civ:
@@ -97,3 +98,32 @@ class Civ:
                     for species_id in present_species_ids]
 
         return sum(averages) / tb.population.get_total_population()
+
+    def get_species_district_habitability(self, star_system_id: str, tb_id: str,
+                                          district_id: int, species_id: str):
+        # Returns the habitability of a species in a district
+
+        tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
+        sub_population = tb.population.sub_populations[district_id]
+
+        if species_id in sub_population.get_species_ids():
+
+            modifier_id = f"species_district_habitability@"\
+                +f"{tb.star_system_id}@{tb.id}@{district_id}@{species_id}"
+
+            return self.modifiers_handler.get_modifier(modifier_id).get_value()
+
+    def get_average_species_district_habitability(self, star_system_id: str,
+                                                  tb_id: str, district_id: str):
+        # Returns the average habitability of all species in a district
+
+        tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
+        sub_population: SubPopulation = tb.population.sub_populations[district_id]
+
+        present_species_ids = sub_population.get_species_ids()
+        habitabilities = [self.get_species_district_habitability(star_system_id, tb_id,
+                                                                 district_id, species_id)
+                    * tb.population.get_species_population(species_id)
+                    for species_id in present_species_ids]
+
+        return sum(habitabilities) / sub_population.get_total_population()
