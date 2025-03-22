@@ -6,7 +6,7 @@
             "Apartment Complexes"
         ],
         "upkeep": {
-            "energy": {
+            "energy_usage": {
                 "base": 1000,
                 "level_multiplier": 2
             }

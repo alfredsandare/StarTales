@@ -80,8 +80,9 @@ class Civ:
                 f"{district_id}@{this_building_id}@{upkeep_id}"
             func = lambda uid=upkeep_id: building.get_upkeep(uid)
             name = f"{RESOURCE_NAMES[upkeep_id]} Upkeep"
-            # affects = [(f"{upkeep_id}@{star_system_id}@{tb_id}", 1, False)]
-            modifier = Modifier(name, 0, id=id_, get_base_value_func=func)
+            affects = [(f"{upkeep_id}@{star_system_id}@{tb_id}", 1, False)]
+            modifier = Modifier(name, 0, id=id_, get_base_value_func=func,
+                                affects=affects)
             self.modifiers_handler.add_modifier(modifier)
 
         # Create produce modifiers
