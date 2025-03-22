@@ -1,7 +1,9 @@
 # 'civ' is used as a shorthand for 'civilization'
 
+from data.consts import PLANETARY_RESOURCES, RESOURCE_NAMES
 from physics.star_system import StarSystem
 from physics.terrestrial_body import TerrestrialBody
+from society.building import Building
 from society.modifier import Modifier
 from society.modifiers_handler import ModifiersHandler
 from society.species import Species
@@ -56,8 +58,42 @@ class Civ:
                                     id=id_, get_base_value_func=func)
                 self.modifiers_handler.add_modifier(modifier)
 
+        # Planetary resources
+        for resource in PLANETARY_RESOURCES:
+            id_ = f"{resource}@{star_system_id}@{tb_id}"
+            modifier = Modifier(RESOURCE_NAMES[resource], 0, id=id_)
+            self.modifiers_handler.add_modifier(modifier)
+
     def time_tick(self):
         self.modifiers_handler.calculate_modifiers()
+
+    def create_building(self, building_template_id: str, star_system_id: str,
+                        tb_id: str, district_id: int, level=1):
+        building = Building(building_template_id, level=level)
+        tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
+        tb.districts[district_id].buildings.append(building)
+        this_building_id = len(tb.districts[district_id].buildings) - 1
+
+        # Create upkeep modifiers
+        for upkeep_id in building.get_upkeep_ids():
+            id_ = f"building_upkeep@{star_system_id}@{tb_id}@" \
+                f"{district_id}@{this_building_id}@{upkeep_id}"
+            func = lambda uid=upkeep_id: building.get_upkeep(uid)
+            name = f"{RESOURCE_NAMES[upkeep_id]} Upkeep"
+            # affects = [(f"{upkeep_id}@{star_system_id}@{tb_id}", 1, False)]
+            modifier = Modifier(name, 0, id=id_, get_base_value_func=func)
+            self.modifiers_handler.add_modifier(modifier)
+
+        # Create produce modifiers
+        for produce_id in building.get_produce_ids():
+            id_ = f"building_produce@{star_system_id}@{tb_id}@" \
+                f"{district_id}@{this_building_id}@{produce_id}"
+            func = lambda uid=produce_id: building.get_produce(uid)
+            name = f"{RESOURCE_NAMES[upkeep_id]} Production"
+            affects = [(f"{produce_id}@{star_system_id}@{tb_id}", 1, False)]
+            modifier = Modifier(name, 0, id=id_, get_base_value_func=func,
+                                affects=affects)
+            self.modifiers_handler.add_modifier(modifier)
 
     def get_average_species_tb_habitability(self, star_system_id: str,
                                             tb_id: str, species_id: str):

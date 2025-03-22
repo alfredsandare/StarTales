@@ -1,0 +1,21 @@
+{
+    "housing_blocks": {
+        "base_name": "Housing buildings",
+        "level_names": [
+            "Urban Sprawls",
+            "Apartment Complexes"
+        ],
+        "upkeep": {
+            "energy": {
+                "base": 1000,
+                "level_multiplier": 2
+            }
+        },
+        "produces": {
+            "housing": {
+                "base": 1000000,
+                "level_multiplier": 2
+            }
+        }
+    }
+}

@@ -21,3 +21,19 @@ CELESTIAL_BODY_TYPES_NAMES = {
 
 TEMPERATURES = ["extremely cold", "very cold", "cold", 
                 "moderate", "hot", "very hot", "extremely hot"]
+
+PLANETARY_RESOURCES = [
+    "energy",
+    "mining_capacity",
+    "storage_capacity",
+    "production_capacity",
+    "housing"
+]
+
+RESOURCE_NAMES = {
+    "energy": "Energy",
+    "mining_capacity": "Mining Capacity",
+    "storage_capacity": "Storage Capacity",
+    "production_capacity": "Production Capacity",
+    "housing": "Housing"
+}

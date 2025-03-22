@@ -26,10 +26,13 @@
             2.2.1.4 Terraforming
             2.2.1.5 Atmosphere calculator
             2.2.1.6 Population
+            2.2.1.7 Buildings
 
         2.2.2 Small planet menu [2]
 
     2.3 Add all cbs
+
+    2.4 Buildings
 
 3 Research & Technology
 

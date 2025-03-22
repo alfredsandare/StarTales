@@ -29,6 +29,9 @@ To keep track of all modifiers, I have listed them here. This is useful because 
 
 ### Modifiers for every building
 
-- Power draw. There should be one modifier per building. Id: `building_power_draw@{star_system_id}@{tb_id}@{district_id}@{building_id}`.
+Resources are: `energy`, `mining_capacity`, `storage_capaity`, `production_capacity`, `housing`
+A building only has the modifiers of the resources it produces and needs for upkeep.
 
-- Production. Id: `building_power_draw@{star_system_id}@{tb_id}@{district_id}@{building_id}@{product_id}`. Product ids are energy_capacity, mining_capacity, storage_capacity, production_capacity. A building only has the production modifiers of the products it produces.
+- Upkeep. There should be one modifier per building per resource. Id: `building_upkeep@{star_system_id}@{tb_id}@{district_id}@{building_id}@{resource_id}`.
+
+- Produce. There should be one modifier per building per resource. Id: `building_produce@{star_system_id}@{tb_id}@{district_id}@{building_id}@{product_id}`.
