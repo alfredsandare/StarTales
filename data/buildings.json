@@ -17,5 +17,87 @@
                 "level_multiplier": 2
             }
         }
+    },
+
+   "solar_panels": {
+        "base_name": "Solar Panels Array",
+        "level_names": [],
+        "upkeep": {
+            "energy_usage": {
+                "base": 1000,
+                "level_multiplier": 2
+            }
+        },
+        "produces": {
+            "energy": {
+                "base": 1000000,
+                "level_multiplier": 2
+            }
+        }
+    },
+
+    "mines": {
+        "base_name": "Mines",
+        "level_names": [
+            "Quarries",
+            "Mineshafts",
+            "Subterranean excavations"
+        ],
+        "upkeep": {
+            "energy_usage": {
+                "base": 1000,
+                "level_multiplier": 2
+            }
+        },
+        "produces": {
+            "mining_capacity": {
+                "base": 1000,
+                "level_multiplier": 2
+            }
+        }
+    },
+
+    "storage": {
+        "base_name": "Storage Units",
+        "level_names": [
+            "Storehouse",
+            "Warehouse",
+            "Storage Site"
+        ],
+        "upkeep": {
+            "energy_usage": {
+                "base": 1000,
+                "level_multiplier": 2
+            }
+        },
+        "produces": {
+            "mining_capacity": {
+                "base": 1000,
+                "level_multiplier": 2
+            }
+        }
+    },
+
+    "factory": {
+        "base_name": "Factories",
+        "level_names": [
+            "Manufactory",
+            "Industrial Complex",
+            "Industrial Park",
+            "Production Hub",
+            "Cyber-Physical Assembly Plants"
+        ],
+        "upkeep": {
+            "energy_usage": {
+                "base": 1000,
+                "level_multiplier": 2
+            }
+        },
+        "produces": {
+            "production_capacity": {
+                "base": 1000,
+                "level_multiplier": 2
+            }
+        }
     }
 }
