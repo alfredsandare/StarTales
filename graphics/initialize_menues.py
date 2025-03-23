@@ -787,6 +787,7 @@ def _init_habitabilities(menu_handler: MenuHandler, tb: TerrestrialBody, font: s
     menu.objects["habitability_title"].change_property("pos", pos)
 
     if not in_district:
+        menu.objects["habitability_title"].change_property("text", "Average Habitabilities")
         population_dict = tb.population.get_total_population_dict()
 
         average_habitabilities = [player_civ.get_average_species_tb_habitability(tb.star_system_id, tb.id, species_id) for species_id in population_dict.keys()]
@@ -796,6 +797,7 @@ def _init_habitabilities(menu_handler: MenuHandler, tb: TerrestrialBody, font: s
         column2_texts = [total_average, *average_habitabilities]
 
     else:
+        menu.objects["habitability_title"].change_property("text", "Habitabilities")
         population_dict = tb.population.sub_populations[district_id].get_population_dict()
 
         habitabilities = [player_civ.get_species_district_habitability(tb.star_system_id, tb.id, district_id, species_id) for species_id in population_dict.keys()]
