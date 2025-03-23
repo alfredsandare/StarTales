@@ -74,7 +74,6 @@ class Civ:
 
     def time_tick(self):
         self.modifiers_handler.calculate_modifiers()
-        print(self.modifiers_handler.get_modifier(f"housing@sol@earth"))
 
     def create_building_and_modifiers(self, building_template_id: str,
                                       star_system_id: str, tb_id: str,
