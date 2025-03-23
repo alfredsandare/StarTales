@@ -45,17 +45,20 @@ class Civ:
     def create_settled_tb_modifiers(self, star_system_id, tb_id):
         # Creates all the modifiers listed in docs/modifiers.md for a terrestrial body.
 
-        tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
+        tb: TerrestrialBody = self.star_systems[star_system_id] \
+            .get_all_cbs_dict()[tb_id]
 
         for species_id in tb.population.get_species_ids():
             for i, sub_population in enumerate(tb.population.sub_populations):
                 # Species District Habitability
-                id_ = f"species_district_habitability@{star_system_id}@{tb_id}@{i}@{species_id}"
-                func = lambda sp=sub_population: sp.get_species_habitability(species_id)
+                id_ = f"species_district_habitability@{star_system_id}" \
+                    f"@{tb_id}@{i}@{species_id}"
+                func = lambda sp=sub_population: \
+                    sp.get_species_habitability(species_id)
                 species_name = self.species[species_id].name
 
-                modifier = Modifier(f"District {i} {species_name} Habitability", 0,
-                                    id=id_, get_base_value_func=func)
+                modifier = Modifier(f"District {i} {species_name} Habitability",
+                                    0, id=id_, get_base_value_func=func)
                 self.modifiers_handler.add_modifier(modifier)
 
         # Planetary resources
@@ -117,9 +120,11 @@ class Civ:
     def get_average_species_tb_habitability(self, star_system_id: str,
                                             tb_id: str, species_id: str):
         # Returns the average habitability of a species on a terrestrial body.
-        # This is the average of all the districts' habitability where this species is present.
+        # This is the average of all the districts' habitability
+        # where this species is present.
 
-        tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
+        tb: TerrestrialBody = self.star_systems[star_system_id] \
+            .get_all_cbs_dict()[tb_id]
         habitability_sum = 0
         count = 0
         for i, sub_population in enumerate(tb.population.sub_populations):
@@ -139,9 +144,11 @@ class Civ:
                                                   tb_id: str):
         # Returns the average habitability of all species on a terrestrial body.
         # This accounts for the population of each species,
-        # so a species with a larger population will have a larger impact on the average.
+        # so a species with a larger population will have a
+        # larger impact on the average.
 
-        tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
+        tb: TerrestrialBody = self.star_systems[star_system_id] \
+            .get_all_cbs_dict()[tb_id]
 
         if tb.population.get_total_population() == 0:
             return 0
@@ -158,7 +165,8 @@ class Civ:
                                           district_id: int, species_id: str):
         # Returns the habitability of a species in a district
 
-        tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
+        tb: TerrestrialBody = self.star_systems[star_system_id] \
+            .get_all_cbs_dict()[tb_id]
         sub_population = tb.population.sub_populations[district_id]
 
         if species_id in sub_population.get_species_ids():
@@ -172,13 +180,15 @@ class Civ:
                                                   tb_id: str, district_id: str):
         # Returns the average habitability of all species in a district
 
-        tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
-        sub_population: SubPopulation = tb.population.sub_populations[district_id]
+        tb: TerrestrialBody = self.star_systems[star_system_id] \
+            .get_all_cbs_dict()[tb_id]
+        sub_population: SubPopulation = \
+            tb.population.sub_populations[district_id]
 
         present_species_ids = sub_population.get_species_ids()
-        habitabilities = [self.get_species_district_habitability(star_system_id, tb_id,
-                                                                 district_id, species_id)
-                    * tb.population.get_species_population(species_id)
-                    for species_id in present_species_ids]
+        habitabilities = [self.get_species_district_habitability(
+                              star_system_id, tb_id, district_id, species_id)
+                          * tb.population.get_species_population(species_id)
+                          for species_id in present_species_ids]
 
         return sum(habitabilities) / sub_population.get_total_population()

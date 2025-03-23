@@ -10,4 +10,3 @@ class District:
     def create_building(self, building_template_id: str, level=1):
         building = Building(building_template_id, level=level)
         self.buildings.append(building)
-        building_id = len(self.buildings) - 1
