@@ -111,6 +111,30 @@
                     "RAINFOREST",
                     "WATER_OCEAN"
                 ],
+                "buildings": [
+                    [
+                        ["housing_blocks", 1],
+                        ["solar_panels", 1],
+                        ["mines", 1],
+                        ["storage", 1],
+                        ["factory", 1]
+                    ],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    []
+                ],
                 "atmosphere": {
                     "oxygen": 5398,
                     "nitrogen": 20049,

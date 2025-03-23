@@ -6,6 +6,7 @@ PATH = get_path_from_file_name(__file__)
 
 class Building:
     def __init__(self, building_template_id, level=1):
+        self.building_template_id = building_template_id
         self.base_name = ""
         self.level_names = []
         self.produces = {}

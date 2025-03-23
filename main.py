@@ -503,12 +503,17 @@ class Game:
             visual = CelestialBodyVisual("terrestrial", style)
 
             blacklist = ["visual_style", "type", "districts", 
-                         "atmosphere", "population"]
+                         "atmosphere", "population", "buildings"]
             kwargs = {key: value for key, value in pb_data.items() 
                       if key not in blacklist}
 
             districts = [District(getattr(climates, district_type))
                          for district_type in pb_data["districts"]]
+            if "buildings" in pb_data.keys():
+                for district_id, buildings in enumerate(pb_data["buildings"]):
+                    for building in buildings:
+                        districts[district_id].create_building(building[0],
+                                                               level=building[1])
 
             atmosphere = Atmosphere(pb_data["atmosphere"], pb_data["size"])
 

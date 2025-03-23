@@ -64,20 +64,38 @@ class Civ:
             modifier = Modifier(RESOURCE_NAMES[resource], 0, id=id_)
             self.modifiers_handler.add_modifier(modifier)
 
+        for district_id, district in enumerate(tb.districts):
+            for building_id, building in enumerate(district.buildings):
+                self.create_building_modifiers(star_system_id, tb_id,
+                                               district_id, building_id)
+
     def time_tick(self):
         self.modifiers_handler.calculate_modifiers()
+        print(self.modifiers_handler.get_modifier(f"housing@sol@earth"))
 
-    def create_building(self, building_template_id: str, star_system_id: str,
-                        tb_id: str, district_id: int, level=1):
-        building = Building(building_template_id, level=level)
-        tb: TerrestrialBody = self.star_systems[star_system_id].get_all_cbs_dict()[tb_id]
-        tb.districts[district_id].buildings.append(building)
-        this_building_id = len(tb.districts[district_id].buildings) - 1
+    def create_building_and_modifiers(self, building_template_id: str,
+                                      star_system_id: str, tb_id: str,
+                                      district_id: int, level=1):
+
+        tb: TerrestrialBody = self.star_systems[star_system_id] \
+            .get_all_cbs_dict()[tb_id]
+        tb.districts[district_id].create_building(building_template_id,
+                                                  level=level)
+        building_id = len(tb.districts[district_id].buildings) - 1
+        self.create_building_modifiers(star_system_id, tb_id, district_id,
+                                       building_id)
+
+    def create_building_modifiers(self, star_system_id: str, tb_id: str,
+                                  district_id: int, building_id: int):
+
+        tb: TerrestrialBody = self.star_systems[star_system_id] \
+            .get_all_cbs_dict()[tb_id]
+        building = tb.districts[district_id].buildings[building_id]
 
         # Create upkeep modifiers
         for upkeep_id in building.get_upkeep_ids():
             id_ = f"building_upkeep@{star_system_id}@{tb_id}@" \
-                f"{district_id}@{this_building_id}@{upkeep_id}"
+                f"{district_id}@{building_id}@{upkeep_id}"
             func = lambda uid=upkeep_id: building.get_upkeep(uid)
             name = f"{RESOURCE_NAMES[upkeep_id]} Upkeep"
             affects = [(f"{upkeep_id}@{star_system_id}@{tb_id}", 1, False)]
@@ -88,7 +106,7 @@ class Civ:
         # Create produce modifiers
         for produce_id in building.get_produce_ids():
             id_ = f"building_produce@{star_system_id}@{tb_id}@" \
-                f"{district_id}@{this_building_id}@{produce_id}"
+                f"{district_id}@{building_id}@{produce_id}"
             func = lambda uid=produce_id: building.get_produce(uid)
             name = f"{RESOURCE_NAMES[upkeep_id]} Production"
             affects = [(f"{produce_id}@{star_system_id}@{tb_id}", 1, False)]
