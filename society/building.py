@@ -11,6 +11,7 @@ class Building:
         self.level_names = []
         self.produces = {}
         self.upkeep = {}
+        self.image_id = ""
         self.level = level
 
         with open(PATH + "data/buildings.json") as file:

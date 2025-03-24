@@ -54,6 +54,7 @@ class Game:
         self.current_star_system = self.star_systems["sol"]
 
         self.climate_images = self._get_climate_images()
+        self.building_images = self._get_building_images()
 
         self.time = 104001  # number of weeks after year 0. 104000 weeks is 2000 years
         self.ms_per_in_game_week = 250
@@ -456,6 +457,23 @@ class Game:
 
         return images
 
+    def _get_building_images(self):
+        IMAGE_SIZE = 70
+
+        images = {}
+        path = PATH+"graphics\\buildings\\"
+
+        os.chdir(path)
+        files = os.listdir(os.getcwd())
+
+        for file in files:
+            image = pygame.image.load(path+file).convert_alpha()
+            image = pygame.transform.scale(image, (IMAGE_SIZE, IMAGE_SIZE))
+            file_name = file.split(".")[0]
+            images[file_name] = image
+
+        return images
+
     def _get_images_in_directory(self, path, original_path):
         os.chdir(path)
         files = os.listdir(os.getcwd())
@@ -563,6 +581,7 @@ class Game:
                                     list(cbs.values()),
                                     self.get_values("default_font bold skip_quotes"),
                                     self.climate_images,
+                                    self.building_images,
                                     self.invoke_command,
                                     self.game_settings,
                                     self.menu_settings,

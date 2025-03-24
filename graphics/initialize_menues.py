@@ -92,6 +92,7 @@ def cb_menu(menu_handler: MenuHandler,
             cbs: list[CelestialBody],
             font: str,
             climate_images: dict[str, pygame.Surface],
+            building_images: dict[str, pygame.Surface],
             invoke_command,
             settings,
             menu_settings,
@@ -120,7 +121,8 @@ def cb_menu(menu_handler: MenuHandler,
         "population_text2_",
         "habitability_text1_",
         "habitability_text2_",
-        "building_button_"
+        "building_button_",
+        "building_picture_"
     ]
 
     menu_handler.delete_multiple_objects("cb_menu", object_ids, 
@@ -192,7 +194,7 @@ def cb_menu(menu_handler: MenuHandler,
     elif menu_settings["cb_menu_mode"] == "district":
         _init_population(menu_handler, cb, font, species, in_district=True, district_id=district_id)
         _init_habitabilities(menu_handler, cb, font, species, player_civ, in_district=True, district_id=district_id)
-        _init_buildings(menu_handler, font, cb, district_id)
+        _init_buildings(menu_handler, font, cb, district_id, building_images)
 
 def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, images):
     object_ids_startswith = [
@@ -830,7 +832,7 @@ def top_bar(menu_handler: MenuHandler, font: str, frame_width: int):
     menu.objects["unity_text"].change_property("text", "Unity: 100%")
     menu.objects["unity_text"].change_property("pos", [3, HEIGHT/2])
 
-def _init_buildings(menu_handler: MenuHandler, font: str, tb: TerrestrialBody, district_id: int):
+def _init_buildings(menu_handler: MenuHandler, font: str, tb: TerrestrialBody, district_id: int, building_images: dict[str, pygame.Surface]):
     cb_menu = menu_handler.menues["cb_menu"]
 
     cb_menu.objects["buildings_bg"].activate()
@@ -854,14 +856,11 @@ def _init_buildings(menu_handler: MenuHandler, font: str, tb: TerrestrialBody, d
         pos = sum_two_vectors(OFFSET, ((SIZE+DISTANCE_BETWEEN)*x,
                                        (SIZE+DISTANCE_BETWEEN)*y))
 
-        # image = climate_images[district.climate.image]
-        # menu_image = Image(pos, image)
-        # menu_handler.add_object("cb_menu", f"district_picture_{i}", menu_image)
+        image = building_images[building.image_id]
+        menu_image = Image(pos, image)
+        menu_handler.add_object("cb_menu", f"building_picture_{i}", menu_image)
 
         button = Button(pos,
-                        text=building.base_name,
-                        font=font,
-                        font_size=16,
                         enable_rect=True,
                         rect_length=SIZE,
                         rect_height=SIZE,
