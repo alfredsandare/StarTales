@@ -63,7 +63,8 @@ class Game:
 
         self.menu_settings = {
             "atmosphere_menu_mode": "units",  # "percentage" or "units"
-            "cb_menu_mode": "overview"  # "overview" or "terraforming"
+            "cb_menu_mode": "overview",  # "overview" or "terraforming"
+            "districts_or_all_buildings": "all_buildings"
         }
 
         self.cb_menu_cb_id = None

@@ -52,3 +52,19 @@ class TerrestrialBody(PlanetaryBody):
 
     def is_settled(self) -> bool:
         return self.get_total_population() > 0
+
+    def get_all_buildings_dict(self) -> dict:
+        # Returns a dict with (building_template_id, building_level) as keys
+        # and the (amount of every such building, base_name) as values
+        all_buildings = {}
+        for district in self.districts:
+            for building in district.buildings:
+                key = (building.building_template_id, building.level)
+                if key in all_buildings.keys():
+                    all_buildings[key][0] += 1
+                else:
+                    all_buildings[key] = [1, building.base_name]
+
+        # Sort by alphabetical order on the template ids
+        sorted_keys = sorted(all_buildings, key=lambda k: k[0])
+        return {key: all_buildings[key] for key in sorted_keys}

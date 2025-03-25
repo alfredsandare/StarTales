@@ -124,7 +124,13 @@
                     [],
                     [],
                     [],
-                    [],
+                    [
+                        ["housing_blocks", 2],
+                        ["solar_panels", 3],
+                        ["mines", 4],
+                        ["storage", 5],
+                        ["factory", 7]
+                    ],
                     [],
                     [],
                     [],
