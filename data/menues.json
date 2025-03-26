@@ -547,6 +547,20 @@
                 "command": "set_cb_menu_mode population"
             },
 
+            "buildings_button": {
+                "type": "button",
+                "pos": [560, 590],
+                "enable_rect": true,
+                "color_theme": "default",
+                "text": "Buildings",
+                "font": "@get default_font bold@",
+                "font_size": 18,
+                "rect_length": 100,
+                "rect_height": 30,
+                "anchor": "se",
+                "command": "set_cb_menu_mode all_buildings"
+            },
+
             "buildings_bg": {
                 "type": "shape",
                 "pos": [0, 0],

@@ -136,6 +136,7 @@ def cb_menu(menu_handler: MenuHandler,
     menu_handler.menues["cb_submenu_moons"].deactivate()
     menu_handler.menues["cb_submenu_active_terraforming"].deactivate()
     menu_handler.menues["cb_submenu_available_terraforming"].deactivate()
+    menu_handler.menues["cb_submenu_all_buildings"].deactivate()
 
     cb_menu = menu_handler.menues["cb_menu"]
 
@@ -180,10 +181,7 @@ def cb_menu(menu_handler: MenuHandler,
     if isinstance(cb, TerrestrialBody) and menu_settings["cb_menu_mode"] == "overview":
         _init_atmosphere(menu_handler, cb, font, menu_settings["atmosphere_menu_mode"], 
                          images, switch_atm_mode_command)
-        if menu_settings["districts_or_all_buildings"] == "districts":
-            _init_districts(menu_handler, cb, climate_images, invoke_command)
-        else:
-            _init_all_buildings(menu_handler, cb, building_images, font)
+        _init_districts(menu_handler, cb, climate_images, invoke_command)
 
     if menu_settings["cb_menu_mode"] == "overview":
         _init_properties(menu_handler, cb, host_cb, font, settings, SIZE)
@@ -200,6 +198,9 @@ def cb_menu(menu_handler: MenuHandler,
         _init_population(menu_handler, cb, font, species, in_district=True, district_id=district_id)
         _init_habitabilities(menu_handler, cb, font, species, player_civ, in_district=True, district_id=district_id)
         _init_buildings(menu_handler, font, cb, district_id, building_images)
+
+    elif menu_settings["cb_menu_mode"] == "all_buildings":
+        _init_all_buildings(menu_handler, cb, building_images, font)
 
 def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, images):
     object_ids_startswith = [
@@ -886,7 +887,7 @@ def _init_all_buildings(menu_handler: MenuHandler, tb: TerrestrialBody, building
     DISTANCE_BETWEEN = 10
     BUILDING_ICON_SIZE = 70
 
-    BG_SIZE = (330, 550)
+    BG_SIZE = (330, 510)
     cb_menu.objects["all_buildings_bg"].change_property("pos", CB_MENU_OFFSET)
     cb_menu.objects["all_buildings_bg"].change_property("size", BG_SIZE)
 
@@ -894,7 +895,8 @@ def _init_all_buildings(menu_handler: MenuHandler, tb: TerrestrialBody, building
     cb_menu.objects["all_buildings_title"].change_property("pos", pos)
 
     object_ids_startswith = [
-
+        "icon_image_",
+        "text_"
     ]
 
     menu_handler.delete_multiple_objects("cb_submenu_all_buildings", [], object_ids_startswith)
@@ -911,11 +913,11 @@ def _init_all_buildings(menu_handler: MenuHandler, tb: TerrestrialBody, building
 
     all_buildings_dict = tb.get_all_buildings_dict()
     for i, ((building_template_id, building_level), (amount, base_name)) in enumerate(all_buildings_dict.items()):
-        icon_image = Image((10, i*(BUILDING_ICON_SIZE+DISTANCE_BETWEEN)),
+        icon_image = Image((0, i*(BUILDING_ICON_SIZE+DISTANCE_BETWEEN)),
                            building_images[building_template_id])
         menu_handler.add_object("cb_submenu_all_buildings", f"icon_image_{i}", icon_image)
 
-        building_text = Text((20+BUILDING_ICON_SIZE, i*(BUILDING_ICON_SIZE+DISTANCE_BETWEEN)+BUILDING_ICON_SIZE/2),
+        building_text = Text((10+BUILDING_ICON_SIZE, i*(BUILDING_ICON_SIZE+DISTANCE_BETWEEN)+BUILDING_ICON_SIZE/2),
                              f"{amount}x {base_name}, level {building_level}",
                              font,
                              18,
