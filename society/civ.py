@@ -12,14 +12,16 @@ from society.sub_population import SubPopulation
 
 class Civ:
     def __init__(self, name, star_systems: dict[str, StarSystem], 
-                 species: dict[str, Species], 
+                 species: dict[str, Species],
+                 buildings_data: dict,
                  owned_cb_ids: list[list[str, str]] = None):
 
         self.name = name
 
-        # These are depency injected
+        # These are dependency injected
         self.star_systems = star_systems
         self.species = species
+        self.buildings_data = buildings_data
 
         # list of tuples of the form (star_system_id, cb_id)
         self.owned_cb_ids = owned_cb_ids if owned_cb_ids is not None else []
@@ -82,6 +84,7 @@ class Civ:
         tb: TerrestrialBody = self.star_systems[star_system_id] \
             .get_all_cbs_dict()[tb_id]
         tb.districts[district_id].create_building(building_template_id,
+                                                  self.buildings_data,
                                                   level=level)
         building_id = len(tb.districts[district_id].buildings) - 1
         self.create_building_modifiers(star_system_id, tb_id, district_id,

@@ -43,6 +43,7 @@ class Game:
 
         self.game_settings = self.load_game_settings()
         self.species = self.load_species_data()
+        self.buildings_data = self.load_buildings_data()
 
         self.view = "main"
 
@@ -71,7 +72,8 @@ class Game:
         self.atmosphere_calculator = AtmosphereCalculator()
 
         self.civs: dict[str, Civ] = {}
-        self.civs["humanity"] = Civ("Humanity", self.star_systems, self.species, [["sol", "earth"]])
+        self.civs["humanity"] = Civ("Humanity", self.star_systems, self.species,
+                                    self.buildings_data, [["sol", "earth"]])
         self.player_civ_id = "humanity"
 
     def main(self):
@@ -260,6 +262,10 @@ class Game:
                                               species_value["habitat_preferences"])
 
             return species
+
+    def load_buildings_data(self):
+        with open(PATH + "data/buildings.json") as file:
+            return json.load(file)
 
     def _get_button_color_theme(self, theme):
         if theme == "default":
@@ -531,6 +537,7 @@ class Game:
                 for district_id, buildings in enumerate(pb_data["buildings"]):
                     for building in buildings:
                         districts[district_id].create_building(building[0],
+                                                               self.buildings_data,
                                                                level=building[1])
 
             atmosphere = Atmosphere(pb_data["atmosphere"], pb_data["size"])

@@ -7,6 +7,7 @@ class District:
         self.climate = climate
         self.buildings = [] if buildings is None else buildings
 
-    def create_building(self, building_template_id: str, level=1):
-        building = Building(building_template_id, level=level)
+    def create_building(self, building_template_id: str,
+                        buildings_data: dict,level=1):
+        building = Building(building_template_id, buildings_data, level=level)
         self.buildings.append(building)
