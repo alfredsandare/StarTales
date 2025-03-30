@@ -28,6 +28,7 @@
             2.2.1.6 Population
             2.2.1.7 Buildings
             2.2.1.8 All buildings
+            2.2.1.9 Add building
 
         2.2.2 Small planet menu [2]
 

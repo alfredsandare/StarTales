@@ -100,7 +100,8 @@ def cb_menu(menu_handler: MenuHandler,
             switch_atm_mode_command,
             species: dict[str, Species],
             player_civ: Civ,
-            district_id: int):
+            district_id: int,
+            buildings_data: dict):
 
     object_ids = [
         "thickness_text",
@@ -168,7 +169,9 @@ def cb_menu(menu_handler: MenuHandler,
         "buildings_bg",
         "buildings_title",
         "all_buildings_bg",
-        "all_buildings_title"
+        "all_buildings_title",
+        "add_building_bg",
+        "add_building_title"
     ]
 
     for object_id in to_deactivate:
@@ -201,6 +204,7 @@ def cb_menu(menu_handler: MenuHandler,
 
     elif menu_settings["cb_menu_mode"] == "all_buildings":
         _init_all_buildings(menu_handler, cb, building_images, font)
+        _init_add_building(menu_handler, cb, building_images, buildings_data, font)
 
 def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, images):
     object_ids_startswith = [
@@ -923,3 +927,55 @@ def _init_all_buildings(menu_handler: MenuHandler, tb: TerrestrialBody, building
                              18,
                              anchor="w")
         menu_handler.add_object("cb_submenu_all_buildings", f"text_{i}", building_text)
+
+def _init_add_building(menu_handler: MenuHandler, tb: TerrestrialBody, building_images, buildings_data: dict, font):
+    cb_menu = menu_handler.menues["cb_menu"]
+
+    cb_menu.objects["add_building_bg"].activate()
+    cb_menu.objects["add_building_title"].activate()
+
+    CB_MENU_OFFSET = [350, 40]
+    DISTANCE_BETWEEN = 10
+    BUILDING_ICON_SIZE = 70
+
+    BG_SIZE = (330, 510)
+    cb_menu.objects["add_building_bg"].change_property("pos", CB_MENU_OFFSET)
+    cb_menu.objects["add_building_bg"].change_property("size", BG_SIZE)
+
+    pos = (CB_MENU_OFFSET[0]+BG_SIZE[0]/2, CB_MENU_OFFSET[1]+17)
+    cb_menu.objects["add_building_title"].change_property("pos", pos)
+
+    object_ids_startswith = [
+        "icon_image_",
+        "text_"
+    ]
+
+    menu_handler.delete_multiple_objects("cb_submenu_add_building", [], object_ids_startswith)
+    add_building_menu = menu_handler.menues["cb_submenu_add_building"]
+    add_building_menu.activate()
+
+    add_building_menu_size = sum_two_vectors(BG_SIZE, (-20, -50))
+
+    add_building_menu.change_property("pos", sum_multiple_vectors(cb_menu.pos, CB_MENU_OFFSET, (10, 40)))
+    add_building_menu.change_property("size", add_building_menu_size)
+    add_building_menu.calculate_hitbox()
+    add_building_menu.objects["scroll_slidebar"].change_property("pos", (add_building_menu_size[0], 0))
+    add_building_menu.objects["scroll_slidebar"].change_property("length", add_building_menu_size[1])
+
+    for i, (building_template_id, building_data) in enumerate(buildings_data.items()):
+        button_ = Button((0, i*(BUILDING_ICON_SIZE+DISTANCE_BETWEEN)),
+                        enable_rect=True,
+                        rect_length=300,
+                        rect_height=BUILDING_ICON_SIZE,
+                        rect_color=(0, 0, 0, 120),
+                        rect_hover_color=(255, 255, 255, 60),
+                        rect_click_color=(0, 0, 0, 60))
+        menu_handler.add_object("cb_submenu_add_building", f"building_button_{i}", button_)
+
+        icon_image = Image((0, i*(BUILDING_ICON_SIZE+DISTANCE_BETWEEN)),
+                           building_images[building_template_id])
+        menu_handler.add_object("cb_submenu_add_building", f"icon_image_{i}", icon_image)
+
+        building_text = Text((10+BUILDING_ICON_SIZE, i*(BUILDING_ICON_SIZE+DISTANCE_BETWEEN)+BUILDING_ICON_SIZE/2),
+                             building_data["base_name"], font, 18, anchor="w")
+        menu_handler.add_object("cb_submenu_add_building", f"text_{i}", building_text)

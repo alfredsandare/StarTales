@@ -597,6 +597,25 @@
                 "font": "@get default_font bold@",
                 "font_size": 20,
                 "anchor": "c"
+            },
+
+            "add_building_bg": {
+                "type": "shape",
+                "pos": [0, 0],
+                "size": [0, 0],
+                "color": [30, 35, 140],
+                "type_": "rect",
+                "outline_width": 1,
+                "outline_color": [0, 0, 0]
+            },
+
+            "add_building_title": {
+                "type": "text",
+                "pos": [0, 0],
+                "text": "Build",
+                "font": "@get default_font bold@",
+                "font_size": 20,
+                "anchor": "c"
             }
         }
     },
@@ -662,6 +681,26 @@
     },
 
     "cb_submenu_all_buildings": {
+        "size": [0, 0],
+        "pos": [0, 0],
+        "enable_scroll": true,
+        "scroll_slidebar": "scroll_slidebar",
+        "max_scroll_offset": 0,
+        "layer": 12,
+
+        "objects": {
+            "scroll_slidebar": {
+                "type": "slidebar",
+                "pos": [0, 0],
+                "length": 0,
+                "circle_size": 10,
+                "orientation": "vertical",
+                "anchor": "ne"
+            }
+        }
+    },
+
+    "cb_submenu_add_building": {
         "size": [0, 0],
         "pos": [0, 0],
         "enable_scroll": true,

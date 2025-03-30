@@ -2,6 +2,8 @@
     "housing_blocks": {
         "base_name": "Housing buildings",
         "image_id": "housing_blocks",
+        "base_build_time": 52,
+        "level_build_time_multiplier": 2,
         "level_names": [
             "Urban Sprawls",
             "Apartment Complexes"
@@ -23,6 +25,8 @@
    "solar_panels": {
         "base_name": "Solar Panels Array",
         "image_id": "solar_panels",
+        "base_build_time": 52,
+        "level_build_time_multiplier": 2,
         "level_names": [],
         "upkeep": {
             "energy_usage": {
@@ -41,6 +45,8 @@
     "mines": {
         "base_name": "Mines",
         "image_id": "mines",
+        "base_build_time": 52,
+        "level_build_time_multiplier": 2,
         "level_names": [
             "Quarries",
             "Mineshafts",
@@ -63,6 +69,8 @@
     "storage": {
         "base_name": "Storage Units",
         "image_id": "storage",
+        "base_build_time": 52,
+        "level_build_time_multiplier": 2,
         "level_names": [
             "Storehouse",
             "Warehouse",
@@ -85,6 +93,8 @@
     "factory": {
         "base_name": "Factories",
         "image_id": "factory",
+        "base_build_time": 52,
+        "level_build_time_multiplier": 2,
         "level_names": [
             "Manufactory",
             "Industrial Complex",

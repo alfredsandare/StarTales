@@ -596,7 +596,8 @@ class Game:
                                     self.switch_atm_menu_mode,
                                     self.species,
                                     self.civs[self.player_civ_id],
-                                    district_id)
+                                    district_id,
+                                    self.buildings_data)
 
     def switch_atm_menu_mode(self):
         if self.menu_settings["atmosphere_menu_mode"] == "units":
