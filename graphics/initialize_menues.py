@@ -138,6 +138,7 @@ def cb_menu(menu_handler: MenuHandler,
     menu_handler.menues["cb_submenu_active_terraforming"].deactivate()
     menu_handler.menues["cb_submenu_available_terraforming"].deactivate()
     menu_handler.menues["cb_submenu_all_buildings"].deactivate()
+    menu_handler.menues["cb_submenu_add_building"].deactivate()
 
     cb_menu = menu_handler.menues["cb_menu"]
 
@@ -404,7 +405,8 @@ def _init_districts(menu_handler: MenuHandler, cb, climate_images, invoke_comman
                         rect_outline_hover_color=(255, 255, 255),
                         rect_outline_click_color=(140, 140, 140),
                         rect_outline_width=2,
-                        command=lambda district_id=i: invoke_command(f"set_cb_menu_mode district {district_id}"))
+                        command=lambda district_id=i: invoke_command(f"set_cb_menu_mode district {district_id}"),
+                        layer=1)
         menu_handler.add_object("cb_menu", f"district_button_{i}", button)
 
 def _init_moons(menu_handler: MenuHandler, 
@@ -947,7 +949,8 @@ def _init_add_building(menu_handler: MenuHandler, tb: TerrestrialBody, building_
 
     object_ids_startswith = [
         "icon_image_",
-        "text_"
+        "text_",
+        "building_button_"
     ]
 
     menu_handler.delete_multiple_objects("cb_submenu_add_building", [], object_ids_startswith)

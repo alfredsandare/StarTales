@@ -316,7 +316,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "title_text": {
@@ -336,7 +337,8 @@
                 "type_": "rect",
                 "outline_width": 1,
                 "outline_color": [0, 0, 0],
-                "anchor": "ne"
+                "anchor": "ne",
+                "layer": -1
             },
             
             "info_bg_title": {
@@ -355,7 +357,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
             
             "moons_title": {
@@ -374,7 +377,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
             
             "atmosphere_title": {
@@ -407,7 +411,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
             
             "districts_title": {
@@ -426,7 +431,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
             
             "active_terraforming_title": {
@@ -445,7 +451,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
             
             "available_terraforming_title": {
@@ -454,7 +461,8 @@
                 "text": "Available Projects",
                 "font": "@get default_font bold@",
                 "font_size": 20,
-                "anchor": "c"
+                "anchor": "c",
+                "layer": -1
             },
 
             "population_bg": {
@@ -464,7 +472,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "population_title": {
@@ -483,7 +492,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "habitability_title": {
@@ -568,7 +578,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "buildings_title": {
@@ -587,7 +598,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "all_buildings_title": {
@@ -606,7 +618,8 @@
                 "color": [30, 35, 140],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "add_building_title": {
@@ -799,7 +812,8 @@
                 "color": [39, 48, 148],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "title_text": {
@@ -861,7 +875,8 @@
                 "color": [39, 48, 148],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "title_text": {
@@ -967,7 +982,8 @@
                 "color": [39, 48, 148],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "title_text": {
@@ -1006,7 +1022,8 @@
                 "type_": "rect",
                 "outline_width": 1,
                 "outline_color": [0, 0, 0],
-                "anchor": "w"
+                "anchor": "w",
+                "layer": -1
             },
 
             "amount_input": {
@@ -1058,7 +1075,8 @@
                 "color": [39, 48, 148],
                 "type_": "rect",
                 "outline_width": 1,
-                "outline_color": [0, 0, 0]
+                "outline_color": [0, 0, 0],
+                "layer": -1
             },
 
             "title_text": {
