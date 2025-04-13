@@ -192,7 +192,7 @@ class Civ:
         present_species_ids = sub_population.get_species_ids()
         habitabilities = [self.get_species_district_habitability(
                               star_system_id, tb_id, district_id, species_id)
-                          * tb.population.get_species_population(species_id)
+                          * sub_population.get_species_population(species_id)
                           for species_id in present_species_ids]
 
         return sum(habitabilities) / sub_population.get_total_population()
