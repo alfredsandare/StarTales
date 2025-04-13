@@ -6,7 +6,7 @@ import math
 from PhoenixGUI.util import sum_two_vectors, sum_multiple_vectors
 from PhoenixGUI import *
 import pygame
-from data.consts import CELESTIAL_BODY_TYPES_NAMES
+from data.consts import CELESTIAL_BODY_TYPES_NAMES, TEXT_COLOR_ORANGE
 from physics.atmosphere import GASES, GASES_NAMES
 from physics.atmosphere_calculator import AtmosphereCalculator
 from physics.celestial_body import CelestialBody
@@ -201,7 +201,7 @@ def cb_menu(menu_handler: MenuHandler,
     elif menu_settings["cb_menu_mode"] == "district":
         _init_population(menu_handler, cb, font, species, in_district=True, district_id=district_id)
         _init_habitabilities(menu_handler, cb, font, species, player_civ, in_district=True, district_id=district_id)
-        _init_buildings(menu_handler, font, cb, district_id, building_images)
+        _init_buildings(menu_handler, font, cb, district_id, building_images, civ=player_civ)
 
     elif menu_settings["cb_menu_mode"] == "all_buildings":
         _init_all_buildings(menu_handler, cb, building_images, font)
@@ -844,7 +844,7 @@ def top_bar(menu_handler: MenuHandler, font: str, frame_width: int):
     menu.objects["unity_text"].change_property("text", "Unity: 100%")
     menu.objects["unity_text"].change_property("pos", [3, HEIGHT/2])
 
-def _init_buildings(menu_handler: MenuHandler, font: str, tb: TerrestrialBody, district_id: int, building_images: dict[str, pygame.Surface]):
+def _init_buildings(menu_handler: MenuHandler, font: str, tb: TerrestrialBody, district_id: int, building_images: dict[str, pygame.Surface], civ: Civ):
     cb_menu = menu_handler.menues["cb_menu"]
 
     cb_menu.objects["buildings_bg"].activate()
@@ -869,19 +869,27 @@ def _init_buildings(menu_handler: MenuHandler, font: str, tb: TerrestrialBody, d
                                        (SIZE+DISTANCE_BETWEEN)*y))
 
         image = building_images[building.image_id]
-        menu_image = Image(pos, image)
+        hover_text = f"%%{TEXT_COLOR_ORANGE}%{building.base_name}%, level " \
+            f"{building.level}\n------------\n%%{TEXT_COLOR_ORANGE}%Produces:%\n"
+        for produce_modifier_id in building.produce_modifiers_ids:
+            hover_text += civ.modifiers_handler.get_affected_by_text(produce_modifier_id)
+        hover_text += f"%%{TEXT_COLOR_ORANGE}%Upkeep:%\n"
+        for upkeep_modifier_id in building.upkeep_modifiers_ids:
+            hover_text += civ.modifiers_handler.get_affected_by_text(upkeep_modifier_id)
+        menu_image = Image(pos, image, hover_text=hover_text[:-1], layer=1)
         menu_handler.add_object("cb_menu", f"building_picture_{i}", menu_image)
 
-        button = Button(pos,
-                        enable_rect=True,
-                        rect_length=SIZE,
-                        rect_height=SIZE,
-                        rect_color=(0, 0, 0, 0),
-                        rect_outline_color=(0, 0, 0),
-                        rect_outline_hover_color=(255, 255, 255),
-                        rect_outline_click_color=(140, 140, 140),
-                        rect_outline_width=2)
-        menu_handler.add_object("cb_menu", f"building_button_{i}", button)
+        # This will be used later, the buttons will be used for removing buildings
+        # button = Button(pos,
+        #                 enable_rect=True,
+        #                 rect_length=SIZE,
+        #                 rect_height=SIZE,
+        #                 rect_color=(0, 0, 0, 0),
+        #                 rect_outline_color=(0, 0, 0),
+        #                 rect_outline_hover_color=(255, 255, 255),
+        #                 rect_outline_click_color=(140, 140, 140),
+        #                 rect_outline_width=2)
+        # menu_handler.add_object("cb_menu", f"building_button_{i}", button)
 
 def _init_all_buildings(menu_handler: MenuHandler, tb: TerrestrialBody, building_images, font):
     cb_menu = menu_handler.menues["cb_menu"]

@@ -19,6 +19,7 @@ from physics.terraformprojects import AtmosphereChange, PropertyChange
 from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
 from society.civ import Civ
+from society.modifier import Modifier
 from society.population import Population
 from society.species import Species
 from util import convert_weeks_to_years, get_path_from_file_name, is_valid_image
@@ -32,7 +33,14 @@ class Game:
     def __init__(self):
         self.frame_size = (1280, 720)
         self.screen = pygame.display.set_mode(self.frame_size)
-        self.menu_handler = MenuHandler()
+        self.menu_handler = MenuHandler(hover_menu_bg_color=(20, 20, 100),
+                                        hover_menu_outline_color=(0, 0, 0),
+                                        hover_menu_text_color=(255, 255, 255),
+                                        hover_menu_text_font=self\
+                                            .get_values("default_font bold skip_quotes"),
+                                        hover_menu_text_size=14,
+                                        hover_menu_width=300,
+                                        hover_menu_text_offset=[5, 5])
         self.menu_handler.set_scroll_strength_multiplier(8)
         
         self.images = self._get_images_in_directory(PATH+"graphics\\", PATH+"graphics\\")
@@ -75,6 +83,9 @@ class Game:
         self.civs["humanity"] = Civ("Humanity", self.star_systems, self.species,
                                     self.buildings_data, [["sol", "earth"]])
         self.player_civ_id = "humanity"
+        mod = Modifier("Bunk Beds", 0.15, [(f"building_produce@sol@earth@0@0@housing", 1, True)], id="bunk_beds", is_base=False)
+        self.civs["humanity"].modifiers_handler.add_modifier(mod)
+        self.civs["humanity"].modifiers_handler.calculate_modifiers()
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()

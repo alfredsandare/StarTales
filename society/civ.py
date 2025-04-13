@@ -102,22 +102,24 @@ class Civ:
             id_ = f"building_upkeep@{star_system_id}@{tb_id}@" \
                 f"{district_id}@{building_id}@{upkeep_id}"
             func = lambda uid=upkeep_id: building.get_upkeep(uid)
-            name = f"{RESOURCE_NAMES[upkeep_id]} Upkeep"
+            name = f"{RESOURCE_NAMES[upkeep_id]}"
             affects = [(f"{upkeep_id}@{star_system_id}@{tb_id}", 1, False)]
             modifier = Modifier(name, 0, id=id_, get_base_value_func=func,
                                 affects=affects)
             self.modifiers_handler.add_modifier(modifier)
+            building.upkeep_modifiers_ids.append(id_)
 
         # Create produce modifiers
         for produce_id in building.get_produce_ids():
             id_ = f"building_produce@{star_system_id}@{tb_id}@" \
                 f"{district_id}@{building_id}@{produce_id}"
             func = lambda uid=produce_id: building.get_produce(uid)
-            name = f"{RESOURCE_NAMES[upkeep_id]} Production"
+            name = RESOURCE_NAMES[produce_id]
             affects = [(f"{produce_id}@{star_system_id}@{tb_id}", 1, False)]
             modifier = Modifier(name, 0, id=id_, get_base_value_func=func,
                                 affects=affects)
             self.modifiers_handler.add_modifier(modifier)
+            building.produce_modifiers_ids.append(id_)
 
     def get_average_species_tb_habitability(self, star_system_id: str,
                                             tb_id: str, species_id: str):

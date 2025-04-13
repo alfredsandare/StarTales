@@ -13,6 +13,8 @@ class Building:
         self.upkeep = {}
         self.image_id = ""
         self.level = level
+        self.upkeep_modifiers_ids = []
+        self.produce_modifiers_ids = []
 
         this_building_data: dict = buildings_data[building_template_id]
         for key, item in this_building_data.items():

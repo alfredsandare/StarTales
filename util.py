@@ -145,12 +145,15 @@ def orbital_vel_to_orbital_period(orbital_vel: float, sma: float) -> float:
 def get_path_from_file_name(file_name: str) -> str:
     return file_name[:file_name.find("StarTales") + 10]
 
-def round_and_add_suffix(num, significant_figures, include_space=True, make_int=False):
+def round_and_add_suffix(num, significant_figures, include_space=True, make_int=False, threshold=10000):
     prefixes = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc', 
                 'Ud', 'Dd', 'Td', 'Qad', 'Qid', 'Sxd', 'Spd', 'Ocd', 'Nod', 'Vg', 'Uvg']
 
     if num == 0:
         return '0'
+
+    if -threshold < num < threshold:
+        return str(num)
 
     for i in range(len(prefixes)):
         divided = num/10**(3*i)

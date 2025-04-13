@@ -39,3 +39,7 @@ RESOURCE_NAMES = {
     "production_capacity": "Production Capacity",
     "housing": "Housing"
 }
+
+TEXT_COLOR_ORANGE = "255 150 0"
+TEXT_COLOR_GREEN = "0 255 0"
+TEXT_COLOR_RED = "255 0 0"
