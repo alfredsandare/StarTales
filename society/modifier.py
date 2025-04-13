@@ -41,6 +41,12 @@ class Modifier:
     def get_value(self):
         return self.value
 
+    def get_affect_modifier_list_id(self, modifier_id):
+        """ Returns the int id of given modifier in self.affects """
+        for i, affect in enumerate(self.affects):
+            if affect[0] == modifier_id:
+                return i
+        return None
 
 # LocalModifier is a modifier that is local to a specific cb or species
 class LocalModifier(Modifier):

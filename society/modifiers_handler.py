@@ -1,9 +1,10 @@
 from collections import deque
 import json
+from data.consts import TEXT_COLOR_GREEN, TEXT_COLOR_RED
 from physics.star_system import StarSystem
 from society.modifier import LocalModifier, Modifier
 from society.species import Species
-from util import get_path_from_file_name
+from util import get_path_from_file_name, round_and_add_suffix
 
 PATH = get_path_from_file_name(__file__)
 
@@ -109,3 +110,38 @@ class ModifiersHandler:
 
     def add_modifier(self, modifier: Modifier):
         self.modifiers[modifier.id] = modifier
+        for affects in modifier.affects:
+            self.modifiers[affects[0]].affected_by.append(modifier.id)
+
+    def get_affected_by_text(self, modifier_id: str, positive_is_green=True):
+        # If positive_is_green is True, positive affection will be in green and
+        # negative affection in red. If False, vice versa.
+
+        modifier = self.modifiers[modifier_id]
+        base_value = round_and_add_suffix(modifier.base_value, 3)
+        value = round_and_add_suffix(modifier.value, 3)
+        text = f"{modifier.name}: {value}\n    Base: {base_value}\n"
+
+        for affected_by_modifier_id in modifier.affected_by:
+            affected_by_modifier = self.modifiers[affected_by_modifier_id]
+            list_id = affected_by_modifier \
+                .get_affect_modifier_list_id(modifier_id)
+            affect = affected_by_modifier.value \
+                * affected_by_modifier.affects[list_id][1]
+
+            is_percentage = affected_by_modifier.affects[list_id][2]
+            affect *= 100 if is_percentage else 1
+
+            # Backslash is to not end the color zone.
+            percentage_text = "\\%" if is_percentage else ""
+            sign = "+" if affect > 0 else ""  # Minus sign is automatically included
+            color = TEXT_COLOR_GREEN if not (positive_is_green ^ (affect>0)) \
+                else TEXT_COLOR_RED
+            text += f"    {affected_by_modifier.name}: %%{color}%{sign}" \
+                f"{affect}{percentage_text}%\n"
+
+        return text
+
+    def get_modifiers_startswith(self, startswith: str):
+        return {key: modifier for key, modifier in self.modifiers.items() \
+                if key.startswith(startswith)}
