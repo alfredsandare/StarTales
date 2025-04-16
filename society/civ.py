@@ -14,14 +14,16 @@ class Civ:
     def __init__(self, name, star_systems: dict[str, StarSystem], 
                  species: dict[str, Species],
                  buildings_data: dict,
+                 jobs_data: dict,
                  owned_cb_ids: list[list[str, str]] = None):
 
         self.name = name
 
         # These are dependency injected
         self.star_systems = star_systems
-        self.species = species
+        self.species: dict[str, Species] = species
         self.buildings_data = buildings_data
+        self.jobs_data = jobs_data
 
         # list of tuples of the form (star_system_id, cb_id)
         self.owned_cb_ids = owned_cb_ids if owned_cb_ids is not None else []
@@ -73,6 +75,38 @@ class Civ:
             for building_id, building in enumerate(district.buildings):
                 self.create_building_modifiers(star_system_id, tb_id,
                                                district_id, building_id)
+
+        # Amount of every species working a job
+        for species_id, job_id in tb.population.get_jobs_dict().keys():
+            id_ = f"jobs@{star_system_id}@{tb_id}@{species_id}@{job_id}"
+            name = f"{self.species[species_id].name} {self.jobs_data[job_id]["name"]}"
+            func = lambda p=tb.population, si=species_id, j=job_id: \
+                p.get_job_amount(si, j)
+
+            affects = []
+            for resource_id, multiplier in self.jobs_data[job_id]["produces"].items():
+                affected_id = f"jobs_production@{star_system_id}@{tb_id}@{resource_id}"
+                affects.append((affected_id, multiplier, False))
+
+            for resource_id, multiplier in self.jobs_data[job_id]["upkeep"].items():
+                affected_id = f"jobs_upkeep@{star_system_id}@{tb_id}@{resource_id}"
+                affects.append((affected_id, multiplier, False))
+
+            modifier = Modifier(name, 0, id=id_, get_base_value_func=func)
+            self.modifiers_handler.add_modifier(modifier)
+
+        # Resource production and upkeep from jobs
+        for resource_id in PLANETARY_RESOURCES:
+            id_ = f"jobs_production@{star_system_id}@{tb_id}@{resource_id}"
+            name = f"Jobs {RESOURCE_NAMES[resource_id]} Production"
+            modifier = Modifier(name, 0, id=id_)
+            self.modifiers_handler.add_modifier(modifier)
+
+            id_ = f"jobs_upkeep@{star_system_id}@{tb_id}@{resource_id}"
+            name = f"Jobs {RESOURCE_NAMES[resource_id]} Upkeep"
+            modifier = Modifier(name, 0, id=id_)
+            self.modifiers_handler.add_modifier(modifier)
+
 
     def time_tick(self):
         self.modifiers_handler.calculate_modifiers()

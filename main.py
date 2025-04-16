@@ -57,6 +57,10 @@ class Game:
 
         self.star_systems: dict[str, StarSystem] = {}
 
+        self.jobs_data: dict = {}
+        with open(PATH + "data/jobs.json") as file:
+            self.jobs_data = json.load(file)
+
         self._load_star_system_data()
 
         self.current_star_system_key = "sol"
@@ -81,7 +85,7 @@ class Game:
 
         self.civs: dict[str, Civ] = {}
         self.civs["humanity"] = Civ("Humanity", self.star_systems, self.species,
-                                    self.buildings_data, [["sol", "earth"]])
+                                    self.buildings_data, self.jobs_data, [["sol", "earth"]])
         self.player_civ_id = "humanity"
         mod = Modifier("Bunk Beds", 0.15, [(f"building_produce@sol@earth@0@0@housing", 1, True)], id="bunk_beds", is_base=False)
         self.civs["humanity"].modifiers_handler.add_modifier(mod)
@@ -554,11 +558,11 @@ class Game:
             atmosphere = Atmosphere(pb_data["atmosphere"], pb_data["size"])
 
             # empty population
-            population = Population([{} for _ in districts], 
-                                    districts, atmosphere)
+            population = Population([{} for _ in districts],
+                                    districts, atmosphere, self.jobs_data)
             if "population" in pb_data:
-                population = Population(pb_data["population"], 
-                                        districts, atmosphere)
+                population = Population(pb_data["population"],
+                                        districts, atmosphere, self.jobs_data)
                 population.calculate_habitabilites(self.species, 
                                                    pb_data["temperature"])
 

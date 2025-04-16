@@ -1,0 +1,29 @@
+{
+    "miner": {
+        "name": "Miner",
+        "produces": {
+            "mining_capacity": 1
+        },
+        "upkeep": {
+            "energy": 1
+        }
+    },
+
+    "factory_worker": {
+        "name": "Factory worker",
+        "produces": {
+            "industrial_capacity": 1
+        },
+        "upkeep": {
+            "energy": 1
+        }
+    },
+
+    "unemployed": {
+        "name": "Unemployed",
+        "produces": {},
+        "upkeep": {
+            "energy": 1
+        } 
+    }
+}

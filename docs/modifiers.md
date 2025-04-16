@@ -23,6 +23,17 @@ To keep track of all modifiers, I have listed them here. This is useful because 
 
 - Planet Housing. The should be one modifier per planet per star system. Id: `tb_housing@{star_system_id}@{tb_id}`.
 
+<!-- - Jobs for every species and job combination. That is, how many individuals of a species are working a job. Id: `jobs@{star_system_id}@{tb_id}@{species_id}@{job_id}`. Affects: Jobs resource production, not percentage, factor 1. -->
+
+- Job-Species resource production. How much of a resource a job and species combination are producing. There should be one modifier per resource produced per job per species per tb. Id: `jobs@{star_system_id}@{tb_id}@{species_id}@{job_id}@{resource_id}`.
+
+- Species resource production (from jobs). How much of a resource a species is producing
+
+- Resource production from jobs, one modifier for every resource. `jobs_production@{star_system_id}@{tb_id}@{resource_id}`
+
+#### Notes about jobs modifiers.
+The main problem is that there may be base modifiers that affect a species job resource production, regardless of job, and then there may be modifiers that affect a job resource output, regardless of species
+
 ### Modifiers for every civ
 
 - Civ Population. There should be one modifer per civ. Id: `civ_population`.
