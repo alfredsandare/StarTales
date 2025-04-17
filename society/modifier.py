@@ -2,10 +2,9 @@
 
 # Modifier is a modifier global for a civilization
 class Modifier:
-    def __init__(self, name, base_value, affects: list[list[str, float, bool]] = None, 
-                 affected_by: list[str] = None, id: str = None, 
-                 get_base_value_func: callable = None, is_base: bool = False,
-                 affects_generators: list = None):
+    def __init__(self, name, base_value, affects: list[tuple] = None,
+                 id: str = None, get_base_value_func: callable = None,
+                 is_base: bool = False, affects_generators: list = None):
 
         self.name = name
         self.base_value = base_value
@@ -23,7 +22,7 @@ class Modifier:
         self.affects_generators = affects_generators \
             if affects_generators is not None else []
 
-        self.affected_by = affected_by if affected_by is not None else []
+        self.affected_by = []
         self.id = id
         self.get_base_value_func = get_base_value_func
         self.is_base = is_base
@@ -67,12 +66,11 @@ class Modifier:
 
 # LocalModifier is a modifier that is local to a specific cb or species
 class LocalModifier(Modifier):
-    def __init__(self, name, base_value, place_type, place, 
-                 affects: list[str] = None, affected_by: list[str] = None,
-                 id=None, get_base_value_func: callable = None, 
-                 is_base: bool = False):
+    def __init__(self, name, base_value, place_type, place,
+                 affects: list[str] = None, id=None,
+                 get_base_value_func: callable = None, is_base: bool = False):
 
-        super().__init__(name, base_value, affects, affected_by, 
+        super().__init__(name, base_value, affects,
                          id, get_base_value_func, is_base)
         self.place_type = place_type  # 'cb' or 'species'
         self.place = place  # species id or cb id
