@@ -32,10 +32,11 @@ class ModifiersHandler:
 
         self._add_local_cb_modifiers(star_systems, owned_cb_ids)
         self._add_local_species_modifiers(species)
-        self._add_affected_by()
+        self._calculate_affected_by()
 
-    def _add_affected_by(self):
+    def _calculate_affected_by(self):
         for key, modifier in self.modifiers.items():
+            modifier.affected_by = []
             for affected in modifier.affects:
                 affected_modifier = self.modifiers[affected[0]]
                 # if affected[0] not in affected_modifier.affected_by:
@@ -72,12 +73,17 @@ class ModifiersHandler:
         return self.modifiers[modifier_name]
     
     def calculate_modifiers(self):
+        for modifier in self.modifiers.values():
+            modifier.calculate_affects()
+
+        self._calculate_affected_by()
         self._sort_modifiers()
+
         for modifier in self.modifiers.values():
             modifier.calculate_value()
 
             for affected in modifier.affects:
-                affected_id, multiplier, is_percentage = affected
+                affected_id, multiplier, is_percentage, _ = affected
                 affected_modifier = self.modifiers[affected_id]
 
                 if is_percentage:
@@ -145,3 +151,20 @@ class ModifiersHandler:
     def get_modifiers_startswith(self, startswith: str):
         return {key: modifier for key, modifier in self.modifiers.items() \
                 if key.startswith(startswith)}
+
+    def get_modifiers_ids(self, req: list) -> list[str]:
+        # req is a list of requirements. Each element must equal each element
+        # in a modifier's id split by @. Put a None in req to indicate that
+        # position does not matter.
+        ids = []
+        for id_ in self.modifiers.keys():
+            split = id_.split("@")
+            if len(split) > len(req):
+                split = split[:len(req)]
+            elif len(split) < len(req):
+                continue
+
+            if all([split==req or req==None for split, req in zip(split, req)]):
+                ids.append(id_)
+
+        return ids
