@@ -37,6 +37,8 @@ class ModifiersHandler:
     def _calculate_affected_by(self):
         for key, modifier in self.modifiers.items():
             modifier.affected_by = []
+
+        for key, modifier in self.modifiers.items():
             for affected in modifier.affects:
                 affected_modifier = self.modifiers[affected[0]]
                 # if affected[0] not in affected_modifier.affected_by:
@@ -85,6 +87,7 @@ class ModifiersHandler:
             for affected in modifier.affects:
                 affected_id, multiplier, is_percentage, _ = affected
                 affected_modifier = self.modifiers[affected_id]
+                multiplier = self.get_multiplier(multiplier)
 
                 if is_percentage:
                     affected_modifier.added_percentage += modifier.value * multiplier
@@ -133,7 +136,7 @@ class ModifiersHandler:
             list_id = affected_by_modifier \
                 .get_affect_modifier_list_id(modifier_id)
             affect = affected_by_modifier.value \
-                * affected_by_modifier.affects[list_id][1]
+                * self.get_multiplier(affected_by_modifier.affects[list_id][1])
 
             is_percentage = affected_by_modifier.affects[list_id][2]
             affect *= 100 if is_percentage else 1
@@ -168,3 +171,8 @@ class ModifiersHandler:
                 ids.append(id_)
 
         return ids
+
+    def get_multiplier(self, multiplier):
+        if callable(multiplier):
+            return multiplier()
+        return multiplier
