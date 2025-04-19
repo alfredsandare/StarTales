@@ -27,7 +27,7 @@ PLANETARY_RESOURCES = [
     "energy_usage",
     "mining_capacity",
     "storage_capacity",
-    "production_capacity",
+    "industrial_capacity",
     "housing"
 ]
 
@@ -36,7 +36,7 @@ RESOURCE_NAMES = {
     "energy_usage": "Energy Usage",
     "mining_capacity": "Mining Capacity",
     "storage_capacity": "Storage Capacity",
-    "production_capacity": "Production Capacity",
+    "industrial_capacity": "Industrial Capacity",
     "housing": "Housing"
 }
 

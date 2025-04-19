@@ -9,7 +9,7 @@
             "Apartment Complexes"
         ],
         "upkeep": {
-            "energy_usage": {
+            "energy": {
                 "base": 1000,
                 "level_multiplier": 2
             }
@@ -29,7 +29,7 @@
         "level_build_time_multiplier": 2,
         "level_names": [],
         "upkeep": {
-            "energy_usage": {
+            "energy": {
                 "base": 1000,
                 "level_multiplier": 2
             }
@@ -53,7 +53,7 @@
             "Subterranean excavations"
         ],
         "upkeep": {
-            "energy_usage": {
+            "energy": {
                 "base": 1000,
                 "level_multiplier": 2
             }
@@ -77,7 +77,7 @@
             "Storage Site"
         ],
         "upkeep": {
-            "energy_usage": {
+            "energy": {
                 "base": 1000,
                 "level_multiplier": 2
             }
@@ -103,13 +103,13 @@
             "Cyber-Physical Assembly Plants"
         ],
         "upkeep": {
-            "energy_usage": {
+            "energy": {
                 "base": 1000,
                 "level_multiplier": 2
             }
         },
         "produces": {
-            "production_capacity": {
+            "industrial_capacity": {
                 "base": 1000,
                 "level_multiplier": 2
             }
