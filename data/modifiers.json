@@ -2,28 +2,24 @@
     "kardashev_rating": {
         "name": "Kardashev Rating",
         "base_value": 0,
-        "affects": [],
-        "type": "global"
+        "affects": []
     },
 
     "total_energy_consumption": {
         "name": "Total Energy Consumption",
         "base_value": 0,
-        "affects": [["kardashev_rating", 0.1, false]],
-        "type": "global"
+        "affects": [["kardashev_rating", 0.1, false]]
     },
 
     "civ_population": {
         "name": "Total Population",
         "base_value": 0,
-        "affects": [],
-        "type": "global"
+        "affects": []
     },
 
     "total_planets": {
         "name": "Total Planets",
         "base_value": 0,
-        "affects": [],
-        "type": "global"
+        "affects": []
     }
 }

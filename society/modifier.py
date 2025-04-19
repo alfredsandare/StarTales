@@ -68,17 +68,3 @@ class Modifier:
             if affect[0] == modifier_id:
                 return i
         return None
-
-# LocalModifier is a modifier that is local to a specific cb or species
-class LocalModifier(Modifier):
-    def __init__(self, name, base_value, place_type, place,
-                 affects: list[str] = None, id=None,
-                 get_base_value_func: callable = None, is_base: bool = False):
-
-        super().__init__(name, base_value, affects,
-                         id, get_base_value_func, is_base)
-        self.place_type = place_type  # 'cb' or 'species'
-        self.place = place  # species id or cb id
-
-    def __str__(self):
-        return f"Local Modifier - id: {self.id}, name: {self.name}, value: {self.value}"
