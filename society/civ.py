@@ -1,6 +1,6 @@
 # 'civ' is used as a shorthand for 'civilization'
 
-from data.consts import PLANETARY_RESOURCES, RESOURCE_NAMES
+from data.consts import PLANETARY_RESOURCES, PLANETARY_MODIFIERS, RESOURCE_NAMES
 from physics.star_system import StarSystem
 from physics.terrestrial_body import TerrestrialBody
 from society.modifier import Modifier
@@ -27,9 +27,7 @@ class Civ:
         # list of tuples of the form (star_system_id, cb_id)
         self.owned_cb_ids = owned_cb_ids if owned_cb_ids is not None else []
 
-        self.modifiers_handler = ModifiersHandler(self.star_systems, 
-                                                  self.species, 
-                                                  self.owned_cb_ids)
+        self.modifiers_handler = ModifiersHandler()
         self.create_all_modifiers()
         self.modifiers_handler.calculate_modifiers()
 
@@ -95,6 +93,9 @@ class Civ:
             self.create_modifier_1102(star_system_id, tb, resource_id)
             self.create_modifier_1105(star_system_id, tb, resource_id)
 
+        # Planetary modifiers, 14xx
+        self.create_modifiers_14xx(star_system_id, tb_id)
+
     def time_tick(self):
         self.modifiers_handler.calculate_modifiers()
 
@@ -124,8 +125,14 @@ class Civ:
                 f"{district_id}@{building_id}@{upkeep_id}"
             func = lambda uid=upkeep_id: building.get_upkeep(uid)
             name = f"{RESOURCE_NAMES[upkeep_id]}"
-            affects = [(f"resource@{star_system_id}@{tb_id}@{upkeep_id}",
-                        1, False)]
+
+            affects = []
+            if upkeep_id in PLANETARY_RESOURCES:
+                affects = [(f"resource@{star_system_id}@{tb_id}@{upkeep_id}",
+                            1, False)]
+            else:  # Upkeep in PLANETARY_MODIFIERS
+                affects = [(f"{upkeep_id}@{star_system_id}@{tb_id}", 1, False)]
+
             modifier = Modifier(name, 0, id=id_, get_base_value_func=func,
                                 affects=affects, type_id=1201)
             self.modifiers_handler.add_modifier(modifier)
@@ -137,8 +144,14 @@ class Civ:
                 f"{district_id}@{building_id}@{produce_id}"
             func = lambda uid=produce_id: building.get_produce(uid)
             name = RESOURCE_NAMES[produce_id]
-            affects = [(f"resource@{star_system_id}@{tb_id}@{produce_id}",
-                        1, False)]
+
+            affects = []
+            if produce_id in PLANETARY_RESOURCES:
+                affects = [(f"resource@{star_system_id}@{tb_id}@{produce_id}",
+                            1, False)]
+            else:  # Upkeep in PLANETARY_MODIFIERS
+                affects = [(f"{produce_id}@{star_system_id}@{tb_id}", 1, False)]
+
             modifier = Modifier(name, 0, id=id_, get_base_value_func=func,
                                 affects=affects, type_id=1200)
             self.modifiers_handler.add_modifier(modifier)
@@ -262,9 +275,11 @@ class Civ:
             f"{tb.id}@{resource_id}"
         name = f"{RESOURCE_NAMES[resource_id]} upkeep from jobs"
 
-        req = ["resource", star_system_id, tb.id, resource_id]
-        get_ids_func = lambda req=req: \
-            self.modifiers_handler.get_modifiers_ids(req)
+        req1 = ["resource", star_system_id, tb.id, resource_id]  # Resources
+        req2 = [resource_id, star_system_id, tb.id]  # Planetary modifiers
+        get_ids_func = lambda req1=req1, req2=req2: \
+            self.modifiers_handler.get_modifiers_ids(req1) \
+            + self.modifiers_handler.get_modifiers_ids(req2)
 
         affects_generators = [(get_ids_func, -1, False)]
         modifier = Modifier(name, 0, id=id_, type_id=1102,
@@ -308,11 +323,20 @@ class Civ:
             f"{tb.id}@{resource_id}"
         name = f"{RESOURCE_NAMES[resource_id]} upkeep from jobs"
 
-        req = ["resource", star_system_id, tb.id, resource_id]
-        get_ids_func = lambda req=req: \
-            self.modifiers_handler.get_modifiers_ids(req)
+        req1 = ["resource", star_system_id, tb.id, resource_id]  # Resources
+        req2 = [resource_id, star_system_id, tb.id]  # Planetary modifiers
+        get_ids_func = lambda req1=req1, req2=req2: \
+            self.modifiers_handler.get_modifiers_ids(req1) \
+            + self.modifiers_handler.get_modifiers_ids(req2)
 
         affects_generators = [(get_ids_func, 1, False)]
         modifier = Modifier(name, 0, id=id_, type_id=1105,
                             affects_generators=affects_generators)
         self.modifiers_handler.add_modifier(modifier)
+
+    def create_modifiers_14xx(self, star_system_id, tb_id):
+        for modifier in PLANETARY_MODIFIERS:
+            id_ = f"{modifier}@{star_system_id}@{tb_id}"
+            name = RESOURCE_NAMES[modifier]
+            modifier = Modifier(name, 0, id=id_)
+            self.modifiers_handler.add_modifier(modifier)

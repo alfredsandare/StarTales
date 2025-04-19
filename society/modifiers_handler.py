@@ -1,23 +1,16 @@
 from collections import deque
 import json
 from data.consts import TEXT_COLOR_GREEN, TEXT_COLOR_RED
-from physics.star_system import StarSystem
 from society.modifier import Modifier
-from society.species import Species
 from util import get_path_from_file_name, round_and_add_suffix
 
 PATH = get_path_from_file_name(__file__)
 
 
 class ModifiersHandler:
-    def __init__(self, star_systems: dict[str, StarSystem], 
-                 species: dict[str, Species], 
-                 owned_cb_ids: list[list[str, str]] = None):
-
+    def __init__(self):
         self.modifiers: dict[str, Modifier] = {}
-        self._load_data(star_systems, species, owned_cb_ids)
-        self._calculate_affected_by()
-        self.calculate_modifiers()
+        self._load_data()
 
     def _load_data(self):
         with open(f"{PATH}/data/modifiers.json", "r") as file:
@@ -91,8 +84,6 @@ class ModifiersHandler:
 
     def add_modifier(self, modifier: Modifier):
         self.modifiers[modifier.id] = modifier
-        for affects in modifier.affects:
-            self.modifiers[affects[0]].affected_by.append(modifier.id)
 
     def get_affected_by_text(self, modifier_id: str, positive_is_green=True):
         # If positive_is_green is True, positive affection will be in green and

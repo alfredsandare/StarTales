@@ -24,7 +24,10 @@ TEMPERATURES = ["extremely cold", "very cold", "cold",
 
 PLANETARY_RESOURCES = [
     "energy",
-    "energy_usage",
+    "minerals"
+]
+
+PLANETARY_MODIFIERS = [
     "mining_capacity",
     "storage_capacity",
     "industrial_capacity",
@@ -33,7 +36,7 @@ PLANETARY_RESOURCES = [
 
 RESOURCE_NAMES = {
     "energy": "Energy",
-    "energy_usage": "Energy Usage",
+    "minerals": "Minerals",
     "mining_capacity": "Mining Capacity",
     "storage_capacity": "Storage Capacity",
     "industrial_capacity": "Industrial Capacity",
