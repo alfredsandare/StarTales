@@ -6,43 +6,29 @@ A modifier is a value in a civ, and modifiers can affect other modifiers, that's
 
 Many values are not only a modifier, they also exist in other places in the code. For example population. Every TerrestrialBody has a Population object, which stores data about how many people of each species live there. But the civ that owns the planet also has modifiers for population, whose base values are retrieved from the tb's population. When values like science gain are retrieved every week, they are retrieved from the civ's ModifierHandler.
 
-## List of modifiers
+## class Modifier
 
-To keep track of all modifiers, I have listed them here. This is useful because when certain events occur (like settling a new planet), modifiers may need to be added or removed.
+### Properties
 
-### Modifiers for every settled TerrestrialBody
-- Species District Habitability. There should be one modifier per species per district per planet per star system. Id: `species_district_habitability@{star_system_id}@{tb_id}@{district_id}@{species_id}`
+- `name`: `str`. Name of the modifier.
+- `base_value`: `float`. The base value of the modifier. Then, the modifiers value is its base value added with values from other modifiers that affect this modifier.
+- `affects`: `list[tuple[str, float, bool]]`. A list of tuples describing which modifiers this modifier affects. Each tuple represents one affected modifier. The first element of a tuple holds the id of the affected modifier. The second element is a multiplier, which this modifier's value will be multiplied by when added to the affected modifier. Can be `float`, `str` or `callable`. If callable, the function will be called and the returned value used as the multiplier. The third element tells whether the value of this modifier will be added to the affected modifier, OR, if this modifier holds a value that the affected modifier will be multiplied by.
+- `id`: `str`. The id of this modifier.
+- `get_base_value_func`: `callable`. When calculating modifiers, this function will be called to fetch the modifier's base value, instead of using its base_value property.
+- `is_base`: `bool`. Whether or not this modifier is a base modifier. A base modifier cannot be affected by other modifiers, and they will be displayed differently in the game.
+- `affects_generators`: `list[tuple[callable, float OR callable, bool]]`. A list of tuples that generates affects-tuples. The callable should return a list of strings, and for all strings a new affects-tuple will be created and added to `self.affects`. The second value of the tuple is the multiplier, which can either be provided directly with a float value, or with a callable that returns a float value. The function will be called with one positional argument, the id of the affects-tuple.
 
-- Species Planet Happiness. There should be one modifier per species per planet per star system. Id: `species_tb_happiness@{star_system_id}@{tb_id}@{species_id}`
+## Spreadsheet explanation
 
-- Species District Population. There should be one modifier per species per district per planet per star system. Id: `species_tb_population@{star_system_id}@{tb_id}@{district_id}@{species_id}`. Affects: Species Planet Population, not percentage, factor 1.
+In the spreadsheet every modifier type is listed. They're called "modifier type" because some modifier types instantiate multiple modifiers.
 
-- Species Planet Population. There should be one modifier per species per planet per star system. Id: `species_tb_population@{star_system_id}@{tb_id}@{species_id}`. Affects: Planet population, not percentage, factor 1.
+Explanation for column titles:
 
-- Planet Population. There should be one modifier per planet per star system. Id: `tb_population@{star_system_id}@{tb_id}`. Affects: Civ population, not percentage, factor 1.
-
-- Planet Housing. The should be one modifier per planet per star system. Id: `tb_housing@{star_system_id}@{tb_id}`.
-
-<!-- - Jobs for every species and job combination. That is, how many individuals of a species are working a job. Id: `jobs@{star_system_id}@{tb_id}@{species_id}@{job_id}`. Affects: Jobs resource production, not percentage, factor 1. -->
-
-- Job-Species resource production. How much of a resource a job and species combination are producing. There should be one modifier per resource produced per job per species per tb. Id: `jobs@{star_system_id}@{tb_id}@{species_id}@{job_id}@{resource_id}`.
-
-- Species resource production (from jobs). How much of a resource a species is producing
-
-- Resource production from jobs, one modifier for every resource. `jobs_production@{star_system_id}@{tb_id}@{resource_id}`
-
-#### Notes about jobs modifiers.
-The main problem is that there may be base modifiers that affect a species job resource production, regardless of job, and then there may be modifiers that affect a job resource output, regardless of species
-
-### Modifiers for every civ
-
-- Civ Population. There should be one modifer per civ. Id: `civ_population`.
-
-### Modifiers for every building
-
-Resources are: `energy`, `mining_capacity`, `storage_capaity`, `production_capacity`, `housing`
-A building only has the modifiers of the resources it produces and needs for upkeep.
-
-- Upkeep. There should be one modifier per building per resource. Id: `building_upkeep@{star_system_id}@{tb_id}@{district_id}@{building_id}@{resource_id}`.
-
-- Produce. There should be one modifier per building per resource. Id: `building_produce@{star_system_id}@{tb_id}@{district_id}@{building_id}@{product_id}`.
+- Type ID: A unique ID for every modifier type.
+- Name: Its name.
+- ID format: How the modifier instances' IDs should be formatted.
+- Desc: Description
+- Affects: Which modifier types this modifier type affects, formatted like: [affect_id, multiplier, is_percentage]. See society/modifier.py for further explanation.
+- Middle: Whether or not this modifier type is a middle modifier type. A middle modifier type is a modifier type that acts as a "middle" between modifiers.
+- Multiple: Whether or not this modifier type instantiates multiple modifiers.
+- Multiple format: How a modifier type should be instantiated.
