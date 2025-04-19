@@ -15,7 +15,6 @@ from physics.gas_giant import GasGiant
 from physics.planetary_body import PlanetaryBody
 from physics.star import Star
 from physics.star_system import StarSystem
-from physics.terraformprojects import AtmosphereChange, PropertyChange
 from physics.terrestrial_body import TerrestrialBody
 from graphics import initialize_menues
 from society.civ import Civ

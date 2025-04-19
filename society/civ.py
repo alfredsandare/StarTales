@@ -3,7 +3,6 @@
 from data.consts import PLANETARY_RESOURCES, RESOURCE_NAMES
 from physics.star_system import StarSystem
 from physics.terrestrial_body import TerrestrialBody
-from society.building import Building
 from society.modifier import Modifier
 from society.modifiers_handler import ModifiersHandler
 from society.species import Species

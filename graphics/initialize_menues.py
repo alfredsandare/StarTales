@@ -1,7 +1,6 @@
 # module for adding content to menues
 # function names here are only the name of the menu
 
-import copy
 import math
 from PhoenixGUI.util import sum_two_vectors, sum_multiple_vectors
 from PhoenixGUI import *
@@ -16,7 +15,7 @@ from physics.star_system import StarSystem
 from physics.terraformprojects import PROJECTS, PROPERTY_UNITS
 from physics.terrestrial_body import TerrestrialBody
 from society.civ import Civ
-from society.species import CHARACTERISTICS, CHARACTERISTICS_NAMES, ENVIRONMENTS_NAMES, HABITAT_PREFERENCES_NAMES, Species
+from society.species import CHARACTERISTICS_NAMES, ENVIRONMENTS_NAMES, HABITAT_PREFERENCES_NAMES, Species
 from util import orbital_vel_to_orbital_period, round_and_add_suffix, round_seconds, round_to_significant_figures
 
 YES_NO = {
