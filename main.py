@@ -89,7 +89,7 @@ class Game:
         self.player_civ_id = "humanity"
         # mod = Modifier("Bunk Beds", 0.15, [(f"building_produce@sol@earth@0@0@housing", 1, True)], id="bunk_beds", is_base=False)
         mod = Modifier("Bunk Beds", 1, id="bunk_beds", is_base=False,
-                       affects_generators=[(lambda: self.civs["humanity"].modifiers_handler.get_modifiers_ids(["building_produce", "sol", "earth", None, None, "housing"]), lambda: self.time, False)])
+                       affects_generators=[(lambda: self.civs["humanity"].modifiers_handler.get_modifiers_ids(["building_produce", "sol", "earth", None, None, "housing"]), lambda _: self.time, False)])
         self.civs["humanity"].modifiers_handler.add_modifier(mod)
         self.civs["humanity"].modifiers_handler.calculate_modifiers()
 

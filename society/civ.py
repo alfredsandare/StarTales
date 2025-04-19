@@ -41,6 +41,12 @@ class Civ:
         return f"{self.name}"
 
     def create_all_modifiers(self):
+        for job_id, job_data in self.jobs_data.items():
+            for resource_id, amount in job_data["upkeep"].items():
+                self.create_modifier_1100(job_id, resource_id, amount)
+            for resource_id, amount in job_data["produces"].items():
+                self.create_modifier_1103(job_id, resource_id, amount)
+
         for (star_system_id, cb_id) in self.owned_cb_ids:
             cb = self.star_systems[star_system_id].get_all_cbs_dict()[cb_id]
             if isinstance(cb, TerrestrialBody) and cb.is_settled():
@@ -65,48 +71,30 @@ class Civ:
                                     0, id=id_, get_base_value_func=func)
                 self.modifiers_handler.add_modifier(modifier)
 
-        # Planetary resources
+        # Planetary resources, 1300
         for resource in PLANETARY_RESOURCES:
-            id_ = f"{resource}@{star_system_id}@{tb_id}"
-            modifier = Modifier(RESOURCE_NAMES[resource], 0, id=id_)
+            id_ = f"resource@{star_system_id}@{tb_id}@{resource}"
+            modifier = Modifier(RESOURCE_NAMES[resource], 0, id=id_,
+                                type_id=1300)
             self.modifiers_handler.add_modifier(modifier)
 
+        # Buildings: 1200, 1201
         for district_id, district in enumerate(tb.districts):
             for building_id, building in enumerate(district.buildings):
                 self.create_building_modifiers(star_system_id, tb_id,
                                                district_id, building_id)
 
-        # Amount of every species working a job
         for species_id, job_id in tb.population.get_jobs_dict().keys():
-            id_ = f"jobs@{star_system_id}@{tb_id}@{species_id}@{job_id}"
-            name = f"{self.species[species_id].name} {self.jobs_data[job_id]["name"]}"
-            func = lambda p=tb.population, si=species_id, j=job_id: \
-                p.get_job_amount(si, j)
+            for resource_id in self.jobs_data[job_id]["upkeep"].keys():
+                self.create_modifier_1101(star_system_id, tb, species_id,
+                                          job_id, resource_id)
+            for resource_id in self.jobs_data[job_id]["produces"].keys():
+                self.create_modifier_1104(star_system_id, tb, species_id,
+                                          job_id, resource_id)
 
-            affects = []
-            for resource_id, multiplier in self.jobs_data[job_id]["produces"].items():
-                affected_id = f"jobs_production@{star_system_id}@{tb_id}@{resource_id}"
-                affects.append((affected_id, multiplier, False))
-
-            for resource_id, multiplier in self.jobs_data[job_id]["upkeep"].items():
-                affected_id = f"jobs_upkeep@{star_system_id}@{tb_id}@{resource_id}"
-                affects.append((affected_id, multiplier, False))
-
-            modifier = Modifier(name, 0, id=id_, get_base_value_func=func)
-            self.modifiers_handler.add_modifier(modifier)
-
-        # Resource production and upkeep from jobs
         for resource_id in PLANETARY_RESOURCES:
-            id_ = f"jobs_production@{star_system_id}@{tb_id}@{resource_id}"
-            name = f"Jobs {RESOURCE_NAMES[resource_id]} Production"
-            modifier = Modifier(name, 0, id=id_)
-            self.modifiers_handler.add_modifier(modifier)
-
-            id_ = f"jobs_upkeep@{star_system_id}@{tb_id}@{resource_id}"
-            name = f"Jobs {RESOURCE_NAMES[resource_id]} Upkeep"
-            modifier = Modifier(name, 0, id=id_)
-            self.modifiers_handler.add_modifier(modifier)
-
+            self.create_modifier_1102(star_system_id, tb, resource_id)
+            self.create_modifier_1105(star_system_id, tb, resource_id)
 
     def time_tick(self):
         self.modifiers_handler.calculate_modifiers()
@@ -131,27 +119,29 @@ class Civ:
             .get_all_cbs_dict()[tb_id]
         building = tb.districts[district_id].buildings[building_id]
 
-        # Create upkeep modifiers
+        # Create upkeep modifiers, 1201
         for upkeep_id in building.get_upkeep_ids():
             id_ = f"building_upkeep@{star_system_id}@{tb_id}@" \
                 f"{district_id}@{building_id}@{upkeep_id}"
             func = lambda uid=upkeep_id: building.get_upkeep(uid)
             name = f"{RESOURCE_NAMES[upkeep_id]}"
-            affects = [(f"{upkeep_id}@{star_system_id}@{tb_id}", 1, False)]
+            affects = [(f"resource@{star_system_id}@{tb_id}@{upkeep_id}",
+                        1, False)]
             modifier = Modifier(name, 0, id=id_, get_base_value_func=func,
-                                affects=affects)
+                                affects=affects, type_id=1201)
             self.modifiers_handler.add_modifier(modifier)
             building.upkeep_modifiers_ids.append(id_)
 
-        # Create produce modifiers
+        # Create produce modifiers, 1200
         for produce_id in building.get_produce_ids():
             id_ = f"building_produce@{star_system_id}@{tb_id}@" \
                 f"{district_id}@{building_id}@{produce_id}"
             func = lambda uid=produce_id: building.get_produce(uid)
             name = RESOURCE_NAMES[produce_id]
-            affects = [(f"{produce_id}@{star_system_id}@{tb_id}", 1, False)]
+            affects = [(f"resource@{star_system_id}@{tb_id}@{produce_id}",
+                        1, False)]
             modifier = Modifier(name, 0, id=id_, get_base_value_func=func,
-                                affects=affects)
+                                affects=affects, type_id=1200)
             self.modifiers_handler.add_modifier(modifier)
             building.produce_modifiers_ids.append(id_)
 
@@ -230,3 +220,100 @@ class Civ:
                           for species_id in present_species_ids]
 
         return sum(habitabilities) / sub_population.get_total_population()
+
+    def get_1100_and_1103_multiplier_func(self, job_id):
+        return lambda id_, job_id=job_id: \
+            self.star_systems[id_.split("@")[1]] \
+            .get_all_cbs_dict()[id_.split("@")[2]] \
+            .population.get_jobs_dict()[(id_.split("@")[3], job_id)]
+
+    def create_modifier_1100(self, job_id, resource_id, amount):
+        id_ = f"job_base_resource_upkeep@{job_id}@{resource_id}"
+        name = f"{RESOURCE_NAMES[resource_id]} upkeep per " \
+            f"{self.jobs_data[job_id]["name"]}"
+
+        req = ["job_resource_upkeep", None, None, None, job_id, resource_id]
+        get_ids_func = lambda req=req: \
+            self.modifiers_handler.get_modifiers_ids(req)
+
+        multiplier_func = self.get_1100_and_1103_multiplier_func(job_id)
+        affects_generators = [(get_ids_func, multiplier_func, False)]
+        modifier = Modifier(name, amount, id=id_, type_id=1100,
+                            affects_generators=affects_generators)
+        self.modifiers_handler.add_modifier(modifier)
+
+    def create_modifier_1101(self, star_system_id, tb, species_id,
+                             job_id, resource_id):
+        id_ = f"job_species_resource_upkeep@{star_system_id}@{tb.id}" \
+            f"@{species_id}@{job_id}@{resource_id}"
+        name = f"{self.jobs_data[job_id]["name"]}" \
+            f"{RESOURCE_NAMES[resource_id]} upkeep"
+
+        req = ["resource_upkeep_from_jobs", star_system_id, tb.id, resource_id]
+        get_ids_func = lambda req=req: \
+            self.modifiers_handler.get_modifiers_ids(req)
+
+        affects_generators = [(get_ids_func, 1, False)]
+        modifier = Modifier(name, 0, id=id_, type_id=1101,
+                            affects_generators=affects_generators)
+        self.modifiers_handler.add_modifier(modifier)
+
+    def create_modifier_1102(self, star_system_id, tb, resource_id):
+        id_ = f"resource_upkeep_from_jobs@{star_system_id}@" \
+            f"{tb.id}@{resource_id}"
+        name = f"{RESOURCE_NAMES[resource_id]} upkeep from jobs"
+
+        req = ["resource", star_system_id, tb.id, resource_id]
+        get_ids_func = lambda req=req: \
+            self.modifiers_handler.get_modifiers_ids(req)
+
+        affects_generators = [(get_ids_func, -1, False)]
+        modifier = Modifier(name, 0, id=id_, type_id=1102,
+                            affects_generators=affects_generators)
+        self.modifiers_handler.add_modifier(modifier)
+
+    def create_modifier_1103(self, job_id, resource_id, amount):
+        id_ = f"job_base_resource_production@{job_id}@{resource_id}"
+        name = f"{RESOURCE_NAMES[resource_id]} output per " \
+            f"{self.jobs_data[job_id]["name"]}"
+
+        req = ["job_resource_production", None, None, None, job_id, resource_id]
+        get_ids_func = lambda req=req: \
+            self.modifiers_handler.get_modifiers_ids(req)
+
+        multiplier_func = self.get_1100_and_1103_multiplier_func(job_id)
+        affects_generators = [(get_ids_func, multiplier_func, False)]
+        modifier = Modifier(name, amount, id=id_, type_id=1103,
+                            affects_generators=affects_generators)
+        self.modifiers_handler.add_modifier(modifier)
+
+    def create_modifier_1104(self, star_system_id, tb, species_id,
+                             job_id, resource_id):
+        id_ = f"job_resource_production@{star_system_id}@{tb.id}@" \
+            f"{species_id}@{job_id}@{resource_id}"
+        name = f"{self.jobs_data[job_id]["name"]}" \
+            f"{RESOURCE_NAMES[resource_id]} production"
+
+        req = ["resource_production_from_jobs", star_system_id,
+               tb.id, resource_id]
+        get_ids_func = lambda req=req: \
+            self.modifiers_handler.get_modifiers_ids(req)
+
+        affects_generators = [(get_ids_func, 1, False)]
+        modifier = Modifier(name, 0, id=id_, type_id=1104,
+                            affects_generators=affects_generators)
+        self.modifiers_handler.add_modifier(modifier)
+
+    def create_modifier_1105(self, star_system_id, tb, resource_id):
+        id_ = f"resource_production_from_jobs@{star_system_id}@" \
+            f"{tb.id}@{resource_id}"
+        name = f"{RESOURCE_NAMES[resource_id]} upkeep from jobs"
+
+        req = ["resource", star_system_id, tb.id, resource_id]
+        get_ids_func = lambda req=req: \
+            self.modifiers_handler.get_modifiers_ids(req)
+
+        affects_generators = [(get_ids_func, 1, False)]
+        modifier = Modifier(name, 0, id=id_, type_id=1105,
+                            affects_generators=affects_generators)
+        self.modifiers_handler.add_modifier(modifier)

@@ -71,15 +71,8 @@ class Population:
     def get_jobs_dict(self):
         return self.jobs
 
+    def get_jobs_list(self):
+        return list(set([job_id for _, job_id in self.jobs.keys()]))
+
     def get_job_amount(self, species_id, job_id):
         return self.jobs[(species_id, job_id)]
-
-    def get_total_jobs_production(self, resource_id) -> float:
-        total_production = 0
-        for job_id, job_data in self.jobs_data.items():
-            if resource_id in job_data["produces"].keys():
-                for species_id in self.get_species_ids():
-                    total_production += job_data["produces"][resource_id] \
-                        * self.jobs[(species_id, job_id)]
-
-        return total_production

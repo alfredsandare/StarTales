@@ -4,7 +4,8 @@
 class Modifier:
     def __init__(self, name, base_value, affects: list[tuple] = None,
                  id: str = None, get_base_value_func: callable = None,
-                 is_base: bool = False, affects_generators: list = None):
+                 is_base: bool = False, affects_generators: list = None,
+                 type_id: int = None):
 
         self.name = name
         self.base_value = base_value
@@ -26,6 +27,7 @@ class Modifier:
         self.id = id
         self.get_base_value_func = get_base_value_func
         self.is_base = is_base
+        self.type_id = type_id
 
         self.added_value = 0
         self.added_percentage = 0  # this is a fraction, not an actual percentage
@@ -51,8 +53,11 @@ class Modifier:
         self.affects = [affect for affect in self.affects if not affect[3]]
         for affect in self.affects_generators:
             ids = affect[0]()  # affect[0] is callable and returns list of strs
+            multiplier = affect[1]
             for id_ in ids:
-                self.affects.append((id_, affect[1], affect[2], True))
+                if callable(multiplier):
+                    multiplier = multiplier(id_)
+                self.affects.append((id_, multiplier, affect[2], True))
 
     def get_value(self):
         return self.value
