@@ -306,3 +306,9 @@ class StarSystem:
         largest_sma = max([pb.sma for pb in self.get_pbs_list()])
         if largest_sma * self.zoom < DISALLOW_ZOOM_OUT_SMA_THRESHOLD:
             self.allow_zoom_out = False
+
+    def get_distance_to_star(self, cb_id: str):
+        if self.is_moon(cb_id):
+            host_id = self.planetary_bodies[cb_id].orbital_host
+            return self.planetary_bodies[host_id].sma
+        return self.planetary_bodies[cb_id].sma
