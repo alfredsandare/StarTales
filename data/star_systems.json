@@ -21,7 +21,6 @@
                 "day_length": 15206400,
                 "gravity": 3.7,
                 "sma": 0.387098,
-                "temperature": "moderate",
                 "districts": [
                     "COLD_DESERT",
                     "COLD_DESERT",
@@ -55,7 +54,6 @@
                 "day_length": 20995200,
                 "gravity": 8.87,
                 "sma": 0.723,
-                "temperature": "moderate",
                 "districts": [
                     "TOXIC",
                     "TOXIC",
@@ -92,7 +90,6 @@
                 "day_length": 86400,
                 "gravity": 9.81,
                 "sma": 1,
-                "temperature": "moderate",
                 "districts": [
                     "WATER_OCEAN",
                     "RAINFOREST",
@@ -178,7 +175,6 @@
                 "day_length": 86400,
                 "gravity": 1.622,
                 "sma": 0.00257,
-                "temperature": "moderate",
                 "districts": [
                     "COLD_DESERT",
                     "COLD_DESERT",
@@ -212,7 +208,6 @@
                 "day_length": 88620,
                 "gravity": 3.72,
                 "sma": 1.523,
-                "temperature": "moderate",
                 "districts": [
                     "TOXIC",
                     "TOXIC",
@@ -259,6 +254,51 @@
                 "is_tidally_locked": false,
                 "orbital_velocity": 9680,
                 "sma": 9.58
+            }
+        }
+    },
+
+    "pc": {
+        "name": "Proxima Centauri",
+        "star": {
+            "visual_style": "CLASS_G",
+            "size": 268,
+            "name": "PC",
+            "id": "pc",
+            "star_class": "G2V"
+        },
+        "planetary_bodies": {
+            "b": {
+                "type": "terrestrial_world",
+                "visual_style": "MESA",
+                "size": 19.1,
+                "name": "b",
+                "id": "b",
+                "orbital_host": "pc",
+                "is_tidally_locked": false,
+                "orbital_velocity": 47194,
+                "day_length": 86400,
+                "gravity": 10,
+                "sma": 0.04856,
+                "districts": [
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC",
+                    "TOXIC"
+                ],
+                "atmosphere": {}
             }
         }
     }
