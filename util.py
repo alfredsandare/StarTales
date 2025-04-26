@@ -1,7 +1,7 @@
 import math
 from PIL import Image
 
-from data.consts import METERS_PER_AU
+from data.consts import METERS_PER_AU, TEMPERATURES_ADJECTIVES
 
 
 def multiply_vector(vector, factor):
@@ -162,6 +162,12 @@ def round_and_add_suffix(num, significant_figures, include_space=True, make_int=
             if round(output) == output: #so that 436.0 becomes 436
                 output = int(output)
             return str(output) + (' ' if include_space else '') + prefixes[i]
+
+def get_temperature_adjective(temperature):
+    for limit, adjective in TEMPERATURES_ADJECTIVES.items():
+        if temperature >= limit:
+            return adjective
+    return ""
 
 if __name__ == "__main__":
     # run_convert_erv_to_day_length_program()
