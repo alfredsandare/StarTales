@@ -1,5 +1,7 @@
+import math
+from data.consts import METERS_PER_AU, SB_CONSTANT
 from graphics.celestial_body_visual import CelestialBodyVisual
-from physics.atmosphere import Atmosphere
+from physics.atmosphere import GASES_GREENHOUSE_CONSTS, Atmosphere, GASES
 from physics.district import District
 from physics.planetary_body import PlanetaryBody
 from society.population import Population
@@ -21,8 +23,7 @@ class TerrestrialBody(PlanetaryBody):
                  districts: list[District],
                  atmosphere: Atmosphere,
                  population: Population,
-                 owner: str = None,
-                 temperature="moderate"):
+                 owner: str = None):
         
         super().__init__(visual, 
                          size, 
@@ -43,7 +44,7 @@ class TerrestrialBody(PlanetaryBody):
         self.districts = districts
         self.atmosphere = atmosphere
         self.population = population
-        self.temperature = temperature
+        self.temperature = 0
 
         self.atmosphere.tb_size = self.size
 
@@ -68,3 +69,29 @@ class TerrestrialBody(PlanetaryBody):
         # Sort by alphabetical order on the template ids
         sorted_keys = sorted(all_buildings, key=lambda k: k[0])
         return {key: all_buildings[key] for key in sorted_keys}
+
+    def calculate_temperature(self, host_lum, sma):
+
+        # Table of values, how this scale works
+        # Temperature in celsius, temperature in this scale
+        #  -60  23
+        #  -23  31
+        #   14  38
+        # ~500 330
+
+        ALBEDO = 0.3  # Constant
+        SCALE = 0.2
+        OFFSET = 100
+        GREENHOUSE_BASE_CONST = 0.3
+
+        # Formula for planetary equilibrium temperature
+        equilibrium_temp = ((host_lum*(1-ALBEDO))
+                            /(16*math.pi*SB_CONSTANT*(sma*METERS_PER_AU)**2))**0.25
+        temperature = SCALE * (equilibrium_temp - OFFSET)
+        temperature = temperature if temperature > 0 else 0
+
+        for gas, share in self.atmosphere.get_composition_shares().items():
+            temperature += (share * self.atmosphere.get_thickness())**0.5 \
+                * GASES_GREENHOUSE_CONSTS[gas] * GREENHOUSE_BASE_CONST
+
+        self.temperature = temperature

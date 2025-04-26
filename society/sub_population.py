@@ -28,7 +28,7 @@ class SubPopulation:
 
     def calculate_habitabilites(self, species: dict[str, Species], 
                                 atmosphere: Atmosphere, 
-                                temperature: str):
+                                temperature: float):
 
         self.habitabilites = {}
 
@@ -40,10 +40,8 @@ class SubPopulation:
 
             habitability -= atmosphere.get_habitability_penalty(species[species_id])
 
-            pref_index = TEMPERATURES.index(species[species_id]
-                                            .habitat_preferences["temperature"])
-            index_ = TEMPERATURES.index(temperature)
-            habitability -= 0.2 * abs(pref_index - index_)
+            pref_temp = species[species_id].habitat_preferences["temperature"]
+            habitability -= 0.01 * abs(pref_temp - temperature)
 
             if habitability < 0:
                 habitability = 0

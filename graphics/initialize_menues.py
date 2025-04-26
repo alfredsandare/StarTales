@@ -16,7 +16,7 @@ from physics.terraformprojects import PROJECTS, PROPERTY_UNITS
 from physics.terrestrial_body import TerrestrialBody
 from society.civ import Civ
 from society.species import CHARACTERISTICS_NAMES, ENVIRONMENTS_NAMES, HABITAT_PREFERENCES_NAMES, Species
-from util import orbital_vel_to_orbital_period, round_and_add_suffix, round_seconds, round_to_significant_figures
+from util import get_temperature_adjective, orbital_vel_to_orbital_period, round_and_add_suffix, round_seconds, round_to_significant_figures
 
 YES_NO = {
     True: "Yes",
@@ -351,6 +351,7 @@ def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: Cele
         properties.extend([
             ["Tidally locked", YES_NO[cb.is_tidally_locked]],
             ["Gravity", f"{cb.gravity} N"],
+            ["Temperature", get_temperature_adjective(cb.temperature)]
         ])
 
         # Day length is only interesting if not tidally locked.
@@ -714,7 +715,7 @@ def view_species_menu(menu_handler: MenuHandler, species: Species, font: str):
 
     HABITAT_PREFERENCES_TEXTS = [
         species.habitat_preferences["main_fluid"].capitalize(),
-        species.habitat_preferences["temperature"].capitalize(),
+        str(species.habitat_preferences["temperature"]).capitalize(),
         f"{round(species.habitat_preferences['atmospheric_pressure'])} kPa"
     ]
 

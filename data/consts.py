@@ -72,3 +72,5 @@ TEMPERATURES_ADJECTIVES = {
     20: "Freezing",
     0: "Cryogenic"
 }
+
+SB_CONSTANT = 5.67*10**(-8)  # Stefan-Boltzmann constant

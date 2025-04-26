@@ -86,11 +86,11 @@ class Game:
         self.civs["humanity"] = Civ("Humanity", self.star_systems, self.species,
                                     self.buildings_data, self.jobs_data, [["sol", "earth"]])
         self.player_civ_id = "humanity"
-        # mod = Modifier("Bunk Beds", 0.15, [(f"building_produce@sol@earth@0@0@housing", 1, True)], id="bunk_beds", is_base=False)
         mod = Modifier("Bunk Beds", 1, id="bunk_beds", is_base=False,
                        affects_generators=[(lambda: self.civs["humanity"].modifiers_handler.get_modifiers_ids(["building_produce", "sol", "earth", None, None, "housing"]), lambda _: self.time, False)])
         self.civs["humanity"].modifiers_handler.add_modifier(mod)
-        self.civs["humanity"].modifiers_handler.calculate_modifiers()
+
+        self.setup_calculations()
 
     def main(self):
         self.menu_handler.menues["main_menu"].activate()
@@ -127,15 +127,29 @@ class Game:
             clock.tick(60)
             # print("FPS:", round(clock.get_fps()))
 
+    def setup_calculations(self):
+        for star_system in self.star_systems.values():
+            for cb in star_system.get_all_cbs():
+                if isinstance(cb, TerrestrialBody):
+                    cb.calculate_temperature(star_system.star.get_luminosity(),
+                                             star_system.get_distance_to_star(cb.id))
+                    cb.population.calculate_habitabilites(self.species, cb.temperature)
+
+        for civ in self.civs.values():
+            civ.modifiers_handler.calculate_modifiers()
+
     def _time_tick(self):
         self.time += 1
 
         for star_system in self.star_systems.values():
-            for pb in star_system.get_pbs_list():
-                pb.update_orbit_progress()
-
             for cb in star_system.get_all_cbs():
                 cb.apply_terraform_projects()
+                if isinstance(cb, PlanetaryBody):
+                    cb.update_orbit_progress()
+                if isinstance(cb, TerrestrialBody):
+                    cb.calculate_temperature(star_system.star.get_luminosity(),
+                                             star_system.get_distance_to_star(cb.id))
+                    cb.population.calculate_habitabilites(self.species, cb.temperature)
 
         for civ in self.civs.values():
             civ.time_tick()
@@ -564,8 +578,6 @@ class Game:
             if "population" in pb_data:
                 population = Population(pb_data["population"],
                                         districts, atmosphere, self.jobs_data)
-                population.calculate_habitabilites(self.species, 
-                                                   pb_data["temperature"])
 
             return TerrestrialBody(visual, **kwargs, 
                                    districts=districts, 

@@ -30,7 +30,7 @@ class Population:
                     for sub_population in self.sub_populations])
 
     def calculate_habitabilites(self, species: dict[str, Species], 
-                                temperature: str):
+                                temperature: float):
 
         for sub_population in self.sub_populations:
             sub_population.calculate_habitabilites(species,

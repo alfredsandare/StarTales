@@ -29,7 +29,6 @@ class Civ:
 
         self.modifiers_handler = ModifiersHandler()
         self.create_all_modifiers()
-        self.modifiers_handler.calculate_modifiers()
 
     def __str__(self):
         return f"Civilization: {self.name}"
