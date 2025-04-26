@@ -142,6 +142,13 @@ def orbital_vel_to_orbital_period(orbital_vel: float, sma: float) -> float:
     time_in_s = orbit_length / orbital_vel
     return time_in_s
 
+def orbital_period_to_orbital_vel(period: float, sma: float) -> float:
+    ''' Period in days, sma in AU'''
+    period_in_s = period * 86_400
+    sma_in_m = sma * METERS_PER_AU
+    orbit_length = 2 * math.pi * sma_in_m
+    return orbit_length / period_in_s
+
 def get_path_from_file_name(file_name: str) -> str:
     return file_name[:file_name.find("StarTales") + 10]
 
@@ -172,4 +179,4 @@ def get_temperature_adjective(temperature):
 if __name__ == "__main__":
     # run_convert_erv_to_day_length_program()
     # run_calculate_total_atmosphere_units_program()
-    print(round_and_add_suffix(-123456789, 3))
+    print(orbital_period_to_orbital_vel(11.18, 0.0485))
