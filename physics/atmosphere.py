@@ -34,10 +34,10 @@ class Atmosphere:
 
     def get_habitability_penalty(self, species: Species):
         penalty = 0
-        thickness_and_preference = [self.get_thickness(), \
-            species.habitat_preferences['atmospheric_pressure']]
 
-        penalty += 0.4 * (max(thickness_and_preference) / min(thickness_and_preference) - 1)
+        thickness = self.get_thickness()
+        pref = species.habitat_preferences['atmospheric_pressure']
+        penalty += 0.4 * abs(pref - thickness) / max(thickness, pref)
 
         composition_shares = self.get_composition_shares(use_all_gases=True)
         atm_preferences: dict[str, float] = \
@@ -66,4 +66,12 @@ GASES_NAMES = {
     'carbon-dioxide': 'Carbon Dioxide',
     'methane': 'Methane',
     "water_vapor": "Water Vapor"
+}
+
+GASES_GREENHOUSE_CONSTS = {
+    'nitrogen': 1,
+    'oxygen': 1,
+    'carbon-dioxide': 10,
+    'methane': 40,
+    "water_vapor": 10
 }
