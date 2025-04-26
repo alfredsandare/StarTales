@@ -10,7 +10,7 @@
         "environment": "land",
         "habitat_preferences": {
             "main_fluid": "water",
-            "temperature": "moderate",
+            "temperature": 38,
             "atmospheric_pressure": 103,
             "atmospheric_composition": {
                 "min_oxygen": 0.19,
@@ -30,7 +30,7 @@
         "environment": "land",
         "habitat_preferences": {
             "main_fluid": "water",
-            "temperature": "moderate",
+            "temperature": 38,
             "atmospheric_pressure": 103,
             "atmospheric_composition": {
                 "min_oxygen": 0.19,
@@ -50,7 +50,7 @@
         "environment": "air",
         "habitat_preferences": {
             "main_fluid": "water",
-            "temperature": "moderate",
+            "temperature": 38,
             "atmospheric_pressure": 103,
             "atmospheric_composition": {
                 "min_oxygen": 0.19,
@@ -70,7 +70,7 @@
         "environment": "land",
         "habitat_preferences": {
             "main_fluid": "water",
-            "temperature": "moderate",
+            "temperature": 38,
             "atmospheric_pressure": 103,
             "atmospheric_composition": {
                 "min_oxygen": 0.19,
@@ -90,7 +90,7 @@
         "environment": "land",
         "habitat_preferences": {
             "main_fluid": "water",
-            "temperature": "moderate",
+            "temperature": 38,
             "atmospheric_pressure": 103,
             "atmospheric_composition": {
                 "min_oxygen": 0.19,
@@ -110,7 +110,7 @@
         "environment": "land",
         "habitat_preferences": {
             "main_fluid": "water",
-            "temperature": "moderate",
+            "temperature": 38,
             "atmospheric_pressure": 103,
             "atmospheric_composition": {
                 "min_oxygen": 0.19,
