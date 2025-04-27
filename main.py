@@ -39,7 +39,8 @@ class Game:
                                             .get_values("default_font bold skip_quotes"),
                                         hover_menu_text_size=14,
                                         hover_menu_width=300,
-                                        hover_menu_text_offset=[5, 5])
+                                        hover_menu_text_offset=[5, 5],
+                                        hover_menu_offset=[10, 10])
         self.menu_handler.set_scroll_strength_multiplier(8)
         
         self.images = self._get_images_in_directory(PATH+"graphics\\", PATH+"graphics\\")
