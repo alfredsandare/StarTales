@@ -1,10 +1,11 @@
 import math
-from data.consts import METERS_PER_AU, SB_CONSTANT
+from data.consts import METERS_PER_AU, SB_CONSTANT, TEXT_COLOR_ORANGE
 from graphics.celestial_body_visual import CelestialBodyVisual
-from physics.atmosphere import GASES_GREENHOUSE_CONSTS, Atmosphere, GASES
+from physics.atmosphere import GASES_GREENHOUSE_CONSTS, GASES_NAMES, Atmosphere
 from physics.district import District
 from physics.planetary_body import PlanetaryBody
 from society.population import Population
+from util import get_temperature_adjective, round_to_significant_figures
 
 
 class TerrestrialBody(PlanetaryBody):
@@ -70,7 +71,7 @@ class TerrestrialBody(PlanetaryBody):
         sorted_keys = sorted(all_buildings, key=lambda k: k[0])
         return {key: all_buildings[key] for key in sorted_keys}
 
-    def calculate_temperature(self, host_lum, sma):
+    def calculate_temperature(self, host_lum, sma, get_hover_text=False):
 
         # Table of values, how this scale works
         # Temperature in celsius, temperature in this scale
@@ -87,11 +88,29 @@ class TerrestrialBody(PlanetaryBody):
         # Formula for planetary equilibrium temperature
         equilibrium_temp = ((host_lum*(1-ALBEDO))
                             /(16*math.pi*SB_CONSTANT*(sma*METERS_PER_AU)**2))**0.25
-        temperature = SCALE * (equilibrium_temp - OFFSET)
-        temperature = temperature if temperature > 0 else 0
+        equilibrium_temp = SCALE * (equilibrium_temp - OFFSET)
+        equilibrium_temp = equilibrium_temp if equilibrium_temp > 0 else 0
 
+        temperature = equilibrium_temp
+        gases_effects = {}
         for gas, share in self.atmosphere.get_composition_shares().items():
-            temperature += (share * self.atmosphere.get_thickness())**0.5 \
+            effect = (share * self.atmosphere.get_thickness())**0.5 \
                 * GASES_GREENHOUSE_CONSTS[gas] * GREENHOUSE_BASE_CONST
+            temperature += effect
+            gases_effects[gas] = effect
 
-        self.temperature = temperature
+        if not get_hover_text:
+            self.temperature = temperature
+            return
+
+        text = f"%%{TEXT_COLOR_ORANGE}%Temperature:% " \
+            f"{get_temperature_adjective(temperature).lower()}\n----------\n" \
+            f"%%{TEXT_COLOR_ORANGE}%On scale:% " \
+            f"{round_to_significant_figures(temperature, 3)}\n" \
+            f"    From star: {round_to_significant_figures(equilibrium_temp, 3)}\n"
+
+        for gas, effect in gases_effects.items():
+            text += f"    From {GASES_NAMES[gas].lower()}: " \
+                f"+{round_to_significant_figures(effect, 3)}\n"
+
+        return text

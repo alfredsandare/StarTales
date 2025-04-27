@@ -100,7 +100,8 @@ def cb_menu(menu_handler: MenuHandler,
             species: dict[str, Species],
             player_civ: Civ,
             district_id: int,
-            buildings_data: dict):
+            buildings_data: dict,
+            star_system: StarSystem):
 
     object_ids = [
         "thickness_text",
@@ -122,7 +123,8 @@ def cb_menu(menu_handler: MenuHandler,
         "habitability_text1_",
         "habitability_text2_",
         "building_button_",
-        "building_picture_"
+        "building_picture_",
+        "property_hover_"
     ]
 
     menu_handler.delete_multiple_objects("cb_menu", object_ids, 
@@ -187,7 +189,7 @@ def cb_menu(menu_handler: MenuHandler,
         _init_districts(menu_handler, cb, climate_images, invoke_command)
 
     if menu_settings["cb_menu_mode"] == "overview":
-        _init_properties(menu_handler, cb, host_cb, font, settings, SIZE)
+        _init_properties(menu_handler, cb, host_cb, font, settings, SIZE, star_system)
         _init_moons(menu_handler, font, cb, cbs, invoke_command)
 
     elif menu_settings["cb_menu_mode"] == "terraforming":
@@ -312,7 +314,7 @@ def _init_terraforming(menu_handler: MenuHandler, cb: CelestialBody, font, image
         text = Text(pos, project.get_info_text(), font, 16, anchor="w")
         menu_handler.add_object("cb_submenu_active_terraforming", f"project_text_{i}", text)
 
-def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: CelestialBody, font, settings, cb_menu_size):
+def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: CelestialBody, font, settings, cb_menu_size, star_system: StarSystem):
     cb_menu = menu_handler.menues["cb_menu"]
 
     cb_menu.objects["info_bg"].activate()
@@ -326,12 +328,12 @@ def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: Cele
     cb_menu.objects["info_bg_title"].pos = \
         [INFO_POS[0]-INFO_SIZE[0]/2, INFO_POS[1]+10]
     
-    properties = [["Size", round_to_significant_figures(cb.size, 3)]]
+    properties = [["Size", round_to_significant_figures(cb.size, 3), ""]]
 
     if isinstance(cb, PlanetaryBody):
         properties.extend([
-            ["Orbital host", host_cb.name],
-            ["SMA", f"{round_to_significant_figures(cb.sma, 3)} AU"]
+            ["Orbital host", host_cb.name, ""],
+            ["SMA", f"{round_to_significant_figures(cb.sma, 3)} AU", ""]
         ])
 
         if settings["cb_menu"]["show_orbital_velocity"]:
@@ -340,33 +342,45 @@ def _init_properties(menu_handler: MenuHandler, cb: CelestialBody, host_cb: Cele
                                              3, make_int=True)
 
             properties.append(["Orbital Velocity", 
-                               f"{orbital_velocity_text} km/s"])
+                               f"{orbital_velocity_text} km/s", ""])
 
         if settings["cb_menu"]["show_orbital_period"]:
             period = orbital_vel_to_orbital_period(cb.orbital_velocity, cb.sma)
-            properties.append(["Orbital Period Length", round_seconds(period)])
+            properties.append(["Orbital Period Length", round_seconds(period), ""])
 
     if isinstance(cb, TerrestrialBody):
-
         properties.extend([
-            ["Tidally locked", YES_NO[cb.is_tidally_locked]],
-            ["Gravity", f"{cb.gravity} N"],
-            ["Temperature", get_temperature_adjective(cb.temperature)]
+            ["Tidally locked", YES_NO[cb.is_tidally_locked], ""],
+            ["Gravity", f"{cb.gravity} N", ""],
+            ["Temperature", get_temperature_adjective(cb.temperature),
+             cb.calculate_temperature(star_system.star.get_luminosity(),
+                                      star_system.get_distance_to_star(cb.id),
+                                      get_hover_text=True)]
         ])
 
         # Day length is only interesting if not tidally locked.
         if not cb.is_tidally_locked:
-            properties.append(["Day length", round_seconds(cb.day_length)])
+            properties.append(["Day length", round_seconds(cb.day_length), ""])
 
     ROW_HEIGHT = 40
-    for i, (name, property) in enumerate(properties):
-        pos = [INFO_POS[0]-INFO_SIZE[0]+10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
-        text = Text(pos, name, font, 18, anchor="w")
+    TEXT_SIZE = 18
+    for i, (name, property, hover_text) in enumerate(properties):
+        left_pos = [INFO_POS[0]-INFO_SIZE[0]+10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
+        text = Text(left_pos, name, font, TEXT_SIZE, anchor="w")
         menu_handler.add_object("cb_menu", f"property_title_{i}", text)
 
-        pos = [INFO_POS[0]-10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
-        text = Text(pos, str(property), font, 18, anchor="e")
+        right_pos = [INFO_POS[0]-10, (i+1)*INFO_POS[1]+ROW_HEIGHT]
+        text = Text(right_pos, str(property), font, TEXT_SIZE, anchor="e")
         menu_handler.add_object("cb_menu", f"property_{i}", text)
+
+        # Invisible rect, for hover
+        rect = Shape((left_pos[0], left_pos[1]-TEXT_SIZE/2),
+                     (right_pos[0]-left_pos[0], TEXT_SIZE),
+                     (0, 0, 0, 0),
+                     "rect",
+                     hover_text=hover_text,
+                     layer=10)
+        menu_handler.add_object("cb_menu", f"property_hover_{i}", rect)
 
 def _init_districts(menu_handler: MenuHandler, cb, climate_images, invoke_command):
     cb_menu = menu_handler.menues["cb_menu"]
